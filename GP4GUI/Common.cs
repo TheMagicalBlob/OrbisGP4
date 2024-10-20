@@ -15,7 +15,7 @@ namespace GP4GUI {
         public static string Gp4OutputDirectory;
         public static GP4Creator gp4;
         public static RichTextBox _OutputWindow;
-
+        public static Color AppColour = Color.FromArgb(150, 150, 240);
 
         // Basic Debug Output Function
         public static void DLog(object str = null) {
