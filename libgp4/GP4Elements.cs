@@ -2,18 +2,17 @@
 using System.Xml;
 #pragma warning disable CS1587
 
-/////////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\\
-///# Contents:                                  \\\
+///##############################################\\\
+/// Contents:                                    \\\
 ///--> Functions to Create Various .gp4 Elements \\\
-/////////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\\
+///##############################################\\\
 
 namespace libgp4 {
     public partial class GP4Creator {
 
-
-        /////////////////////\\\\\\\\\\\\\\\\\\\
+        ///##################################\\\
         ///--     GP4 ELEMENT CREATION     --\\\
-        /////////////////////\\\\\\\\\\\\\\\\\\\
+        ///##################################\\\
         #region GP4 ELEMENT CREATION
 
         /// <summary>
@@ -85,7 +84,7 @@ namespace libgp4 {
                 file.SetAttribute("targ_path", file_paths[index].Remove(0, gamedata_folder.Length + 1).Replace('\\', '/'));
                 file.SetAttribute(
                     "orig_path",
-                    _AbsoluteFilePaths ?
+                    AbsoluteFilePaths ?
                     file_paths[index] :
                     file_paths[index].Remove(0, gamedata_folder.Length + 1) // Strip
                 );
@@ -236,8 +235,8 @@ namespace libgp4 {
                     return true;
                 }
 
-            if(_BlacklistedFilesOrFolders != null)
-                foreach(var blacklisted_file_or_folder in _BlacklistedFilesOrFolders) {
+            if(BlacklistedFilesOrFolders != null)
+                foreach(var blacklisted_file_or_folder in BlacklistedFilesOrFolders) {
                     if(filepath.Contains(blacklisted_file_or_folder)) {
 #if Log
                         WLog($"User Ignoring: {filepath}", true);
@@ -289,5 +288,6 @@ namespace libgp4 {
             return false;
         }
         #endregion
+        ///==================================\\\
     }
 }

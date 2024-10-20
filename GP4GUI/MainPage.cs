@@ -31,7 +31,7 @@ namespace GP4GUI {
 
         private void TestBtn_Click(object sender, EventArgs e) {
 #if DEBUG
-            gp4._VerboseLogging = true;
+            gp4.VerboseLogging = true;
             var newgp4path = gp4.CreateGP4(@"C:\Users\msblob\gp4", true);
             if (newgp4path == null) {
                 WLog("Error: CreateGP4() Returned Null, Aborting.");
@@ -72,7 +72,7 @@ namespace GP4GUI {
             WLog($"Passcode: {newgp4.Passcode}");
             WLog($".sfo Timestamp: {newgp4.Timestamp}");
             WLog("================== Instnce Tests End ====================\n\n");
-            //================\\
+            ///==============\\\
 
 
             // static tests \\
@@ -105,16 +105,18 @@ namespace GP4GUI {
             WLog($"Passcode: {GP4Reader.GetPkgPasscode(newgp4path)}");
             WLog($".sfo Timestamp: {GP4Reader.GetTimestamp(newgp4path)}");
             WLog("================== Static Tests End ====================");
-            //===============\\
+            ///=============\\\
 
             System.Diagnostics.Process.Start(newgp4path);
 #endif
         }
 
 
-        //##########################################\\
+
+
+        ///########################################\\\
         ///--     Designer Managed Functions     --\\\
-        //##########################################\\
+        ///########################################\\\
         #region Designer Managed Functions
 #pragma warning disable CS0168 // var not used
 
@@ -135,6 +137,7 @@ namespace GP4GUI {
             this.dummy = new System.Windows.Forms.Button();
             this.OutputWindow = new GP4GUI.RichTextBox();
             this.GamedataFolderPathBox = new GP4GUI.TextBox();
+            this.SwapBrowseModeBtn = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // CreateBtn
@@ -192,7 +195,7 @@ namespace GP4GUI {
             this.BrowseBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(232)))));
             this.BrowseBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.BrowseBtn.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.BrowseBtn.Location = new System.Drawing.Point(311, 58);
+            this.BrowseBtn.Location = new System.Drawing.Point(302, 58);
             this.BrowseBtn.Name = "BrowseBtn";
             this.BrowseBtn.Size = new System.Drawing.Size(60, 23);
             this.BrowseBtn.TabIndex = 7;
@@ -261,12 +264,26 @@ namespace GP4GUI {
             this.GamedataFolderPathBox.TabIndex = 2;
             this.GamedataFolderPathBox.Text = "Paste The Gamedata Folder Path Here, Or Use The Browse Button...";
             // 
+            // SwapBrowseModeBtn
+            // 
+            this.SwapBrowseModeBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(232)))));
+            this.SwapBrowseModeBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.SwapBrowseModeBtn.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F);
+            this.SwapBrowseModeBtn.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.SwapBrowseModeBtn.Location = new System.Drawing.Point(361, 58);
+            this.SwapBrowseModeBtn.Name = "SwapBrowseModeBtn";
+            this.SwapBrowseModeBtn.Size = new System.Drawing.Size(11, 23);
+            this.SwapBrowseModeBtn.TabIndex = 16;
+            this.SwapBrowseModeBtn.UseVisualStyleBackColor = false;
+            this.SwapBrowseModeBtn.Click += new System.EventHandler(this.SwapBrowseModeBtn_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
             this.ClientSize = new System.Drawing.Size(452, 349);
+            this.Controls.Add(this.SwapBrowseModeBtn);
             this.Controls.Add(this.dummy);
             this.Controls.Add(this.ClearLogBtn);
             this.Controls.Add(this.OptionsBtn);
@@ -288,9 +305,11 @@ namespace GP4GUI {
         #endregion
 
 
-        //#########################################\\
+
+
+        ///#######################################\\\
         ///--     Basic Form Init Functions     --\\\
-        //#########################################\\
+        ///#######################################\\\
         #region Basic Form Init Functions
         public void BorderFunc(Form form) {
             var MainBox = new GroupBox() {
@@ -345,83 +364,105 @@ namespace GP4GUI {
 
 
         public void MouseUpFunc(object sender, MouseEventArgs e) {
-            mouse_is_down = 0;
-            Options?.BringToFront();
+            MouseIsDown = 0;
+            OptionsForm?.BringToFront();
         }
         public void MouseDownFunc(object sender, MouseEventArgs e) {
             MouseDif = new Point(MousePosition.X - ActiveForm.Location.X, MousePosition.Y - ActiveForm.Location.Y);
-            mouse_is_down = 1;
+            MouseIsDown = 1;
         }
         public void MoveForm(object sender, MouseEventArgs e) {
-            if(mouse_is_down != 0) {
+            if(MouseIsDown != 0) {
                 ActiveForm.Location = new Point(MousePosition.X - MouseDif.X, MousePosition.Y - MouseDif.Y);
                 ActiveForm.Update();
-                if(Options == null) return;
-                Options.Location = new Point(MousePosition.X - MouseDif.X + 30, MousePosition.Y - MouseDif.Y + 60);
-                Options.Update();
+
+                if (OptionsForm != null) {
+                    OptionsForm.Location = new Point(MousePosition.X - MouseDif.X + 30, MousePosition.Y - MouseDif.Y + 60);
+                    OptionsForm.Update();
+                }
             }
         }
         #endregion
 
 
-        /////////////////////\\\\\\\\\\\\\\\\\\\\
-        ///--     Application Variables     --\\\
-        /////////////////////\\\\\\\\\\\\\\\\\\\\
-        #region Application Variables
-/*        
-        public int mouse_is_down = 0;
-        public bool options_page_is_open, limit_output;
-        public string Gp4OutputDirectory;
-        public Point MouseDif;
-        private Form Options;
-        public GP4Creator gp4;
-*/
-        #endregion
+        ///###############################################\\\
+        ///--     Main Form Functions and Variables     --\\\
+        ///###############################################\\\
+        #region Main Form Functions & Variables
 
-
-        ////////////////////\\\\\\\\\\\\\\\\\\\
-        ///--     Main Form Functions     --\\\
-        ////////////////////\\\\\\\\\\\\\\\\\\\
-        #region Main Form Functions
+        public static Point MouseDif;
+        public static int MouseIsDown = 0;
+        public static Form OptionsForm;
+        public static Button[] DropdownMenu = new Button[2];
 
         private void ClearLogBtn_Click(object sender = null, EventArgs e = null) => OutputWindow.Clear();
 
-        /// <summary>
-        /// Create Page For Changing Various .gp4 Options. <br/>(passcode, source pkg, etc)
-        /// </summary>
+
+        // Create Page For Changing Various .gp4 Options. (passcode, source pkg, etc)
         private void OptionsBtn_Click(object sender, EventArgs e) {
-            if (!options_page_is_open) { 
-                Options?.BringToFront();
+            if (!OptionsPageIsOpen) { 
+                OptionsForm?.BringToFront();
 
                 var NewPage = new OptionsPage(this, Location);
-                Options = NewPage;
+                OptionsForm = NewPage;
                 NewPage.Show();
             }
+            else {
+                OptionsForm.Dispose();
+                OptionsPageIsOpen = false;
+            }
         }
 
 
-        /// <summary> Use The Dummy File Method To Open A Folder.
-        /// </summary>
+
+        // Use The Dummy File Method To Open A Folder.
         private void BrowseBtn_Click(object sender, MouseEventArgs e) {
             if(e.Button == MouseButtons.Right) {
-                using(var FBrowser = new FolderBrowserDialog())
-                    if(FBrowser.ShowDialog() == DialogResult.OK)
-                        GamedataFolderPathBox.Text = FBrowser.SelectedPath;
+                var Browser = new OpenFileDialog() {
+                    ValidateNames = false,
+                    Filter = "Folder Selection|*.",
+                    FileName = "Press 'Open' Once Inside The Desired Folder.",
+                    CheckFileExists = false,
+                    CheckPathExists = false
+                };
+
+                if(Browser.ShowDialog() == DialogResult.OK) {
+                    GamedataFolderPathBox.Text = Browser.FileName.Remove(Browser.FileName.LastIndexOf('\\'));
+                }
             }
 
+            using (var FBrowser = new FolderBrowserDialog())
+                if (FBrowser.ShowDialog() == DialogResult.OK)
+                    GamedataFolderPathBox.Text = FBrowser.SelectedPath;
+        }
 
-            var Browser = new OpenFileDialog() {
-                ValidateNames = false,
-                Filter = "Folder Selection|*.",
-                FileName = "Press 'Open' Once Inside The Desired Folder.",
-                CheckFileExists = false,
-                CheckPathExists = false
-            };
+        private void SwapBrowseModeBtn_Click(object sender, EventArgs e) {
+            if (DropdownMenuIsOpen) {
+                DropdownMenu[0].Dispose();
+                DropdownMenu[1].Dispose();
+                DropdownMenuIsOpen ^= true;
+            }
+            else {
+                DropdownMenu[0] = new Button() {
+                    Size = new Size(40, 15),
+                    ForeColor = Color.Red,
+                    Location = new Point(SwapBrowseModeBtn.Location.X + 10, SwapBrowseModeBtn.Location.Y + 10),
+                };
+                DropdownMenu[1] = new Button() {
+                    Size = new Size(40, 15),
+                    ForeColor = Color.Red,
+                    Location = new Point(SwapBrowseModeBtn.Location.X + 10, SwapBrowseModeBtn.Location.Y + 70),
+                };
+                ActiveForm.Controls.Add(DropdownMenu[0]);
+                ActiveForm.Controls.Add(DropdownMenu[1]);
 
-            if(Browser.ShowDialog() == DialogResult.OK) {
-                GamedataFolderPathBox.Text = Browser.FileName.Remove(Browser.FileName.LastIndexOf('\\'));
+                DropdownMenu[0].BringToFront();
+                DropdownMenu[1].BringToFront();
+                DropdownMenuIsOpen ^= true;
             }
         }
+
+
 
         // Apply Defaults to Unassigned but Required .gp4 Variables
         private bool ApplyDefaults()
@@ -447,7 +488,7 @@ namespace GP4GUI {
 
             // Assign An Output Directory For The .gp4 If None Has Been Set Yet.
             if (Gp4OutputDirectory == null)
-                if (!gp4._AbsoluteFilePaths)
+                if (!gp4.AbsoluteFilePaths)
                     Gp4OutputDirectory = gp4.GamedataFolder;
                 else
                     Gp4OutputDirectory = gp4.GamedataFolder.Remove(gp4.GamedataFolder.LastIndexOf('\\'));
@@ -455,32 +496,38 @@ namespace GP4GUI {
             return false;
         }
 
+
+        // Create the .gp4 Project File.
         private void BuildProjectFile(object sender, EventArgs e) {
-            ApplyDefaults();
+            if (ApplyDefaults())
+            return;
 
             gp4.CreateGP4(Gp4OutputDirectory, true);
         }
         #endregion
 
 
-        //####################################\\
+
+        ///##################################\\\
         ///--     Control Declarations     --\\\
-        //####################################\\
+        ///##################################\\\
         #region ControlDeclarations
-        private Button CreateBtn;
-        private Button ClearLogBtn;
         private TextBox GamedataFolderPathBox;
-        private Label Title;
+        private Button BrowseBtn;
+        private Button SwapBrowseModeBtn;
+        private Button CreateBtn;
+        private Button OptionsBtn;
+        private Button ClearLogBtn;
         private Button MinimizeBtn;
         private Button ExitBtn;
-        private RichTextBox OutputWindow;
-        private Button BrowseBtn;
-        private Button OptionsBtn;
         private Button dummy; // I forget why this is here
+        private Label Title;
+        private RichTextBox OutputWindow;
         #endregion
-        //====================================\\
+        ///==================================\\\
 
 
         private readonly Button DesignerManip; // Manipulate Designer Stupidity (Stop Creating Methods Inside Existing Code, You Fucking Moron)
+
     }
 }

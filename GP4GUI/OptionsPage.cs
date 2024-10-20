@@ -14,7 +14,7 @@ namespace GP4GUI
         {
             InitializeComponent();
             MainForm.BorderFunc(this);
-            options_page_is_open = true;
+            OptionsPageIsOpen = true;
 
             Location = new Point(LastPos.X + 30, LastPos.Y + 60);
             TinyVersionLabel.Text = Version;
@@ -27,28 +27,28 @@ namespace GP4GUI
             if(gp4.BasePackagePath != null)
                 BasePackagePathTextBox.Text = gp4.BasePackagePath;
 
-            AbsolutePathCheckBox.Checked = gp4._AbsoluteFilePaths;
-            KeystoneToggleBox.Checked = gp4._Keystone;
-            VerboseOutputBox.Checked = gp4._VerboseLogging;
+            AbsolutePathCheckBox.Checked = gp4.AbsoluteFilePaths;
+            KeystoneToggleBox.Checked = gp4.Keystone;
+            VerboseOutputBox.Checked = gp4.VerboseLogging;
 
-            if(gp4._BlacklistedFilesOrFolders != null) {
-                var str = gp4._BlacklistedFilesOrFolders[0];
-                for(var i = 1; i< gp4._BlacklistedFilesOrFolders.Length; i++)
-                    str += $",{gp4._BlacklistedFilesOrFolders[i]}";
+            if(gp4.BlacklistedFilesOrFolders != null) {
+                var str = gp4.BlacklistedFilesOrFolders[0];
+                for(var i = 1; i< gp4.BlacklistedFilesOrFolders.Length; i++)
+                    str += $",{gp4.BlacklistedFilesOrFolders[i]}";
 
                 FilterTextBox.Text = str;
             }
 
 
-            if(gp4._Passcode != "00000000000000000000000000000000")
-                CustomPasscodeTextBox.Text = gp4._Passcode;
+            if(gp4.Passcode != "00000000000000000000000000000000")
+                CustomPasscodeTextBox.Text = gp4.Passcode;
 #endregion
         }
 
 
-        //##########################################\\
+        ///########################################\\\
         ///--     Designer-Managed Functions     --\\\
-        //##########################################\\
+        ///########################################\\\
         #region Designer Managed Functions
 #pragma warning disable CS0168 // var not used
         private IContainer components = null;
@@ -262,35 +262,24 @@ namespace GP4GUI
 
         }
         #endregion
-        //==========================================\\
+        ///========================================\\\
 
 
         private void ExitBtn_Click(object sender, EventArgs e) {
-            options_page_is_open = false;
+            OptionsPageIsOpen = false;
             Dispose();
         }
 
 
-        //#########################################\\
+        ///#######################################\\\
         ///--     Options-Related Functions     --\\\
-        //#########################################\\
+        ///#######################################\\\
         #region Options Related Functions
-        private void KeystoneToggleBox_CheckedChanged(object sender, EventArgs e) => gp4._Keystone = ((CheckBox)sender).Checked;
-        private void LimitedOutputBox_CheckedChanged(object sender, EventArgs e) => gp4._VerboseLogging = ((CheckBox)sender).Checked;
-        private void AbsolutePathCheckBox_CheckedChanged(object sender, EventArgs e) {
-            if (AbsolutePathCheckBox.Checked && Gp4OutputDirectory == gp4.GamedataFolder)
-            {
-                Gp4OutputDirectory = gp4.GamedataFolder.Remove(gp4.GamedataFolder.LastIndexOf('\\'));
-            }
-            else
-            {
-
-            }
-
-            gp4._AbsoluteFilePaths = ((CheckBox)sender).Checked;
-        }
+        private void KeystoneToggleBox_CheckedChanged(object sender, EventArgs e) => gp4.Keystone = ((CheckBox)sender).Checked;
+        private void LimitedOutputBox_CheckedChanged(object sender, EventArgs e) => gp4.VerboseLogging = ((CheckBox)sender).Checked;
+        private void AbsolutePathCheckBox_CheckedChanged(object sender, EventArgs e) => gp4.AbsoluteFilePaths = ((CheckBox)sender).Checked;
         private void OutputPathTextBox_TextChanged(object sender, EventArgs e)  => Gp4OutputDirectory = ((Control)sender).Text;
-        private void CustomPasscodeTextBox_TextChanged(object sender, EventArgs e) => gp4._Passcode = ((Control)sender).Text;
+        private void CustomPasscodeTextBox_TextChanged(object sender, EventArgs e) => gp4.Passcode = ((Control)sender).Text;
 
         private void OutputPathBtn_Click(object sender, EventArgs e) {
             using(var Browser = new FolderBrowserDialog())
@@ -338,7 +327,7 @@ namespace GP4GUI
         private void FilterTextBox_TextChanged(object sender, EventArgs _) { // tst : eboot.bin, keystone, discname.txt; param.sfo
             TextBox Sender;
             if((Sender = ((TextBox)sender)).IsDefault) {
-                gp4._BlacklistedFilesOrFolders = null;
+                gp4.BlacklistedFilesOrFolders = null;
                 return;
             }
 
@@ -352,19 +341,19 @@ namespace GP4GUI
                     filter_strings_length++;
 
 
-            gp4._BlacklistedFilesOrFolders = new string[filter_strings_length];
+            gp4.BlacklistedFilesOrFolders = new string[filter_strings_length];
 
             var buffer = Encoding.UTF8.GetBytes((FilterTextBox.Text + ';').ToCharArray());
 
             try {
-                for(int array_index = 0, char_index = 0; array_index < gp4._BlacklistedFilesOrFolders.Length; array_index++) {
+                for(int array_index = 0, char_index = 0; array_index < gp4.BlacklistedFilesOrFolders.Length; array_index++) {
                     Builder = new StringBuilder();
 
                     while(buffer[char_index] != 0x3B && buffer[char_index] != 0x2C)
                         Builder.Append(Encoding.UTF8.GetString(new byte[] { buffer[char_index++] }));
 
                     char_index++;
-                    gp4._BlacklistedFilesOrFolders[array_index] = Builder.ToString().Trim(' ');
+                    gp4.BlacklistedFilesOrFolders[array_index] = Builder.ToString().Trim(' ');
                 }
             }
             catch (IndexOutOfRangeException ex) {
@@ -378,17 +367,17 @@ namespace GP4GUI
         private void CustomPasscodeTextBox_FocusChanged(object sender, EventArgs e) {
             var Sender = ((TextBox)sender);
             if(!Sender.IsDefault)
-                gp4._Passcode = Sender.Text;
+                gp4.Passcode = Sender.Text;
         }
 
         #endregion
-        //=========================================\\
+        ///=======================================\\\
 
 
 
-        //####################################\\
+        ///##################################\\\
         ///--     Control Declarations     --\\\
-        //####################################\\
+        ///##################################\\\
         #region ControlDeclarations
         private Label TinyVersionLabel;
         private Label Title;
@@ -405,6 +394,6 @@ namespace GP4GUI
         private TextBox FilterTextBox;
         private TextBox CustomPasscodeTextBox;
         #endregion
-        //====================================\\
+        ///==================================\\\
     }
 }

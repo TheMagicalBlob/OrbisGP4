@@ -6,56 +6,71 @@ using System.Diagnostics;
 
 namespace GP4GUI {
 
-    /// <summary> Words
-    ///</summary>
+    /// <summary>
+    /// Contains Variables &amp; Functions Used by Both the Main and Options Pages.
+    /// </summary>
     public static class Common
     {
-        public static int mouse_is_down = 0;
-        public static bool options_page_is_open, limit_output;
+        public static bool OptionsPageIsOpen, DropdownMenuIsOpen;
         public static string Gp4OutputDirectory;
-        public static Point MouseDif;
-        public static Form Options;
         public static GP4Creator gp4;
         public static RichTextBox _OutputWindow;
 
-        public static void WLog(object str = null) => _OutputWindow.AppendLine(str.ToString());
 
-        public static void DLog(string str = "") {
+        // Basic Debug Output Function
+        public static void DLog(object str = null) {
 #if DEBUG
-            try { Debug.WriteLine(str);
-            }
-            catch (Exception) { }
+            try {
+                Debug.WriteLine(str);
+            }   
+            catch (Exception){}
 
-            try { Console.WriteLine(str);
+            try {
+                Console.WriteLine(str);
             }
-            catch (Exception) { }
+            catch (Exception){}
 #endif
         }
+
+        // Output Misc. Messages to The Main Output Window (the big-ass text box).
+#if DEBUG
+        public static void WLog(object str = null) {
+            _OutputWindow.AppendLine(str.ToString());
+            DLog(str);
+        }
+#else
+        public static void WLog(object str = null) => _OutputWindow.AppendLine(str.ToString());
+#endif
     }
 
 
+    ///################################################\\\
+    ///--    Custom/"Overridden" Control Classes     --\\\
+    ///################################################\\\
+    #region [Custom/"Overridden" Control Classes]
 
-    /// <summary> Custom TextBox Class to Better Handle Default TextBox Contents
-    ///</summary>
+    // Custom RichTextBox Class to Better Handle Default TextBox Contents
     public class RichTextBox : System.Windows.Forms.RichTextBox {
 
         /// <summary> Appends Text to The Currrent Text of A Text Box, Followed By The Standard Line Terminator.<br/>Scrolls To Keep The Newest Line In View. </summary>
         /// <param name="str"> The String To Output. </param>
         public void AppendLine(string str = "") {
-            if(str.Length <= 0) AppendText("\n");
-
-            else AppendText($"{str}\n");
+            if(str.Length <= 0)
+                AppendText("\n");
+            else
+                AppendText($"{str}\n");
 
             ScrollToCaret();
         }
     }
 
 
-    /// <summary> Custom RichTextBox Class to Better Handle Default TextBox Contents
-    ///</summary>
+    // Custom TextBox Class to Better Handle Default TextBox Contents
     public class TextBox : System.Windows.Forms.TextBox {
-        public TextBox() {
-            
+
+        // Create Controll Instance
+        public TextBox()
+        {
             IsDefault = true;
             TextChanged += Set;
 
@@ -91,13 +106,16 @@ namespace GP4GUI {
         }
 
 
+        // Default Controll Text to Be Displayed When "Empty".
         private string DefaultText;
+
+        // Help Better Keep Track of Whether the User's Changed the Text, Because I'm a Moron.
         public bool IsDefault { get; private set; }
 
 
         /// <summary> Yoink Default Text From First Text Assignment.
         ///</summary>
-        void Set(object s, EventArgs e) {
+        private void Set(object s, EventArgs e) {
             DefaultText = Text;
 
             TextChanged -= Set;
@@ -109,4 +127,8 @@ namespace GP4GUI {
             };
         }
     }
+
+    #endregion
+    ///================================================\\\
+
 }

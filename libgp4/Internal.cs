@@ -7,10 +7,10 @@ using System.Text;
 using System.Xml;
 #pragma warning disable CS1587
 
-//////////////////\\\\\\\\\\\\\\\\\\\
-///# Contents:                    \\\
+///###############################\\\
+/// Contents:                     \\\
 ///--> Main Library Functionality \\\
-//////////////////\\\\\\\\\\\\\\\\\\\
+///###############################\\\
 
 
 // A Small Library For Building .gp4 Files For Use In PS4 .pkg Creation, And Grabbing Data From Existing Ones
@@ -55,9 +55,8 @@ namespace libgp4 {
         ///</summary>
         public struct Scenario {
 
-            /// <summary>
-            /// Create A New Scenario Instance From A .gp4 Node
-            /// </summary>
+            /// <summary> Create A New Scenario Instance From A .gp4 Node
+            ///</summary>
             /// <param name="gp4Stream"> The XmlReader Instance With The Scneario Node </param>
             public Scenario(XmlReader gp4Stream) {
                 Type = gp4Stream.GetAttribute("type");
@@ -97,9 +96,9 @@ namespace libgp4 {
         }
 
 
-        ////////////////////////\\\\\\\\\\\\\\\\\\\\\\\\
+        ///##########################################\\\
         ///--     Internal Variables / Methods     --\\\
-        ////////////////////////\\\\\\\\\\\\\\\\\\\\\\\\
+        ///##########################################\\\
         #region Internal Variables / Methods
 
         /// <summary>
@@ -493,13 +492,12 @@ namespace libgp4 {
         }
 
         #endregion
-        /////////////////////////////////////|
+        ///==========================================\\\
 
 
-
-        //////////////////////\\\\\\\\\\\\\\\\\\\\\
+        ///#####################################\\\
         ///--     GP4 Attributes / Values     --\\\
-        //////////////////////\\\\\\\\\\\\\\\\\\\\\
+        ///#####################################\\\
         #region GP4 Attributes / Values
 
         /// <summary>
@@ -586,12 +584,12 @@ namespace libgp4 {
         private int version;
 
         #endregion
+        ///=====================================\\\
 
 
-
-        /////////////////\\\\\\\\\\\\\\\\\
+        ///############################\\\
         ///--     User Functions     --\\\
-        /////////////////\\\\\\\\\\\\\\\\\
+        ///############################\\\
         #region User Functions
         /// <summary> Check Various Parts Of The .gp4 To Try And Find Any Possible Errors In The Project File.
         ///</summary>
@@ -610,9 +608,9 @@ namespace libgp4 {
 
 
 
-            //======================================\\
+            ///====================================\\\
             //| Check For Invalid Volume Type Data |\\
-            //======================================\\
+            ///====================================\\\
             {
                 if(volume_type != "pkg_ps4_app" && volume_type != "pkg_ps4_patch")
                     Errors += $"Invalid Volume Type:\n ({volume_type})\n\n";
@@ -629,9 +627,9 @@ namespace libgp4 {
 
 
 
-            //===================================\\
+            ///=================================\\\
             //| Check "package" Node Attributes |\\
-            //===================================\\
+            ///=================================\\\
             {
 
                 if((!IsPatchProject && storage_type != "digital50") || (IsPatchProject && storage_type != "digital25"))
@@ -727,9 +725,9 @@ namespace libgp4 {
 
 
 
-            //============================\\
+            ///==========================\\\
             //| Check Chunk Related Shit |\\
-            //============================\\
+            ///==========================\\\
             {
                 // Check Default Scenario Id
                 if(DefaultScenarioId > Scenarios.Length - 1)
@@ -806,9 +804,9 @@ namespace libgp4 {
 
 
 
-            //==================================================\\
+            ///================================================\\\
             //| Throw An Exception If Any Errors Were Detected |\\
-            //==================================================\\
+            ///================================================\\\
             if(Errors != string.Empty) {
                 string Message;
                 var ErrorCount = (Errors.Length - Errors.Replace("\n\n", "").Length) / 2;
@@ -988,6 +986,8 @@ namespace libgp4 {
             new GP4Reader(GP4Path).VerifyGP4();
         }
         #endregion
+        ///============================\\\
+
     }
 
 
@@ -1002,8 +1002,8 @@ namespace libgp4 {
         /// 
         /// <param name="gamedataFolder"> The Folder Containing The Gamedata To Create A .gp4 Project File For. </param>
         public GP4Creator(string gamedataFolder) {
-            _Passcode = "00000000000000000000000000000000";
-            _Keystone = true;
+            Passcode = "00000000000000000000000000000000";
+            Keystone = true;
 
             GamedataFolder = gamedataFolder;
         }
@@ -1014,8 +1014,8 @@ namespace libgp4 {
         /// <br/><br/> (A Valid GamedataFolder Must Be Set Prior To Creating The .gp4 Project File)
         /// </summary>
         public GP4Creator() {
-            _Passcode = "00000000000000000000000000000000";
-            _Keystone = true;
+            Passcode = "00000000000000000000000000000000";
+            Keystone = true;
         }
 
 
@@ -1182,10 +1182,10 @@ namespace libgp4 {
                                 var arr = ((string)SfoParams[i]).Split(',');
                                 foreach(var v in arr)
                                     Debug.WriteLine(v);
-                                Parent._SfoCreationDate = arr[0].Substring(arr[0].IndexOf('='));
-                                Parent._SdkVersion = arr[1].Substring(arr[1].IndexOf('='));
+                                Parent.SfoCreationDate = arr[0].Substring(arr[0].IndexOf('='));
+                                Parent.SdkVersion = arr[1].Substring(arr[1].IndexOf('='));
                                 storage_type = arr[2].Substring(arr[2].IndexOf('=')); // (digital25 / bd50)
-                                //==================================================
+                                ///=================================================
 #else
                                 storage_type = ((string)SfoParams[i]).Split(',')[2]; // (digital25 / bd50)
 #endif
@@ -1194,20 +1194,20 @@ namespace libgp4 {
 #if GUIExtras
                             // Store Some Extra Things I May Use In My .gp4 GUI
                             case "APP_TYPE":
-                                Parent._AppType = (int)SfoParams[i];
+                                Parent.AppType = (int)SfoParams[i];
                                 continue;
 
                             case "TITLE":
-                                (Parent._AppTitles = new List<string>()).Add(Parent._AppTitle = (string)SfoParams[i]);
+                                (Parent.AppTitles = new List<string>()).Add(Parent.AppTitle = (string)SfoParams[i]);
                                 continue;
 
                             default:
                                 if(SfoParamLabels[i].Contains("Title_"))
-                                    Parent._AppTitles.Add((string)SfoParams[i]);
+                                    Parent.AppTitles.Add((string)SfoParams[i]);
                                 continue;
 
                             case "TARGET_APP_VER":
-                                Parent._TargetAppVer = ((string)SfoParams[i]);
+                                Parent.TargetAppVer = ((string)SfoParams[i]);
                                 continue;
 #endif
                         }
@@ -1240,7 +1240,6 @@ namespace libgp4 {
                 chunk_labels,   // Array Of All Chunk Names
                 scenario_labels // Array Of All Scenario Names
             ;
-#pragma warning restore CS1591
 
 
             /// <summary>
@@ -1409,9 +1408,9 @@ namespace libgp4 {
         }
 
 
-        ////////////////////\\\\\\\\\\\\\\\\\\
+        ///################################\\\
         ///--     Internal Variables     --\\\
-        ////////////////////\\\\\\\\\\\\\\\\\\
+        ///################################\\\
         #region Internal Variables
 
         /// <summary> Names Of Files That Are Always To Be Excluded From .gp4 Projects By Default.
@@ -1453,13 +1452,13 @@ namespace libgp4 {
         /// Output Log Messages To A Custom Output Method (GP4Creator.LoggingMethod(string)), And/Or To The Console If Applicable.<br/><br/>
         /// Duplicates Message To Standard Console Output As Well.
         ///</summary>
-        private void WLog(object o, bool Verbosity) {
+        private void WLog(object o, bool IsVerboseMsg) {
 #if Log
-            if(LoggingMethod != null && !(_VerboseLogging ^ Verbosity))
+            if(LoggingMethod != null && !(VerboseLogging ^ IsVerboseMsg))
                 LoggingMethod(o);
+#endif
 #if DEBUG
             DLog(o);
-#endif
 #endif
         }
 
@@ -1467,64 +1466,76 @@ namespace libgp4 {
         ///</summary>
         private static string DLog(object o) {
 #if DEBUG
-            try { Debug.WriteLine(o); }
-            catch(Exception) { }
+            try {
+                Debug.WriteLine(o);
+            }
+            catch(Exception) {}
 
             if(!Console.IsOutputRedirected)
-                try { Console.WriteLine(o); }
-                catch(Exception) { }
+                try {
+                    Console.WriteLine(o);
+                }
+                catch (Exception){}
 #endif
             return o as string;
         }
 
 
-        /// <summary> Check Various Parts Of The Parsed gp4 Parameters To Try And Find Any Possible Errors In The Project Files/Structure.
+        /// <summary>
+        /// Check Various Parts Of The Parsed .gp4 Parameters To Try And Find Any Possible Errors In The Project Files/Structure.
         ///</summary>
         private void VerifyGP4(string gamedata_folder, string playgo_content_id, SfoParser data) {
             var Errors = string.Empty;
             int ErrorCount;
 
+
+            // Verify Path to Gamedata Folder
             if(!Directory.Exists(gamedata_folder))
                 Errors += $"Could Not Find The Provided Game Data Directory.\n \nPath Provided: \"{gamedata_folder}\"\n\n"; // Spaced Out The First Double-line-break To Avoid Counting This Error As Two
 
+            
+            // Check for Mismatched Content ID's
             if(playgo_content_id != data.content_id)
                 Errors += $"Content ID Mismatch Detected, Process Aborted\n[playgo-chunk.dat: {playgo_content_id} != param.sfo: {data.content_id}]\n\n";
 
-
+            
             // Catch Conflicting Project Type Information
-            if(data.category == "gp" && data.app_ver == "01.00")
+            if (data.category == "gp" && data.app_ver == "01.00") {
                 Errors += $"Invalid App Version For Patch Package. App Version Must Be Passed 1.00.\n\n";
-
-            else if(data.category == "gd" && data.app_ver != "01.00")
+            }
+            else if(data.category == "gd" && data.app_ver != "01.00") {
                 Errors += $"Invalid App Version For Application Package. App Version Was {data.app_ver}, Must Be 1.00.\n\n";
+            }
 
-
-            if(_Passcode.Length < 32)
+            // Verify Passcode Length
+            if(Passcode.Length < 32)
                 Errors += $"Invalid Password Length, Must Be A 32-Character String.\n\n";
 
-
+            // Make Sure A Folder Path Wasn't Provided In Place of the Base Game Package (In case they thought the tool would detect the right one? idk.)
             if(BasePackagePath != null && BasePackagePath[BasePackagePath.Length - 1] == '\\')
                 Errors += $"Invalid Base Application .pkg Path.\nDirectory \"{BasePackagePath}\" Was Given.\n\n";
 
 
 
-            //==================================================\\
-            //| Throw An Exception If Any Errors Were Detected |\\
-            //==================================================\\
-            if(Errors != string.Empty) {
+            ///##################################################\\\
+            ///  Throw An Exception If Any Errors Were Detected  \\\
+            ///##################################################\\\
+            if (Errors != string.Empty) {
                 if((ErrorCount = (Errors.Length - Errors.Replace("\n\n", string.Empty).Length) / 2) == 1)
                     Errors = $"The Following Error Was Found During The .gp4 Project Creation With Gamedata In: {gamedata_folder}.\n{Errors}";
                 else
                     Errors = $"The Following {ErrorCount} Errors Were Found During The .gp4 Project Creation With Gamedata In: {gamedata_folder}.\n{Errors}";
 
 #if Log
-                DLog(Errors);
                 WLog(Errors, true);
+#elif DEBUG
+                DLog(Errors);
 #endif
 
                 throw new InvalidDataException(Errors);
             }
         }
         #endregion
+        ///================================\\\
     }
 }
