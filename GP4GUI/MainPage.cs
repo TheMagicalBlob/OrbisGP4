@@ -16,6 +16,7 @@ namespace GP4GUI {
             // Initialize and Decorate Form, Then Set Event Handlers
             InitializeComponent();
             BorderFunc(this);
+            CreateDropdownMenu(this);
             AddControlEventHandlers(Controls, this);
 
             // Set Output Box Ptr
@@ -113,8 +114,6 @@ namespace GP4GUI {
 #endif
         }
 
-        private Button button1;
-
 
 
 
@@ -139,17 +138,16 @@ namespace GP4GUI {
             this.OptionsBtn = new System.Windows.Forms.Button();
             this.ClearLogBtn = new System.Windows.Forms.Button();
             this.dummy = new System.Windows.Forms.Button();
+            this.SwapBrowseModeBtn = new System.Windows.Forms.Button();
             this.OutputWindow = new GP4GUI.RichTextBox();
             this.GamedataFolderPathBox = new GP4GUI.TextBox();
-            this.SwapBrowseModeBtn = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // CreateBtn
             // 
-            this.CreateBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(150)))), ((int)(((byte)(150)))), ((int)(((byte)(240)))));
+            this.CreateBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(115)))), ((int)(((byte)(160)))), ((int)(((byte)(240)))));
             this.CreateBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.CreateBtn.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.CreateBtn.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold);
             this.CreateBtn.ForeColor = System.Drawing.SystemColors.WindowText;
             this.CreateBtn.Location = new System.Drawing.Point(373, 58);
             this.CreateBtn.Name = "CreateBtn";
@@ -171,7 +169,7 @@ namespace GP4GUI {
             // 
             // MinimizeBtn
             // 
-            this.MinimizeBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(150)))), ((int)(((byte)(150)))), ((int)(((byte)(240)))));
+            this.MinimizeBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(115)))), ((int)(((byte)(160)))), ((int)(((byte)(240)))));
             this.MinimizeBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.MinimizeBtn.Font = new System.Drawing.Font("MS Gothic", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.MinimizeBtn.ForeColor = System.Drawing.SystemColors.WindowText;
@@ -186,7 +184,7 @@ namespace GP4GUI {
             // 
             // ExitBtn
             // 
-            this.ExitBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(150)))), ((int)(((byte)(150)))), ((int)(((byte)(240)))));
+            this.ExitBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(115)))), ((int)(((byte)(160)))), ((int)(((byte)(240)))));
             this.ExitBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.ExitBtn.ForeColor = System.Drawing.SystemColors.WindowText;
             this.ExitBtn.Location = new System.Drawing.Point(428, 2);
@@ -198,26 +196,28 @@ namespace GP4GUI {
             // 
             // BrowseBtn
             // 
-            this.BrowseBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(150)))), ((int)(((byte)(150)))), ((int)(((byte)(240)))));
+            this.BrowseBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(115)))), ((int)(((byte)(160)))), ((int)(((byte)(240)))));
             this.BrowseBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.BrowseBtn.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.BrowseBtn.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold);
             this.BrowseBtn.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.BrowseBtn.Location = new System.Drawing.Point(299, 58);
+            this.BrowseBtn.Location = new System.Drawing.Point(297, 58);
             this.BrowseBtn.Name = "BrowseBtn";
-            this.BrowseBtn.Size = new System.Drawing.Size(63, 23);
+            this.BrowseBtn.Size = new System.Drawing.Size(65, 23);
             this.BrowseBtn.TabIndex = 7;
             this.BrowseBtn.Text = "Browse...";
             this.BrowseBtn.UseVisualStyleBackColor = false;
+            this.BrowseBtn.Click += new System.EventHandler(this.BrowseBtn_Click);
             this.BrowseBtn.MouseClick += new System.Windows.Forms.MouseEventHandler(this.BrowseBtn_Click);
             // 
             // OptionsBtn
             // 
-            this.OptionsBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(150)))), ((int)(((byte)(150)))), ((int)(((byte)(240)))));
+            this.OptionsBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(115)))), ((int)(((byte)(160)))), ((int)(((byte)(240)))));
             this.OptionsBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.OptionsBtn.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold);
             this.OptionsBtn.ForeColor = System.Drawing.SystemColors.WindowText;
             this.OptionsBtn.Location = new System.Drawing.Point(4, 4);
             this.OptionsBtn.Name = "OptionsBtn";
-            this.OptionsBtn.Size = new System.Drawing.Size(75, 23);
+            this.OptionsBtn.Size = new System.Drawing.Size(84, 23);
             this.OptionsBtn.TabIndex = 9;
             this.OptionsBtn.Text = "Tool Options";
             this.OptionsBtn.UseVisualStyleBackColor = false;
@@ -227,11 +227,11 @@ namespace GP4GUI {
             // 
             this.ClearLogBtn.BackColor = System.Drawing.SystemColors.ControlText;
             this.ClearLogBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ClearLogBtn.Font = new System.Drawing.Font("Gadugi", 7F, System.Drawing.FontStyle.Bold);
+            this.ClearLogBtn.Font = new System.Drawing.Font("Segoe UI Semibold", 7F, System.Drawing.FontStyle.Bold);
             this.ClearLogBtn.ForeColor = System.Drawing.SystemColors.Control;
-            this.ClearLogBtn.Location = new System.Drawing.Point(4, 81);
+            this.ClearLogBtn.Location = new System.Drawing.Point(4, 79);
             this.ClearLogBtn.Name = "ClearLogBtn";
-            this.ClearLogBtn.Size = new System.Drawing.Size(38, 21);
+            this.ClearLogBtn.Size = new System.Drawing.Size(38, 23);
             this.ClearLogBtn.TabIndex = 15;
             this.ClearLogBtn.Text = "Clear";
             this.ClearLogBtn.UseVisualStyleBackColor = false;
@@ -249,6 +249,19 @@ namespace GP4GUI {
             this.dummy.TabIndex = 0;
             this.dummy.UseVisualStyleBackColor = false;
             // 
+            // SwapBrowseModeBtn
+            // 
+            this.SwapBrowseModeBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(115)))), ((int)(((byte)(160)))), ((int)(((byte)(240)))));
+            this.SwapBrowseModeBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.SwapBrowseModeBtn.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F);
+            this.SwapBrowseModeBtn.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.SwapBrowseModeBtn.Location = new System.Drawing.Point(361, 58);
+            this.SwapBrowseModeBtn.Name = "SwapBrowseModeBtn";
+            this.SwapBrowseModeBtn.Size = new System.Drawing.Size(11, 23);
+            this.SwapBrowseModeBtn.TabIndex = 16;
+            this.SwapBrowseModeBtn.UseVisualStyleBackColor = false;
+            this.SwapBrowseModeBtn.Click += new System.EventHandler(this.SwapBrowseModeBtn_Click);
+            // 
             // OutputWindow
             // 
             this.OutputWindow.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(10)))));
@@ -264,38 +277,12 @@ namespace GP4GUI {
             // 
             // GamedataFolderPathBox
             // 
-            this.GamedataFolderPathBox.Font = new System.Drawing.Font("Microsoft YaHei UI", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.GamedataFolderPathBox.Font = new System.Drawing.Font("Arial", 8.25F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.GamedataFolderPathBox.Location = new System.Drawing.Point(5, 33);
             this.GamedataFolderPathBox.Name = "GamedataFolderPathBox";
-            this.GamedataFolderPathBox.Size = new System.Drawing.Size(442, 21);
+            this.GamedataFolderPathBox.Size = new System.Drawing.Size(442, 20);
             this.GamedataFolderPathBox.TabIndex = 2;
             this.GamedataFolderPathBox.Text = "Paste The Gamedata Folder Path Here, Or Use The Browse Button...";
-            // 
-            // SwapBrowseModeBtn
-            // 
-            this.SwapBrowseModeBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(150)))), ((int)(((byte)(150)))), ((int)(((byte)(240)))));
-            this.SwapBrowseModeBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.SwapBrowseModeBtn.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F);
-            this.SwapBrowseModeBtn.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.SwapBrowseModeBtn.Location = new System.Drawing.Point(361, 58);
-            this.SwapBrowseModeBtn.Name = "SwapBrowseModeBtn";
-            this.SwapBrowseModeBtn.Size = new System.Drawing.Size(11, 23);
-            this.SwapBrowseModeBtn.TabIndex = 16;
-            this.SwapBrowseModeBtn.UseVisualStyleBackColor = false;
-            this.SwapBrowseModeBtn.Click += new System.EventHandler(this.SwapBrowseModeBtn_Click);
-            // 
-            // button1
-            // 
-            this.button1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(150)))), ((int)(((byte)(150)))), ((int)(((byte)(240)))));
-            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button1.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button1.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.button1.Location = new System.Drawing.Point(156, 60);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(80, 25);
-            this.button1.TabIndex = 18;
-            this.button1.Text = "Browse...";
-            this.button1.UseVisualStyleBackColor = false;
             // 
             // MainForm
             // 
@@ -303,7 +290,6 @@ namespace GP4GUI {
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
             this.ClientSize = new System.Drawing.Size(452, 363);
-            this.Controls.Add(this.button1);
             this.Controls.Add(this.SwapBrowseModeBtn);
             this.Controls.Add(this.dummy);
             this.Controls.Add(this.ClearLogBtn);
@@ -332,15 +318,6 @@ namespace GP4GUI {
         ///--     Basic Form Init Functions     --\\\
         ///#######################################\\\
         #region Basic Form Init Functions
-        public void BorderFunc(Form form) {
-            var MainBox = new GroupBox() {
-                Name = "MainBox",
-                Location = new Point(0, -6),
-                Size = new Size(form.Size.Width, form.Size.Height + 7),
-            };
-
-            form.Controls.Add(MainBox);
-        }
 
         public void AddControlEventHandlers(Control.ControlCollection Controls, Form form) {
             form.MouseDown += new MouseEventHandler(MouseDownFunc);
@@ -415,6 +392,7 @@ namespace GP4GUI {
         public static int MouseIsDown = 0;
         public static Form OptionsForm;
         public static Button[] DropdownMenu = new Button[2];
+        public static bool LegacyFolderSelectionDialogue = true;
 
         private void ClearLogBtn_Click(object sender = null, EventArgs e = null) => OutputWindow.Clear();
 
@@ -434,87 +412,96 @@ namespace GP4GUI {
             }
         }
 
-
-
+        
         // Use The Dummy File Method To Open A Folder.
-        private void BrowseBtn_Click(object sender, MouseEventArgs e) {
-            if(e.Button == MouseButtons.Right) {
+        private void BrowseBtn_Click(object __, EventArgs _){}// The Winforms Designer Is Moronic
+        private void BrowseBtn_Click(object sender, MouseEventArgs e)
+        {
+            // Hide Dropdown Menu Buttons
+            if (DropdownMenu[0].Visible) {
+                DropdownMenu[1].Visible = DropdownMenu[0].Visible = false;
+            }
+
+
+            // Use the ghastly Directory Tree Dialogue to Choose A Folder
+            if (LegacyFolderSelectionDialogue) {
+                using (var FBrowser = new FolderBrowserDialog())
+                    if (FBrowser.ShowDialog() == DialogResult.OK)
+                        GamedataFolderPathBox.Text = FBrowser.SelectedPath;
+            }
+
+            // Use The Newer "Hackey" Method
+            else {
                 var Browser = new OpenFileDialog() {
                     ValidateNames = false,
-                    Filter = "Folder Selection|*.",
-                    FileName = "Press 'Open' Once Inside The Desired Folder.",
+                    CheckPathExists = false,
                     CheckFileExists = false,
-                    CheckPathExists = false
+                    FileName = "Press 'Open' Once Inside The Desired Folder.",
+                    Filter = "Folder Selection|*."
                 };
 
-                if(Browser.ShowDialog() == DialogResult.OK) {
+                if (Browser.ShowDialog() == DialogResult.OK)
                     GamedataFolderPathBox.Text = Browser.FileName.Remove(Browser.FileName.LastIndexOf('\\'));
-                }
             }
 
-            using (var FBrowser = new FolderBrowserDialog())
-                if (FBrowser.ShowDialog() == DialogResult.OK)
-                    GamedataFolderPathBox.Text = FBrowser.SelectedPath;
         }
+
 
         private void SwapBrowseModeBtn_Click(object _, EventArgs __) {
-            if (DropdownMenuIsOpen) {
-                DropdownMenu[0].Dispose();
-                DropdownMenu[1].Dispose();
-                DropdownMenuIsOpen ^= true;
-            }
-            else {
-                var extalignment = BrowseBtn.Size;
-                var alignment = BrowseBtn.Location;
-
-                DropdownMenu[0] = new Button() {
-                    Font = new Font("Gadugi", 7F),
-                    Text = "Directory Tree*",
-                    BackColor = AppColour,
-                    ForeColor = Color.Black,
-                    FlatStyle = FlatStyle.Flat,
-                    Location = new Point(alignment.X, alignment.Y + 10),
-                    Size = new Size(85, 25),
-                    Tag = true
-                };
-                DropdownMenu[1] = new Button() {
-                    Font = new Font("Gadugi", 7F),
-                    Text = "File Browser",
-                    BackColor = AppColour,
-                    ForeColor = Color.Black,
-                    FlatStyle = FlatStyle.Flat,
-                    Location = new Point(alignment.X, alignment.Y + 35),
-                    Size = new Size(85, 25),
-                    Tag = false
-                };
-
-                // Create Event Handlers
-                DropdownMenu[0].Click += (sender, e) => {
-                    if ((bool)DropdownMenu[1].Tag) {
-                        DropdownMenu[0].Text += '*';
-                        DropdownMenu[0].Tag = true;
-
-                        DropdownMenu[1].Text = DropdownMenu[1].Text.Remove(DropdownMenu[1].Text.Length-1);
-                    }
-                };
-                DropdownMenu[1].Click += (sender, e) => {
-                    if ((bool)DropdownMenu[0].Tag) {
-                        DropdownMenu[1].Text += '*';
-                        DropdownMenu[1].Tag = true;
-
-                        DropdownMenu[0].Text = DropdownMenu[0].Text.Remove(DropdownMenu[0].Text.Length-1);
-                    }
-                };
-
-
-                ActiveForm.Controls.Add(DropdownMenu[0]);
-                ActiveForm.Controls.Add(DropdownMenu[1]);
-                DropdownMenu[0].BringToFront();
-                DropdownMenu[1].BringToFront();
-                DropdownMenuIsOpen ^= true;
-            }
+            DropdownMenu[1].Visible = DropdownMenu[0].Visible ^= true;
         }
 
+        private void CreateDropdownMenu(Form venat) {
+            var extalignment = BrowseBtn.Size.Height;
+            var alignment = BrowseBtn.Location;
+
+            DropdownMenu[0] = new Button() {
+                Font = new Font("Gadugi", 7F),
+                Text = "Directory Tree*",
+                BackColor = AppColour,
+                ForeColor = Color.Black,
+                FlatStyle = FlatStyle.Flat,
+                Location = new Point(alignment.X, alignment.Y + extalignment),
+                Size = new Size(85, 25)
+            };
+            DropdownMenu[1] = new Button() {
+                Font = new Font("Gadugi", 7F),
+                Text = "File Browser",
+                BackColor = AppColour,
+                ForeColor = Color.Black,
+                FlatStyle = FlatStyle.Flat,
+                Location = new Point(alignment.X, alignment.Y + extalignment + DropdownMenu[0].Size.Height + 1),
+                Size = new Size(85, 25)
+            };
+
+            // Create and Assign Event Handlers
+            DropdownMenu[0].Click += (sender, e) => {
+                if (!LegacyFolderSelectionDialogue) {
+                    DropdownMenu[0].Text += '*';
+                    DropdownMenu[1].Text = DropdownMenu[1].Text.Remove(DropdownMenu[1].Text.Length-1);
+
+                    LegacyFolderSelectionDialogue ^= true;
+                }
+            };
+            DropdownMenu[1].Click += (sender, e) => {
+                if (LegacyFolderSelectionDialogue) {
+                    DropdownMenu[1].Text += '*';
+                    DropdownMenu[0].Text = DropdownMenu[0].Text.Remove(DropdownMenu[0].Text.Length-1);
+
+                    LegacyFolderSelectionDialogue ^= true;
+                }
+            };
+
+            // Add Controls to MainForm Control Collection
+            venat.Controls.Add(DropdownMenu[0]);
+            venat.Controls.Add(DropdownMenu[1]);
+
+            // Ensure Controls Display Correctly
+            DropdownMenu[0].Hide();
+            DropdownMenu[1].Hide();
+            DropdownMenu[0].BringToFront();
+            DropdownMenu[1].BringToFront();
+        }
 
 
         // Apply Defaults to Unassigned but Required .gp4 Variables

@@ -11,11 +11,24 @@ namespace GP4GUI {
     /// </summary>
     public static class Common
     {
-        public static bool OptionsPageIsOpen, DropdownMenuIsOpen;
+        public static bool OptionsPageIsOpen;
         public static string Gp4OutputDirectory;
         public static GP4Creator gp4;
         public static RichTextBox _OutputWindow;
         public static Color AppColour = Color.FromArgb(150, 150, 240);
+
+
+        
+        public static void BorderFunc(Form form) {
+            var MainBox = new GroupBox() {
+                Name = "MainBox",
+                Location = new Point(0, -6),
+                Size = new Size(form.Size.Width, form.Size.Height + 7),
+            };
+
+            form.Controls.Add(MainBox);
+        }
+
 
         // Basic Debug Output Function
         public static void DLog(object str = null) {

@@ -13,7 +13,7 @@ namespace GP4GUI
         public OptionsPage(MainForm MainForm, Point LastPos)
         {
             InitializeComponent();
-            MainForm.BorderFunc(this);
+            BorderFunc(this);
             OptionsPageIsOpen = true;
 
             Location = new Point(LastPos.X + 30, LastPos.Y + 60);
