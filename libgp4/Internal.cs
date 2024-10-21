@@ -982,7 +982,7 @@ namespace libgp4 {
         /// <summary> Check Various Parts Of The .gp4 To Try And Find Any Possible Errors In The Project File.
         ///</summary>
         public static void VerifyGP4(string GP4Path) {
-            // TODO: replace me with a stripped down version instead of a redundant class initialization
+            // TODO: replace with a stripped down version instead of a redundant class initialization
             new GP4Reader(GP4Path).VerifyGP4();
         }
         #endregion
@@ -1464,20 +1464,19 @@ namespace libgp4 {
 
         /// <summary> Console Logging Method.
         ///</summary>
-        private static string DLog(object o) {
+        private static void DLog(object o) {
 #if DEBUG
             try {
-                Debug.WriteLine(o);
+                Debug.WriteLine($"#libgp4: {o}");
             }
             catch(Exception) {}
 
             if(!Console.IsOutputRedirected)
                 try {
-                    Console.WriteLine(o);
+                    Console.WriteLine($"#libgp4: {o}");
                 }
                 catch (Exception){}
 #endif
-            return o as string;
         }
 
 

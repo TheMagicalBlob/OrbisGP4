@@ -15,10 +15,10 @@ namespace GP4GUI {
 
             // Initialize and Decorate Form, Then Set Event Handlers
             InitializeComponent();
-            //BorderFunc(this);
             Paint += PaintBorder;
             CreateDropdownMenu(this);
             AddControlEventHandlers(Controls, this);
+
 
             // Set Output Box Ptr
             _OutputWindow = OutputWindow;
@@ -26,7 +26,7 @@ namespace GP4GUI {
             // Initialize .gp4 Creator Instance, and Set Logging Method to OutputWindow
             gp4 = new GP4Creator() {
                 LoggingMethod = (object str) => {
-                    OutputWindow.AppendLine((string)str);
+                    OutputWindow.AppendLine($"#libgp4: {str}");
                     OutputWindow.Update();
                 }
             };
@@ -148,7 +148,7 @@ namespace GP4GUI {
             // 
             this.CreateBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(125)))), ((int)(((byte)(183)))), ((int)(((byte)(245)))));
             this.CreateBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.CreateBtn.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold);
+            this.CreateBtn.Font = new System.Drawing.Font("Gadugi", 8.25F, System.Drawing.FontStyle.Bold);
             this.CreateBtn.ForeColor = System.Drawing.SystemColors.WindowText;
             this.CreateBtn.Location = new System.Drawing.Point(373, 62);
             this.CreateBtn.Name = "CreateBtn";
@@ -188,7 +188,7 @@ namespace GP4GUI {
             // 
             this.ExitBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(125)))), ((int)(((byte)(183)))), ((int)(((byte)(245)))));
             this.ExitBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.ExitBtn.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold);
+            this.ExitBtn.Font = new System.Drawing.Font("Gadugi", 8.25F, System.Drawing.FontStyle.Bold);
             this.ExitBtn.ForeColor = System.Drawing.SystemColors.WindowText;
             this.ExitBtn.Location = new System.Drawing.Point(428, 2);
             this.ExitBtn.Name = "ExitBtn";
@@ -201,7 +201,7 @@ namespace GP4GUI {
             // 
             this.BrowseBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(125)))), ((int)(((byte)(183)))), ((int)(((byte)(245)))));
             this.BrowseBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.BrowseBtn.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold);
+            this.BrowseBtn.Font = new System.Drawing.Font("Gadugi", 8.25F, System.Drawing.FontStyle.Bold);
             this.BrowseBtn.ForeColor = System.Drawing.SystemColors.WindowText;
             this.BrowseBtn.Location = new System.Drawing.Point(297, 62);
             this.BrowseBtn.Name = "BrowseBtn";
@@ -216,7 +216,7 @@ namespace GP4GUI {
             // 
             this.OptionsBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(125)))), ((int)(((byte)(183)))), ((int)(((byte)(245)))));
             this.OptionsBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.OptionsBtn.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold);
+            this.OptionsBtn.Font = new System.Drawing.Font("Gadugi", 8.25F, System.Drawing.FontStyle.Bold);
             this.OptionsBtn.ForeColor = System.Drawing.SystemColors.WindowText;
             this.OptionsBtn.Location = new System.Drawing.Point(4, 4);
             this.OptionsBtn.Name = "OptionsBtn";
@@ -257,7 +257,7 @@ namespace GP4GUI {
             // 
             this.SwapBrowseModeBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(125)))), ((int)(((byte)(183)))), ((int)(((byte)(245)))));
             this.SwapBrowseModeBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.SwapBrowseModeBtn.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F);
+            this.SwapBrowseModeBtn.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold);
             this.SwapBrowseModeBtn.ForeColor = System.Drawing.SystemColors.WindowText;
             this.SwapBrowseModeBtn.Location = new System.Drawing.Point(361, 62);
             this.SwapBrowseModeBtn.Name = "SwapBrowseModeBtn";
@@ -269,7 +269,7 @@ namespace GP4GUI {
             // OutputWindow
             // 
             this.OutputWindow.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(10)))));
-            this.OutputWindow.Font = new System.Drawing.Font("Gadugi", 8.25F, System.Drawing.FontStyle.Bold);
+            this.OutputWindow.Font = new System.Drawing.Font("Segoe UI Semibold", 9F);
             this.OutputWindow.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(240)))), ((int)(((byte)(250)))));
             this.OutputWindow.Location = new System.Drawing.Point(4, 103);
             this.OutputWindow.MaxLength = 21474836;
@@ -283,10 +283,10 @@ namespace GP4GUI {
             // 
             this.GamedataFolderPathBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(240)))), ((int)(((byte)(250)))));
             this.GamedataFolderPathBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.GamedataFolderPathBox.Font = new System.Drawing.Font("Gadugi", 8.25F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))));
-            this.GamedataFolderPathBox.Location = new System.Drawing.Point(5, 35);
+            this.GamedataFolderPathBox.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Italic);
+            this.GamedataFolderPathBox.Location = new System.Drawing.Point(5, 34);
             this.GamedataFolderPathBox.Name = "GamedataFolderPathBox";
-            this.GamedataFolderPathBox.Size = new System.Drawing.Size(442, 22);
+            this.GamedataFolderPathBox.Size = new System.Drawing.Size(442, 24);
             this.GamedataFolderPathBox.TabIndex = 2;
             this.GamedataFolderPathBox.Text = "Paste The Gamedata Folder Path Here, Or Use The Browse Button...";
             // 
@@ -480,7 +480,7 @@ namespace GP4GUI {
             };
 
             // Create and Assign Event Handlers
-            DropdownMenu[0].Click += (sender, e) => {
+            DropdownMenu[0].Click += (why, does) => {
                 if (!LegacyFolderSelectionDialogue) {
                     DropdownMenu[0].Text += '*';
                     DropdownMenu[1].Text = DropdownMenu[1].Text.Remove(DropdownMenu[1].Text.Length-1);
@@ -488,7 +488,7 @@ namespace GP4GUI {
                     LegacyFolderSelectionDialogue ^= true;
                 }
             };
-            DropdownMenu[1].Click += (sender, e) => {
+            DropdownMenu[1].Click += (my, back) => {
                 if (LegacyFolderSelectionDialogue) {
                     DropdownMenu[1].Text += '*';
                     DropdownMenu[0].Text = DropdownMenu[0].Text.Remove(DropdownMenu[0].Text.Length-1);
@@ -496,6 +496,9 @@ namespace GP4GUI {
                     LegacyFolderSelectionDialogue ^= true;
                 }
             };
+
+            //DropdownMenu[0].LostFocus += (still, hurt) =>
+            //    DropdownMenu[1].Visible = DropdownMenu[0].Visible ^= true;
 
             // Add Controls to MainForm Control Collection
             venat.Controls.Add(DropdownMenu[0]);
@@ -508,6 +511,13 @@ namespace GP4GUI {
             DropdownMenu[1].BringToFront();
         }
 
+
+        public bool ApplyUserOptions()
+        {
+            // dewit
+
+            return false;
+        }
 
         // Apply Defaults to Unassigned but Required .gp4 Variables
         private bool ApplyDefaults()
@@ -544,8 +554,9 @@ namespace GP4GUI {
 
         // Create the .gp4 Project File.
         private void BuildProjectFile(object sender, EventArgs e) {
-            if (ApplyDefaults())
-            return;
+
+
+            if (ApplyDefaults() || ApplyUserOptions())
 
             gp4.CreateGP4(Gp4OutputDirectory, true);
         }
