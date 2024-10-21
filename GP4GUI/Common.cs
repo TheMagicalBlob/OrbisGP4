@@ -11,29 +11,27 @@ namespace GP4GUI {
     /// </summary>
     public static class Common
     {
-        public static bool OptionsPageIsOpen;
+        // Output Path to be Used for the .gp4 Creation Process
         public static string Gp4OutputDirectory;
+
+        public static bool OptionsPageIsOpen;
         public static GP4Creator gp4;
         public static RichTextBox _OutputWindow;
-        public static Color AppColour = Color.FromArgb(150, 150, 240);
+
+
+
+        // Application Aesthetics-Related Variables & Functions
+        # region
+        public static Color AppColour = Color.FromArgb(125, 183, 245);
         public static Color AppColourLight = Color.FromArgb(210, 240, 250);
 
-
-        
-        public static void BorderFunc(Form form) {
-            var MainBox = new GroupBox() {
-                Name = "MainBox",
-                Location = new Point(0, -6),
-                Size = new Size(form.Size.Width, form.Size.Height + 7),
-                ForeColor = AppColour
-            };
-
-            form.Controls.Add(MainBox);
-        }
-
-        
-        ///<summary> Form Border Pen </summary>
         public static Pen pen = new Pen(AppColourLight);
+
+        public static readonly Font MainFont = new Font("Segoe UI Semibold", 9f, FontStyle.Bold); // Segoe UI Semibold, 9pt, style=Bold
+        public static readonly Font TextFont = new Font("Arial", 8.25f, FontStyle.Bold | FontStyle.Italic); // Arial, 8.25pt, style=Bold, Italic
+
+
+        // Draw a Thin Border for the Control On-Paint \\
         public static void PaintBorder(object sender, PaintEventArgs e) {
             var ItemPtr = (Form)sender;
 
@@ -48,24 +46,27 @@ namespace GP4GUI {
             e.Graphics.Clear(Color.FromArgb(20, 20, 20));
             e.Graphics.DrawLines(pen, Border);
         }
+        #endregion
+        //====\\
 
 
-        // Basic Debug Output Function
+        // Logging Bullshit \\
+        #region
+
+        /// Basic Debug Output Function
         public static void DLog(object str = null) {
 #if DEBUG
-            try {
-                Debug.WriteLine(str);
+            try { Debug.WriteLine(str);
             }   
             catch (Exception){}
 
-            try {
-                Console.WriteLine(str);
+            try { Console.WriteLine(str);
             }
             catch (Exception){}
 #endif
         }
 
-        // Output Misc. Messages to The Main Output Window (the big-ass text box).
+        /// Output Misc. Messages to the Main Output Window (the big-ass richtext box).
 #if DEBUG
         public static void WLog(object str = null) {
             _OutputWindow.AppendLine(str.ToString());
@@ -74,6 +75,8 @@ namespace GP4GUI {
 #else
         public static void WLog(object str = null) => _OutputWindow.AppendLine(str.ToString());
 #endif
+        #endregion
+        //====\\
     }
 
 
