@@ -16,6 +16,7 @@ namespace GP4GUI {
         public static GP4Creator gp4;
         public static RichTextBox _OutputWindow;
         public static Color AppColour = Color.FromArgb(150, 150, 240);
+        public static Color AppColourLight = Color.FromArgb(210, 240, 250);
 
 
         
@@ -24,9 +25,28 @@ namespace GP4GUI {
                 Name = "MainBox",
                 Location = new Point(0, -6),
                 Size = new Size(form.Size.Width, form.Size.Height + 7),
+                ForeColor = AppColour
             };
 
             form.Controls.Add(MainBox);
+        }
+
+        
+        ///<summary> Form Border Pen </summary>
+        public static Pen pen = new Pen(AppColourLight);
+        public static void PaintBorder(object sender, PaintEventArgs e) {
+            var ItemPtr = (Form)sender;
+
+            Point[] Border = new Point[] {
+                Point.Empty,
+                new Point(ItemPtr.Width-1, 0),
+                new Point(ItemPtr.Width-1, ItemPtr.Height-1),
+                new Point(0, ItemPtr.Height-1),
+                Point.Empty
+            };
+
+            e.Graphics.Clear(Color.FromArgb(20, 20, 20));
+            e.Graphics.DrawLines(pen, Border);
         }
 
 

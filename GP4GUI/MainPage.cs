@@ -15,7 +15,8 @@ namespace GP4GUI {
 
             // Initialize and Decorate Form, Then Set Event Handlers
             InitializeComponent();
-            BorderFunc(this);
+            //BorderFunc(this);
+            Paint += PaintBorder;
             CreateDropdownMenu(this);
             AddControlEventHandlers(Controls, this);
 
@@ -145,7 +146,7 @@ namespace GP4GUI {
             // 
             // CreateBtn
             // 
-            this.CreateBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(115)))), ((int)(((byte)(160)))), ((int)(((byte)(240)))));
+            this.CreateBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(125)))), ((int)(((byte)(183)))), ((int)(((byte)(245)))));
             this.CreateBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.CreateBtn.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold);
             this.CreateBtn.ForeColor = System.Drawing.SystemColors.WindowText;
@@ -161,6 +162,7 @@ namespace GP4GUI {
             // 
             this.Title.AutoSize = true;
             this.Title.Font = new System.Drawing.Font("Gadugi", 8.5F, System.Drawing.FontStyle.Bold);
+            this.Title.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(240)))), ((int)(((byte)(250)))));
             this.Title.Location = new System.Drawing.Point(153, 6);
             this.Title.Name = "Title";
             this.Title.Size = new System.Drawing.Size(141, 16);
@@ -169,7 +171,7 @@ namespace GP4GUI {
             // 
             // MinimizeBtn
             // 
-            this.MinimizeBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(115)))), ((int)(((byte)(160)))), ((int)(((byte)(240)))));
+            this.MinimizeBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(125)))), ((int)(((byte)(183)))), ((int)(((byte)(245)))));
             this.MinimizeBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.MinimizeBtn.Font = new System.Drawing.Font("MS Gothic", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.MinimizeBtn.ForeColor = System.Drawing.SystemColors.WindowText;
@@ -184,7 +186,7 @@ namespace GP4GUI {
             // 
             // ExitBtn
             // 
-            this.ExitBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(115)))), ((int)(((byte)(160)))), ((int)(((byte)(240)))));
+            this.ExitBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(125)))), ((int)(((byte)(183)))), ((int)(((byte)(245)))));
             this.ExitBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.ExitBtn.ForeColor = System.Drawing.SystemColors.WindowText;
             this.ExitBtn.Location = new System.Drawing.Point(428, 2);
@@ -196,7 +198,7 @@ namespace GP4GUI {
             // 
             // BrowseBtn
             // 
-            this.BrowseBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(115)))), ((int)(((byte)(160)))), ((int)(((byte)(240)))));
+            this.BrowseBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(125)))), ((int)(((byte)(183)))), ((int)(((byte)(245)))));
             this.BrowseBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.BrowseBtn.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold);
             this.BrowseBtn.ForeColor = System.Drawing.SystemColors.WindowText;
@@ -211,7 +213,7 @@ namespace GP4GUI {
             // 
             // OptionsBtn
             // 
-            this.OptionsBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(115)))), ((int)(((byte)(160)))), ((int)(((byte)(240)))));
+            this.OptionsBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(125)))), ((int)(((byte)(183)))), ((int)(((byte)(245)))));
             this.OptionsBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.OptionsBtn.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold);
             this.OptionsBtn.ForeColor = System.Drawing.SystemColors.WindowText;
@@ -226,9 +228,10 @@ namespace GP4GUI {
             // ClearLogBtn
             // 
             this.ClearLogBtn.BackColor = System.Drawing.SystemColors.ControlText;
+            this.ClearLogBtn.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(240)))), ((int)(((byte)(250)))));
             this.ClearLogBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.ClearLogBtn.Font = new System.Drawing.Font("Segoe UI Semibold", 7F, System.Drawing.FontStyle.Bold);
-            this.ClearLogBtn.ForeColor = System.Drawing.SystemColors.Control;
+            this.ClearLogBtn.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(240)))), ((int)(((byte)(250)))));
             this.ClearLogBtn.Location = new System.Drawing.Point(4, 79);
             this.ClearLogBtn.Name = "ClearLogBtn";
             this.ClearLogBtn.Size = new System.Drawing.Size(38, 23);
@@ -251,7 +254,7 @@ namespace GP4GUI {
             // 
             // SwapBrowseModeBtn
             // 
-            this.SwapBrowseModeBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(115)))), ((int)(((byte)(160)))), ((int)(((byte)(240)))));
+            this.SwapBrowseModeBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(125)))), ((int)(((byte)(183)))), ((int)(((byte)(245)))));
             this.SwapBrowseModeBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.SwapBrowseModeBtn.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F);
             this.SwapBrowseModeBtn.ForeColor = System.Drawing.SystemColors.WindowText;
@@ -266,7 +269,7 @@ namespace GP4GUI {
             // 
             this.OutputWindow.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(10)))));
             this.OutputWindow.Font = new System.Drawing.Font("Franklin Gothic Medium", 8.25F);
-            this.OutputWindow.ForeColor = System.Drawing.SystemColors.Window;
+            this.OutputWindow.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(240)))), ((int)(((byte)(250)))));
             this.OutputWindow.Location = new System.Drawing.Point(4, 103);
             this.OutputWindow.MaxLength = 21474836;
             this.OutputWindow.Name = "OutputWindow";
@@ -277,6 +280,8 @@ namespace GP4GUI {
             // 
             // GamedataFolderPathBox
             // 
+            this.GamedataFolderPathBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(240)))), ((int)(((byte)(250)))));
+            this.GamedataFolderPathBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.GamedataFolderPathBox.Font = new System.Drawing.Font("Arial", 8.25F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.GamedataFolderPathBox.Location = new System.Drawing.Point(5, 33);
             this.GamedataFolderPathBox.Name = "GamedataFolderPathBox";
