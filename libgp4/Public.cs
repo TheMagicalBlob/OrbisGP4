@@ -5,19 +5,19 @@ using System.Collections.Generic;
 using System.Configuration;
 #pragma warning disable CS1587
 
-///################################\\\
+//################################\\
 /// Contents:                      \\\
-///--> Publicly Accessible Members \\\
-///################################\\\
+//--> Publicly Accessible Members \\\
+//################################\\
 
 
 namespace libgp4 {
 
     public partial class GP4Creator {
 
-        ///########################\\\
-        ///--    User Options    --\\\
-        ///########################\\\
+        //########################\\
+        //--    User Options    --\\
+        //########################\\
         #region User Options
 
         /// <summary> An Array Of Parameters Parsed From The param.sfo File In The Application/Patch's System Folder (sce_sys\param.sfo)
@@ -237,9 +237,9 @@ namespace libgp4 {
 
 
 
-        ///############################\\\
-        ///--     User Functions     --\\\
-        ///############################\\\
+        //############################\\
+        //--     User Functions     --\\
+        //############################\\
         #region User Functions
 
         #region WIP AddFile(s) Shit

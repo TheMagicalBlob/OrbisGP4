@@ -19,6 +19,9 @@ namespace GP4GUI {
             CreateDropdownMenu(this);
             AddControlEventHandlers(Controls, this);
 
+            this.AddOwnedForm(OptionsForm = new OptionsPage(Location));
+            OptionsPageIsOpen = false;
+            OptionsForm.Visible = false;
 
             // Set Output Box Ptr
             _OutputWindow = OutputWindow;
@@ -118,11 +121,11 @@ namespace GP4GUI {
 
 
 
-        ///########################################\\\
-        ///--     Designer Managed Functions     --\\\
-        ///########################################\\\
+        //##########################################\\
+        //--      Designer Managed Functions      --\\
+        //##########################################\\
         #region Designer Managed Functions
-#pragma warning disable CS0168 // var not used
+        #pragma warning disable CS0168 // var not used
 
         private IContainer components = null;
         protected override void Dispose(bool disposing) {
@@ -316,13 +319,13 @@ namespace GP4GUI {
 
         }
         #endregion
+        //==========================================\\
 
 
 
-
-        ///#######################################\\\
-        ///--     Basic Form Init Functions     --\\\
-        ///#######################################\\\
+        //#######################################\\
+        //--     Basic Form Init Functions     --\\
+        //#######################################\\
         #region Basic Form Init Functions
 
         public void AddControlEventHandlers(Control.ControlCollection Controls, Form form) {
@@ -381,17 +384,19 @@ namespace GP4GUI {
                 ActiveForm.Update();
 
                 if (OptionsForm != null) {
-                    OptionsForm.Location = new Point(MousePosition.X - MouseDif.X + 30, MousePosition.Y - MouseDif.Y + 60);
+                    // TODO: Fix jittering, probably from dividing odd numbered locations
+                    OptionsForm.Location = new Point(MousePosition.X - MouseDif.X + ((Size.Width - OptionsForm.Size.Width)/2), MousePosition.Y - MouseDif.Y + 60);
                     OptionsForm.Update();
                 }
             }
         }
         #endregion
+        //=======================================\\
 
 
-        ///###############################################\\\
-        ///--     Main Form Functions and Variables     --\\\
-        ///###############################################\\\
+        //###############################################\\
+        //--     Main Form Functions and Variables     --\\
+        //###############################################\\
         #region Main Form Functions & Variables
 
         public static Point MouseDif;
@@ -404,18 +409,13 @@ namespace GP4GUI {
 
 
         // Create Page For Changing Various .gp4 Options. (passcode, source pkg, etc)
-        private void OptionsBtn_Click(object sender, EventArgs e) {
-            if (!OptionsPageIsOpen) { 
-                OptionsForm?.BringToFront();
+        private void OptionsBtn_Click(object sender, EventArgs e)
+        {
+            var Spacing = (Size.Width - OptionsForm.Size.Width)/2;
 
-                var NewPage = new OptionsPage(this, Location);
-                OptionsForm = NewPage;
-                NewPage.Show();
-            }
-            else {
-                OptionsForm.Dispose();
-                OptionsPageIsOpen = false;
-            }
+            OptionsForm.Visible = OptionsPageIsOpen ^= true;
+            OptionsForm.Location = new Point(Location.X + Spacing, Location.Y + 30);
+            OptionsForm.Update();
         }
 
         
@@ -514,7 +514,7 @@ namespace GP4GUI {
 
         public bool ApplyUserOptions()
         {
-            // dewit
+            gp4.VerboseLogging = true; //!
 
             return false;
         }
@@ -525,7 +525,7 @@ namespace GP4GUI {
             // Check for Unassigned Gamedata Path
             if (GamedataFolderPathBox.IsDefault) {
                 WLog("Please Assign A Valid Gamedata Folder Before Building");
-                return true;
+                return false;
             }
 
             // Verify Provided Gamedata Folder Path
@@ -537,11 +537,11 @@ namespace GP4GUI {
                     WLog($"(Path: {gp4.GamedataFolder} Leads To A File, Not A Folder)");
                 else
                     WLog($"(Folder: {gp4.GamedataFolder} Does Not Exist)");
-                return true;
+                return false;
             }
 
 
-            // Assign An Output Directory For The .gp4 If None Has Been Set Yet.
+            //! Assign An Output Directory For The .gp4 If None Has Been Set Yet.
             if (Gp4OutputDirectory == null)
                 if (!gp4.AbsoluteFilePaths)
                     Gp4OutputDirectory = gp4.GamedataFolder;
@@ -555,18 +555,20 @@ namespace GP4GUI {
         // Create the .gp4 Project File.
         private void BuildProjectFile(object sender, EventArgs e) {
 
+            // Apply Current Options to GP4Creator Instance, and Apply Defaults to Any Left Unassigned.
+            if (ApplyDefaults() && ApplyUserOptions())
 
-            if (ApplyDefaults() || ApplyUserOptions())
-
+            // Begin .gp4 Creation is all's well
             gp4.CreateGP4(Gp4OutputDirectory, true);
         }
         #endregion
+        //===============================================\\
 
 
 
-        ///##################################\\\
-        ///--     Control Declarations     --\\\
-        ///##################################\\\
+        //##################################\\
+        //--     Control Declarations     --\\
+        //##################################\\
         #region ControlDeclarations
         private TextBox GamedataFolderPathBox;
         private Button BrowseBtn;

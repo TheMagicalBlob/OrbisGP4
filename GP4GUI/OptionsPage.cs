@@ -10,8 +10,7 @@ namespace GP4GUI
 {
     public partial class OptionsPage : Form
     {
-        public OptionsPage(MainForm MainForm, Point LastPos)
-        {
+        public OptionsPage(Point LastPos) {
             InitializeComponent();
             Paint += PaintBorder;
             OptionsPageIsOpen = true;
@@ -21,9 +20,9 @@ namespace GP4GUI
         }
 
 
-        ///########################################\\\
-        ///--     Designer-Managed Functions     --\\\
-        ///########################################\\\
+        //########################################\\
+        //--     Designer-Managed Functions     --\\
+        //########################################\\
         #region Designer Managed Functions
 #pragma warning disable CS0168 // var not used
         private IContainer components = null;
@@ -85,7 +84,6 @@ namespace GP4GUI
             this.ExitBtn.Text = "X";
             this.ExitBtn.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.ExitBtn.UseVisualStyleBackColor = false;
-            this.ExitBtn.Click += new System.EventHandler(this.ExitBtn_Click);
             // 
             // VerboseOutputBox
             // 
@@ -260,15 +258,11 @@ namespace GP4GUI
         #endregion
         ///========================================\\\
 
-
-        private void ExitBtn_Click(object sender, EventArgs e) {
-            OptionsPageIsOpen = false;
-            Dispose();
-        }
-
         private void ReflectCurrentOptions()
         {
-            // Restore Edited User Settings To Controls
+
+
+/*            // Restore Edited User Settings To Controls
             if(Gp4OutputDirectory != null)
                 OutputPathTextBox.Text = Gp4OutputDirectory;
                     
@@ -289,12 +283,12 @@ namespace GP4GUI
 
 
             if(gp4.Passcode != "00000000000000000000000000000000")
-                CustomPasscodeTextBox.Text = gp4.Passcode;
+                CustomPasscodeTextBox.Text = gp4.Passcode;*/
         }
 
-        ///#######################################\\\
-        ///--     Options-Related Functions     --\\\
-        ///#######################################\\\
+        //#######################################\\
+        //--     Options-Related Functions     --\\
+        //#######################################\\
         #region Options Related Functions
         private void KeystoneToggleBox_CheckedChanged(object sender, EventArgs e) => gp4.Keystone = ((CheckBox)sender).Checked;
         private void LimitedOutputBox_CheckedChanged(object sender, EventArgs e) => gp4.VerboseLogging = ((CheckBox)sender).Checked;
@@ -396,9 +390,9 @@ namespace GP4GUI
 
 
 
-        ///##################################\\\
-        ///--     Control Declarations     --\\\
-        ///##################################\\\
+        //##################################\\
+        //--     Control Declarations     --\\
+        //##################################\\
         #region ControlDeclarations
         private Label TinyVersionLabel;
         private Label Title;

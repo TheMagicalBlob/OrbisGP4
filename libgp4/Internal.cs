@@ -7,10 +7,10 @@ using System.Text;
 using System.Xml;
 #pragma warning disable CS1587
 
-///###############################\\\
+//###############################\\
 /// Contents:                     \\\
-///--> Main Library Functionality \\\
-///###############################\\\
+//--> Main Library Functionality \\\
+//###############################\\
 
 
 // A Small Library For Building .gp4 Files For Use In PS4 .pkg Creation, And Grabbing Data From Existing Ones
@@ -96,9 +96,9 @@ namespace libgp4 {
         }
 
 
-        ///##########################################\\\
-        ///--     Internal Variables / Methods     --\\\
-        ///##########################################\\\
+        //##########################################\\
+        //--     Internal Variables / Methods     --\\
+        //##########################################\\
         #region Internal Variables / Methods
 
         /// <summary>
@@ -495,9 +495,9 @@ namespace libgp4 {
         ///==========================================\\\
 
 
-        ///#####################################\\\
-        ///--     GP4 Attributes / Values     --\\\
-        ///#####################################\\\
+        //#####################################\\
+        //--     GP4 Attributes / Values     --\\
+        //#####################################\\
         #region GP4 Attributes / Values
 
         /// <summary>
@@ -587,9 +587,9 @@ namespace libgp4 {
         ///=====================================\\\
 
 
-        ///############################\\\
-        ///--     User Functions     --\\\
-        ///############################\\\
+        //############################\\
+        //--     User Functions     --\\
+        //############################\\
         #region User Functions
         /// <summary> Check Various Parts Of The .gp4 To Try And Find Any Possible Errors In The Project File.
         ///</summary>
@@ -1408,9 +1408,9 @@ namespace libgp4 {
         }
 
 
-        ///################################\\\
-        ///--     Internal Variables     --\\\
-        ///################################\\\
+        //################################\\
+        //--     Internal Variables     --\\
+        //################################\\
         #region Internal Variables
 
         /// <summary> Names Of Files That Are Always To Be Excluded From .gp4 Projects By Default.
@@ -1516,9 +1516,9 @@ namespace libgp4 {
 
 
 
-            ///##################################################\\\
+            //##################################################\\
             ///  Throw An Exception If Any Errors Were Detected  \\\
-            ///##################################################\\\
+            //##################################################\\
             if (Errors != string.Empty) {
                 if((ErrorCount = (Errors.Length - Errors.Replace("\n\n", string.Empty).Length) / 2) == 1)
                     Errors = $"The Following Error Was Found During The .gp4 Project Creation With Gamedata In: {gamedata_folder}.\n{Errors}";

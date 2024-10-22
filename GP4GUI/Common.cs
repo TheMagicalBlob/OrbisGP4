@@ -92,9 +92,9 @@ namespace GP4GUI {
         //====\\
     }
 
-        ///################################################\\\
-        ///--    Custom/"Overridden" Control Classes     --\\\
-        ///################################################\\\
+        //################################################\\
+        //--    Custom/"Overridden" Control Classes     --\\
+        //################################################\\
         #region [Custom/"Overridden" Control Classes]
 
         // Custom RichTextBox Class to Better Handle Default TextBox Contents
@@ -136,7 +136,6 @@ namespace GP4GUI {
                         IsDefault = true;
                     }
                     else {
-
                         IsDefault = false;
                     }
                 };
@@ -162,14 +161,6 @@ namespace GP4GUI {
             private void Set(object _, EventArgs __) {
                 DefaultText = Text;
                 TextChanged -= Set;
-            /*
-                TextChanged += (control, e) => {
-                    if(IsDefault && Text.Length > 0) {
-                        Font = Common.MainFont;
-                        IsDefault = false;
-                    }
-                };
-            */
             }
         }
 

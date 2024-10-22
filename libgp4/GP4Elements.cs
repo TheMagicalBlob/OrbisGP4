@@ -2,17 +2,17 @@
 using System.Xml;
 #pragma warning disable CS1587
 
-///##############################################\\\
+//##############################################\\
 /// Contents:                                    \\\
-///--> Functions to Create Various .gp4 Elements \\\
-///##############################################\\\
+//--> Functions to Create Various .gp4 Elements \\\
+//##############################################\\
 
 namespace libgp4 {
     public partial class GP4Creator {
 
-        ///##################################\\\
-        ///--     GP4 ELEMENT CREATION     --\\\
-        ///##################################\\\
+        //##################################\\
+        //--     GP4 ELEMENT CREATION     --\\
+        //##################################\\
         #region GP4 ELEMENT CREATION
 
         /// <summary>
