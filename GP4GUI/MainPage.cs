@@ -1,13 +1,10 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using static GP4GUI.Common;
 using libgp4;
-using System.Runtime.Remoting.Channels;
-using System.Linq;
 
 namespace GP4GUI {
     public partial class MainForm : Form {
@@ -15,14 +12,15 @@ namespace GP4GUI {
 
             // Initialize and Decorate Form, Then Set Event Handlers
             InitializeComponent();
+            CreateDropdownMenu();
+            PostInit();
+
             Paint += PaintBorder;
-            CreateDropdownMenu(this);
 
-            this.AddOwnedForm(OptionsForm = new OptionsPage(OutputWindow.Location));
+            this.AddOwnedForm(new OptionsPage(OutputWindow.Location));
             OptionsPageIsOpen = false;
-            OptionsForm.Visible = false;
-
-            AddControlEventHandlers(Controls, this);
+            Azem.Visible = false;
+            Venat = this;
             
 
             // Set Output Box Ptr
@@ -208,7 +206,7 @@ namespace GP4GUI {
             this.BrowseBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.BrowseBtn.Font = new System.Drawing.Font("Gadugi", 8.25F, System.Drawing.FontStyle.Bold);
             this.BrowseBtn.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.BrowseBtn.Location = new System.Drawing.Point(297, 62);
+            this.BrowseBtn.Location = new System.Drawing.Point(296, 62);
             this.BrowseBtn.Name = "BrowseBtn";
             this.BrowseBtn.Size = new System.Drawing.Size(65, 23);
             this.BrowseBtn.TabIndex = 7;
@@ -229,7 +227,7 @@ namespace GP4GUI {
             this.OptionsBtn.TabIndex = 9;
             this.OptionsBtn.Text = "Tool Options";
             this.OptionsBtn.UseVisualStyleBackColor = false;
-            this.OptionsBtn.Click += new System.EventHandler(this.OptionsBtn_Click);
+            this.OptionsBtn.Click += new System.EventHandler(ToggleOptionsWindowVisibility);
             // 
             // ClearLogBtn
             // 
@@ -264,7 +262,7 @@ namespace GP4GUI {
             this.SwapBrowseModeBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.SwapBrowseModeBtn.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold);
             this.SwapBrowseModeBtn.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.SwapBrowseModeBtn.Location = new System.Drawing.Point(361, 62);
+            this.SwapBrowseModeBtn.Location = new System.Drawing.Point(360, 62);
             this.SwapBrowseModeBtn.Name = "SwapBrowseModeBtn";
             this.SwapBrowseModeBtn.Size = new System.Drawing.Size(11, 23);
             this.SwapBrowseModeBtn.TabIndex = 16;
@@ -276,11 +274,11 @@ namespace GP4GUI {
             this.OutputWindow.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(10)))));
             this.OutputWindow.Font = new System.Drawing.Font("Segoe UI Semibold", 9F);
             this.OutputWindow.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(240)))), ((int)(((byte)(250)))));
-            this.OutputWindow.Location = new System.Drawing.Point(4, 103);
+            this.OutputWindow.Location = new System.Drawing.Point(4, 105);
             this.OutputWindow.MaxLength = 21474836;
             this.OutputWindow.Name = "OutputWindow";
             this.OutputWindow.ReadOnly = true;
-            this.OutputWindow.Size = new System.Drawing.Size(444, 257);
+            this.OutputWindow.Size = new System.Drawing.Size(444, 263);
             this.OutputWindow.TabIndex = 6;
             this.OutputWindow.Text = "";
             // 
@@ -300,7 +298,7 @@ namespace GP4GUI {
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
-            this.ClientSize = new System.Drawing.Size(452, 363);
+            this.ClientSize = new System.Drawing.Size(452, 371);
             this.Controls.Add(this.SwapBrowseModeBtn);
             this.Controls.Add(this.dummy);
             this.Controls.Add(this.ClearLogBtn);
@@ -330,74 +328,72 @@ namespace GP4GUI {
         //#######################################\\
         #region Basic Form Init Functions
 
-        public void AddControlEventHandlers(Control.ControlCollection Controls, Form form)
+        public void PostInit()
         {
+            Venat = this;
+
             // Set Event Handlers for Form Dragging
-            form.MouseDown += new MouseEventHandler(MouseDownFunc);
-            form.MouseUp += new MouseEventHandler(MouseUpFunc);
-            form.MouseMove += new MouseEventHandler(MoveForm);
+            MouseDown += new MouseEventHandler((sender, e) => {
+                    MouseDif = new Point(MousePosition.X - Venat.Location.X, MousePosition.Y - Venat.Location.Y);
+                    MouseIsDown = true;
+                    Azem?.BringToFront();
+            });
+            MouseUp += new MouseEventHandler((sender, e) => {
+                MouseIsDown = false;
+                Azem?.BringToFront();
+            });
+            MouseMove += new MouseEventHandler((sender, e) => {
+                if(MouseIsDown) {
+                    Venat.Location = new Point(MousePosition.X - MouseDif.X, MousePosition.Y - MouseDif.Y);
+                    Venat.Update();
+
+                    if (Azem != null) {
+                        Azem.Location = new Point(MousePosition.X - MouseDif.X + OptionsFormLocation.X, MousePosition.Y - MouseDif.Y + OptionsFormLocation.Y);
+                        Azem.Update();
+                    }
+                }
+            });
 
             
             // Grab Buffer Values For OptionsPage Positioning
-            OptionsFormLocation = new Point(XPadding = (form.Size.Width - OptionsForm.Size.Width)/2, YPadding = OutputWindow.Location.Y + 15);
-
             foreach(Control Item in Controls) {
+                // Avoid Applying MoveForm EventHandler to Text Containters (to retain the ability to drag-select text)
+                if (Item.GetType() != typeof(TextBox) && Item.GetType() != typeof(RichTextBox)) {
+                    Item.MouseMove += new MouseEventHandler((sender, e) => {
+                        if(MouseIsDown) {
+                            Venat.Location = new Point(MousePosition.X - MouseDif.X, MousePosition.Y - MouseDif.Y);
+                            Venat.Update();
 
-                // TODO: Remove this part and make sure nothing breaks
-                // Designer Added Some Things To The Form, And Some To The Group Box Used To Make The Border. This is me bing lazy. as long as it's not noticably slower
-                if(Item.HasChildren) {
-                    foreach(Control Child in Item.Controls) {
-
-                        Child.MouseDown += new MouseEventHandler(MouseDownFunc);
-                        Child.MouseUp += new MouseEventHandler(MouseUpFunc);
-
-                    }
+                            if (Azem != null) {
+                                Azem.Location = new Point(MousePosition.X - MouseDif.X + OptionsFormLocation.X, MousePosition.Y - MouseDif.Y + OptionsFormLocation.Y);
+                                Azem.Update();
+                            }
+                        }
+                    });
                 }
 
-                // So You Can Drag Select The Text Lol
-                if(Item.GetType() != typeof(TextBox) && Item.GetType() != typeof(RichTextBox))
-                    Item.MouseMove += new MouseEventHandler(MoveForm);
-
-                Item.MouseDown += new MouseEventHandler(MouseDownFunc);
-                Item.MouseUp += new MouseEventHandler(MouseUpFunc);
+                Item.MouseDown += new MouseEventHandler((sender, e) => {
+                    MouseDif = new Point(MousePosition.X - Venat.Location.X, MousePosition.Y - Venat.Location.Y);
+                    MouseIsDown = true;
+                    Azem?.BringToFront();
+                });
+                Item.MouseUp   += new MouseEventHandler((sender, e) => {
+                    MouseIsDown = false;
+                    Azem?.BringToFront();
+                });
             }
+
             try {
-                Controls.Find("MinimizeBtn", true)[0].Click += new EventHandler(MinimizeBtn_Click);
-                Controls.Find("MinimizeBtn", true)[0].MouseEnter += new EventHandler(MinimizeBtnMH);
-                Controls.Find("MinimizeBtn", true)[0].MouseLeave += new EventHandler(ExitBtnML);
-                Controls.Find("ExitBtn", true)[0].Click += new EventHandler(ExitBtn_Click);
-                Controls.Find("ExitBtn", true)[0].MouseEnter += new EventHandler(ExitBtnMH);
-                Controls.Find("ExitBtn", true)[0].MouseLeave += new EventHandler(ExitBtnML);
+                Controls.Find("MinimizeBtn", true)[0].Click += new EventHandler((sender, e) =>  ActiveForm.WindowState = FormWindowState.Minimized);
+                Controls.Find("MinimizeBtn", true)[0].MouseEnter += new EventHandler((sender, e) => ((Control)sender).ForeColor = Color.FromArgb(90, 100, 255));
+                Controls.Find("MinimizeBtn", true)[0].MouseLeave += new EventHandler((sender, e) => ((Control)sender).ForeColor = Color.FromArgb(0, 0, 0));
+                Controls.Find("ExitBtn", true)[0].Click += new EventHandler((sender, e) => Environment.Exit(0));
+                Controls.Find("ExitBtn", true)[0].MouseEnter += new EventHandler((sender, e) => ((Control)sender).ForeColor = Color.FromArgb(230, 100, 100));
+                Controls.Find("ExitBtn", true)[0].MouseLeave += new EventHandler((sender, e) => ((Control)sender).ForeColor = Color.FromArgb(0, 0, 0));
             }
-            catch(IndexOutOfRangeException) { }
+            catch(IndexOutOfRangeException msg) { DLog($"!! ERROR [{msg.Source}]: You Deleted or Renamed The Minimize/Exit Button(s), Fucktard. (Message Below)\nException: {msg.Message}"); }
         }
 
-        private static void MinimizeBtn_Click(object sender, EventArgs e) => ActiveForm.WindowState = FormWindowState.Minimized;
-        private static void ExitBtn_Click(object sender, EventArgs e) => Environment.Exit(0);
-        private static void ExitBtnMH(object sender, EventArgs e) => ((Control)sender).ForeColor = Color.FromArgb(230, 100, 100);
-        private static void MinimizeBtnMH(object sender, EventArgs e) => ((Control)sender).ForeColor = Color.FromArgb(90, 100, 255);
-        private static void ExitBtnML(object sender, EventArgs e) => ((Control)sender).ForeColor = Color.FromArgb(0, 0, 0);
-
-
-        public void MouseUpFunc(object sender, MouseEventArgs e) {
-            MouseIsDown = 0;
-            OptionsForm?.BringToFront();
-        }
-        public void MouseDownFunc(object sender, MouseEventArgs e) {
-            MouseDif = new Point(MousePosition.X - ActiveForm.Location.X, MousePosition.Y - ActiveForm.Location.Y);
-            MouseIsDown = 1;
-        }
-        public void MoveForm(object sender, MouseEventArgs e) {
-            if(MouseIsDown != 0) {
-                ActiveForm.Location = new Point(MousePosition.X - MouseDif.X, MousePosition.Y - MouseDif.Y);
-                ActiveForm.Update();
-
-                if (OptionsForm != null) {
-                    OptionsForm.Location = new Point(MousePosition.X - MouseDif.X + OptionsFormLocation.X, MousePosition.Y - MouseDif.Y + OptionsFormLocation.Y);
-                    OptionsForm.Update();
-                }
-            }
-        }
         #endregion
         //=======================================\\
 
@@ -407,28 +403,11 @@ namespace GP4GUI {
         //###############################################\\
         #region Main Form Functions & Variables
 
-        public static Point MouseDif;
-        public static byte MouseIsDown = 0;
-
-        /// <summary> Horizontal Buffer for X-Axis-Centering of the Options Form. </summary>
-        public int XPadding, YPadding;
-        public static Point OptionsFormLocation;
-
-        public static Form OptionsForm;
         public static Button[] DropdownMenu = new Button[2];
         public static bool LegacyFolderSelectionDialogue = true;
 
         private void ClearLogBtn_Click(object sender = null, EventArgs e = null) => OutputWindow.Clear();
 
-
-        // Create Page For Changing Various .gp4 Options. (passcode, source pkg, etc)
-        private void OptionsBtn_Click(object sender, EventArgs e)
-        {
-            OptionsForm.Visible = OptionsPageIsOpen ^= true;
-
-            OptionsForm.Location = new Point(Location.X + XPadding, Location.Y + YPadding);
-            OptionsForm.Update();
-        }
 
         
         // Use The Dummy File Method To Open A Folder.
@@ -464,11 +443,30 @@ namespace GP4GUI {
             }
 
         }
+        
+        private void MouseUpFunc(object sender, MouseEventArgs e) {
+            MouseIsDown = false;
+            Azem?.BringToFront();
+        }
+        private void MouseDownFunc(object sender, MouseEventArgs e) {
+            MouseDif = new Point(MousePosition.X - ActiveForm.Location.X, MousePosition.Y - ActiveForm.Location.Y);
+            MouseIsDown = true;
+        }
+        private void MoveForm(object sender, MouseEventArgs e) {
+            if(MouseIsDown) {
+                ActiveForm.Location = new Point(MousePosition.X - MouseDif.X, MousePosition.Y - MouseDif.Y);
+                ActiveForm.Update();
 
+                if (Azem != null) {
+                    Azem.Location = new Point(MousePosition.X - MouseDif.X + OptionsFormLocation.X, MousePosition.Y - MouseDif.Y + OptionsFormLocation.Y);
+                    Azem.Update();
+                }
+            }
+        }
 
         private void SwapBrowseModeBtn_Click(object _, EventArgs __) => DropdownMenu[1].Visible = DropdownMenu[0].Visible ^= true;
 
-        private void CreateDropdownMenu(Form venat) {
+        private void CreateDropdownMenu() {
             var extalignment = BrowseBtn.Size.Height;
             var alignment = BrowseBtn.Location;
 
@@ -513,8 +511,8 @@ namespace GP4GUI {
             //    DropdownMenu[1].Visible = DropdownMenu[0].Visible ^= true;
 
             // Add Controls to MainForm Control Collection
-            venat.Controls.Add(DropdownMenu[0]);
-            venat.Controls.Add(DropdownMenu[1]);
+            Controls.Add(DropdownMenu[0]);
+            Controls.Add(DropdownMenu[1]);
 
             // Ensure Controls Display Correctly
             DropdownMenu[0].Hide();

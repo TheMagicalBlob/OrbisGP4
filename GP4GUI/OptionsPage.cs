@@ -12,17 +12,19 @@ namespace GP4GUI
     {
         public OptionsPage(Point LastPos) {
             InitializeComponent();
+            PostInit(); // Set Event Handlers and Other Form-Related Crap
+            
             Paint += PaintBorder;
-            OptionsPageIsOpen = true;
+            TinyVersionLabel.Text = Version; // Set Version Label
 
-            TinyVersionLabel.Text = Version;
+            ExitBtn.Click += new EventHandler(ToggleOptionsWindowVisibility);
         }
 
 
-        //########################################\\
-        //--     Designer-Managed Functions     --\\
-        //########################################\\
-        #region Designer Managed Functions
+        //######################################\\
+        //--     Design-Related Functions     --\\
+        //######################################\\
+        #region Design-Related Functions
 #pragma warning disable CS0168 // var not used
         private IContainer components = null;
         protected override void Dispose(bool disposing) {
@@ -248,57 +250,93 @@ namespace GP4GUI
             this.PerformLayout();
 
         }
+
+        /// <summary>
+        /// Post-InitializeComponent Configuration (Event Handlers, Form-Related Variables)
+        /// </summary>
+        /// <param name="form"> The Form Being Initialized. </param>
+        public void PostInit()
+        {
+            Azem = this;
+            OptionsFormLocation = new Point((Venat.Size.Width - Size.Width)/2, Location.Y + 120);
+
+
+            // Set Event Handlers for Form Dragging
+            MouseDown += new MouseEventHandler((sender, e) => {
+                    MouseDif = new Point(MousePosition.X - Venat.Location.X, MousePosition.Y - Venat.Location.Y);
+                    MouseIsDown = true;
+                    BringToFront();
+            });
+            MouseUp += new MouseEventHandler((sender, e) => {
+                MouseIsDown = false;
+                BringToFront();
+            });
+            MouseMove += new MouseEventHandler((sender, e) => {
+                if(MouseIsDown) {
+                    Venat.Location = new Point(MousePosition.X - MouseDif.X, MousePosition.Y - MouseDif.Y);
+                    Venat.Update();
+
+                    Location = new Point(MousePosition.X - MouseDif.X + OptionsFormLocation.X, MousePosition.Y - MouseDif.Y + OptionsFormLocation.Y);
+                    Update();
+                }
+            });
+
+            
+            // Grab Buffer Values For OptionsPage Positioning
+            foreach(Control Item in Controls) {
+                // Avoid Applying MoveForm EventHandler to Text Containters (to retain the ability to drag-select text)
+                if (Item.GetType() != typeof(TextBox) && Item.GetType() != typeof(RichTextBox)) {
+                    Item.MouseMove += new MouseEventHandler((sender, e) => {
+                        if(MouseIsDown) {
+                            Venat.Location = new Point(MousePosition.X - MouseDif.X, MousePosition.Y - MouseDif.Y);
+                            Venat.Update();
+
+                            Location = new Point(MousePosition.X - MouseDif.X + OptionsFormLocation.X, MousePosition.Y - MouseDif.Y + OptionsFormLocation.Y);
+                            Update();
+                        }
+                    });
+                }
+
+                Item.MouseDown += new MouseEventHandler((sender, e) => {
+                    MouseDif = new Point(MousePosition.X - Venat.Location.X, MousePosition.Y - Venat.Location.Y);
+                    MouseIsDown = true;
+                    BringToFront();
+                });
+                Item.MouseUp   += new MouseEventHandler((sender, e) => {
+                    MouseIsDown = false;
+                    BringToFront();
+                });
+            }
+        }
+
         #endregion
-        //========================================\\
+        //======================================\\
 
 
         //##########################\\
         //--     .gp4 Options     --\\
         //##########################\\
         #region [.gp4 Options]
-        bool Verbosity;
-        string[] BlacklistedItems;
+        public static bool
+            Verbose,
+            Keystone,
+            UseAbsolutePaths
+        ;
+        public static string
+            GP4OutputDirectory,
+            BasePackagePath,
+            Passcode
+        ;
+        public static string[] BlacklistedItems;
         #endregion
         //==========================\\
 
 
-        private void ReflectCurrentOptions()
-        {
-
-
-/*            // Restore Edited User Settings To Controls
-            if(Gp4OutputDirectory != null)
-                OutputPathTextBox.Text = Gp4OutputDirectory;
-                    
-            if(gp4.BasePackagePath != null)
-                BasePackagePathTextBox.Text = gp4.BasePackagePath;
-
-            AbsolutePathCheckBox.Checked = gp4.AbsoluteFilePaths;
-            KeystoneToggleBox.Checked = gp4.Keystone;
-            VerboseOutputBox.Checked = gp4.VerboseLogging;
-
-            if(gp4.BlacklistedFilesOrFolders != null) {
-                var str = gp4.BlacklistedFilesOrFolders[0];
-                for(var i = 1; i< gp4.BlacklistedFilesOrFolders.Length; i++)
-                    str += $",{gp4.BlacklistedFilesOrFolders[i]}";
-
-                FilterTextBox.Text = str;
-            }
-
-
-            if(gp4.Passcode != "00000000000000000000000000000000")
-                CustomPasscodeTextBox.Text = gp4.Passcode;*/
-        }
 
         //#######################################\\
         //--     Options-Related Functions     --\\
         //#######################################\\
         #region Options Related Functions
-        //private void KeystoneToggleBox_CheckedChanged(object sender, EventArgs e) => gp4.Keystone = ((CheckBox)sender).Checked;
-        //private void LimitedOutputBox_CheckedChanged(object sender, EventArgs e) => gp4.VerboseLogging = ((CheckBox)sender).Checked;
-        //private void AbsolutePathCheckBox_CheckedChanged(object sender, EventArgs e) => gp4.AbsoluteFilePaths = ((CheckBox)sender).Checked;
-        //private void OutputPathTextBox_TextChanged(object sender, EventArgs e)  => Gp4OutputDirectory = ((Control)sender).Text;
-        //private void CustomPasscodeTextBox_TextChanged(object sender, EventArgs e) => gp4.Passcode = ((Control)sender).Text;
 
         private void OutputPathBtn_Click(object sender, EventArgs e) {
             using(var Browser = new FolderBrowserDialog())
@@ -306,14 +344,19 @@ namespace GP4GUI
                     OutputPathTextBox.Text = Browser.SelectedPath;
         }
 
-        //private void BasePackagePathTextBox_TextChanged(object sender, EventArgs e) => gp4.BasePackagePath = ((Control)sender).Text;
-
+        /// <summary>
+        /// Search for the Base Application Package Through an OpenFileDialogue Instance.
+        /// </summary>
         private void BasePackagePathBtn_Click(object sender, EventArgs e) {
             using(var Browser = new OpenFileDialog())
                 if(Browser.ShowDialog() == DialogResult.OK)
                     BasePackagePathTextBox.Text = Browser.FileName;
         }
 
+        
+        /// <summary>
+        /// Build an Array of Files to Exclude from the .gp4 Project's File Listing From Those Selected Through an OpenFileDialogue Instance (W/ Multiselect).
+        /// </summary>
         private void FilterBrowseBtn_Click(object sender, EventArgs e) {
             var Browser = new OpenFileDialog() {
                 Multiselect = true,

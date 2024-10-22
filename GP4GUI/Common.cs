@@ -27,9 +27,16 @@ namespace GP4GUI {
     #endif
 
 
+
         public static bool OptionsPageIsOpen;
         public static GP4Creator gp4;
         public static RichTextBox _OutputWindow;
+        
+        
+        public static Point MouseDif;
+        public static bool MouseIsDown = false;
+        public static Form Azem, Venat;
+        public static Point OptionsFormLocation;
 
 
         // Application Aesthetics-Related Variables & Functions
@@ -42,6 +49,15 @@ namespace GP4GUI {
         public static readonly Font MainFont        = new Font("Gadugi", 8.25f, FontStyle.Bold); // Gadugi, 8.25pt, style=Bold, Italic
         public static readonly Font TextFont        = new Font("Segoe UI Semibold", 9f); // Segoe UI Semibold, 9pt, style=Bold
         public static readonly Font DefaultTextFont = new Font("Segoe UI Semibold", 9f, FontStyle.Italic); // Gadugi, 8.25pt, style=Bold, Italic
+
+
+        // Show/Hide Options Window
+        public static void ToggleOptionsWindowVisibility(object sender, EventArgs e) {
+            Azem.Visible = OptionsPageIsOpen ^= true;
+
+            Azem.Location = OptionsFormLocation;
+            Azem.Update();
+        }
 
 
         // Draw a Thin Border for the Control On-Paint \\
