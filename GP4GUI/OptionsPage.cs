@@ -15,7 +15,6 @@ namespace GP4GUI
             Paint += PaintBorder;
             OptionsPageIsOpen = true;
 
-            Location = new Point(LastPos.X + 30, LastPos.Y + 60);
             TinyVersionLabel.Text = Version;
         }
 
@@ -256,7 +255,18 @@ namespace GP4GUI
 
         }
         #endregion
-        ///========================================\\\
+        //========================================\\
+
+
+        //##########################\\
+        //--     .gp4 Options     --\\
+        //##########################\\
+        #region [.gp4 Options]
+        bool Verbosity;
+        string[] BlacklistedItems;
+        #endregion
+        //==========================\\
+
 
         private void ReflectCurrentOptions()
         {

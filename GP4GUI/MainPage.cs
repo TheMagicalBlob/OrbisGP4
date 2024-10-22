@@ -17,11 +17,13 @@ namespace GP4GUI {
             InitializeComponent();
             Paint += PaintBorder;
             CreateDropdownMenu(this);
-            AddControlEventHandlers(Controls, this);
 
-            this.AddOwnedForm(OptionsForm = new OptionsPage(Location));
+            this.AddOwnedForm(OptionsForm = new OptionsPage(OutputWindow.Location));
             OptionsPageIsOpen = false;
             OptionsForm.Visible = false;
+
+            AddControlEventHandlers(Controls, this);
+            
 
             // Set Output Box Ptr
             _OutputWindow = OutputWindow;
@@ -333,21 +335,32 @@ namespace GP4GUI {
             form.MouseUp += new MouseEventHandler(MouseUpFunc);
             form.MouseMove += new MouseEventHandler(MoveForm);
 
+            Spacing = (form.Size.Width - OptionsForm.Size.Width)/2; // Grab Buffer Value For OptionsPage Positioning
+
             foreach(Control Item in Controls) {
-                if(Item.HasChildren) { // Designer Added Some Things To The Form, And Some To The Group Box Used To Make The Border. This is me bing lazy. as long as it's not noticably slower
+
+                // TODO: Remove this part and make sure nothing breaks
+                // Designer Added Some Things To The Form, And Some To The Group Box Used To Make The Border. This is me bing lazy. as long as it's not noticably slower
+                if(Item.HasChildren) {
                     foreach(Control Child in Item.Controls) {
 
                         Child.MouseDown += new MouseEventHandler(MouseDownFunc);
                         Child.MouseUp += new MouseEventHandler(MouseUpFunc);
 
-                        if(!Child.Name.Contains("TextBox") && !Child.Name.Contains("OutputWindow")) // So You Can Drag Select The Text Lol
-                            Child.MouseMove += new MouseEventHandler(MoveForm);
                     }
                 }
+
+/*                // So You Can Drag Select The Text Lol
+                if(!Item.Name.Contains("TextBox") && !Item.Name.Contains("OutputWindow"))
+                    Item.MouseMove += new MouseEventHandler(MoveForm);
+*/
+
+                // So You Can Drag Select The Text Lol
+                if(Item.GetType() != typeof(TextBox) && Item.GetType() != typeof(RichTextBox))
+                    Item.MouseMove += new MouseEventHandler(MoveForm);
+
                 Item.MouseDown += new MouseEventHandler(MouseDownFunc);
                 Item.MouseUp += new MouseEventHandler(MouseUpFunc);
-                if(!Item.Name.Contains("Box") && !Item.Name.Contains("OutputWindow")) // So You Can Drag Select The Text Lol
-                    Item.MouseMove += new MouseEventHandler(MoveForm);
             }
             try {
                 Controls.Find("MinimizeBtn", true)[0].Click += new EventHandler(MinimizeBtn_Click);
@@ -356,9 +369,6 @@ namespace GP4GUI {
                 Controls.Find("ExitBtn", true)[0].Click += new EventHandler(ExitBtn_Click);
                 Controls.Find("ExitBtn", true)[0].MouseEnter += new EventHandler(ExitBtnMH);
                 Controls.Find("ExitBtn", true)[0].MouseLeave += new EventHandler(ExitBtnML);
-                Controls.Find("MainBox", true)[0].MouseDown += new MouseEventHandler(MouseDownFunc);
-                Controls.Find("MainBox", true)[0].MouseUp += new MouseEventHandler(MouseUpFunc);
-                Controls.Find("MainBox", true)[0].MouseMove += new MouseEventHandler(MoveForm);
             }
             catch(IndexOutOfRangeException) { }
         }
@@ -385,7 +395,8 @@ namespace GP4GUI {
 
                 if (OptionsForm != null) {
                     // TODO: Fix jittering, probably from dividing odd numbered locations
-                    OptionsForm.Location = new Point(MousePosition.X - MouseDif.X + ((Size.Width - OptionsForm.Size.Width)/2), MousePosition.Y - MouseDif.Y + 60);
+
+                    OptionsForm.Location = new Point(MousePosition.X - MouseDif.X + Spacing, MousePosition.Y - MouseDif.Y + 60);
                     OptionsForm.Update();
                 }
             }
@@ -401,6 +412,10 @@ namespace GP4GUI {
 
         public static Point MouseDif;
         public static int MouseIsDown = 0;
+
+        /// <summary> Horizontal Buffer for X-Axis-Centering of the Options Form. </summary>
+        public int Spacing;
+
         public static Form OptionsForm;
         public static Button[] DropdownMenu = new Button[2];
         public static bool LegacyFolderSelectionDialogue = true;
@@ -411,10 +426,8 @@ namespace GP4GUI {
         // Create Page For Changing Various .gp4 Options. (passcode, source pkg, etc)
         private void OptionsBtn_Click(object sender, EventArgs e)
         {
-            var Spacing = (Size.Width - OptionsForm.Size.Width)/2;
-
             OptionsForm.Visible = OptionsPageIsOpen ^= true;
-            OptionsForm.Location = new Point(Location.X + Spacing, Location.Y + 30);
+            //OptionsForm.Location = new Point(Location.X + Spacing, Location.Y + 30);
             OptionsForm.Update();
         }
 
