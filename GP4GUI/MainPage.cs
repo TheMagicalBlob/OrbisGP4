@@ -330,12 +330,16 @@ namespace GP4GUI {
         //#######################################\\
         #region Basic Form Init Functions
 
-        public void AddControlEventHandlers(Control.ControlCollection Controls, Form form) {
+        public void AddControlEventHandlers(Control.ControlCollection Controls, Form form)
+        {
+            // Set Event Handlers for Form Dragging
             form.MouseDown += new MouseEventHandler(MouseDownFunc);
             form.MouseUp += new MouseEventHandler(MouseUpFunc);
             form.MouseMove += new MouseEventHandler(MoveForm);
 
-            Spacing = (form.Size.Width - OptionsForm.Size.Width)/2; // Grab Buffer Value For OptionsPage Positioning
+            
+            // Grab Buffer Values For OptionsPage Positioning
+            OptionsFormLocation = new Point(XPadding = (form.Size.Width - OptionsForm.Size.Width)/2, YPadding = OutputWindow.Location.Y + 15);
 
             foreach(Control Item in Controls) {
 
@@ -349,11 +353,6 @@ namespace GP4GUI {
 
                     }
                 }
-
-/*                // So You Can Drag Select The Text Lol
-                if(!Item.Name.Contains("TextBox") && !Item.Name.Contains("OutputWindow"))
-                    Item.MouseMove += new MouseEventHandler(MoveForm);
-*/
 
                 // So You Can Drag Select The Text Lol
                 if(Item.GetType() != typeof(TextBox) && Item.GetType() != typeof(RichTextBox))
@@ -394,9 +393,7 @@ namespace GP4GUI {
                 ActiveForm.Update();
 
                 if (OptionsForm != null) {
-                    // TODO: Fix jittering, probably from dividing odd numbered locations
-
-                    OptionsForm.Location = new Point(MousePosition.X - MouseDif.X + Spacing, MousePosition.Y - MouseDif.Y + 60);
+                    OptionsForm.Location = new Point(MousePosition.X - MouseDif.X + OptionsFormLocation.X, MousePosition.Y - MouseDif.Y + OptionsFormLocation.Y);
                     OptionsForm.Update();
                 }
             }
@@ -411,10 +408,11 @@ namespace GP4GUI {
         #region Main Form Functions & Variables
 
         public static Point MouseDif;
-        public static int MouseIsDown = 0;
+        public static byte MouseIsDown = 0;
 
         /// <summary> Horizontal Buffer for X-Axis-Centering of the Options Form. </summary>
-        public int Spacing;
+        public int XPadding, YPadding;
+        public static Point OptionsFormLocation;
 
         public static Form OptionsForm;
         public static Button[] DropdownMenu = new Button[2];
@@ -427,7 +425,8 @@ namespace GP4GUI {
         private void OptionsBtn_Click(object sender, EventArgs e)
         {
             OptionsForm.Visible = OptionsPageIsOpen ^= true;
-            //OptionsForm.Location = new Point(Location.X + Spacing, Location.Y + 30);
+
+            OptionsForm.Location = new Point(Location.X + XPadding, Location.Y + YPadding);
             OptionsForm.Update();
         }
 

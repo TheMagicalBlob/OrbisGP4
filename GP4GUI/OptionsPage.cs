@@ -57,7 +57,6 @@ namespace GP4GUI
             this.KeystoneToggleBox.TabIndex = 5;
             this.KeystoneToggleBox.Text = "Ignore Keystone";
             this.KeystoneToggleBox.UseVisualStyleBackColor = true;
-            this.KeystoneToggleBox.CheckedChanged += new System.EventHandler(this.KeystoneToggleBox_CheckedChanged);
             // 
             // Title
             // 
@@ -95,7 +94,6 @@ namespace GP4GUI
             this.VerboseOutputBox.TabIndex = 6;
             this.VerboseOutputBox.Text = "Verbose Output";
             this.VerboseOutputBox.UseVisualStyleBackColor = true;
-            this.VerboseOutputBox.CheckedChanged += new System.EventHandler(this.LimitedOutputBox_CheckedChanged);
             // 
             // OutputPathBtn
             // 
@@ -161,7 +159,6 @@ namespace GP4GUI
             this.AbsolutePathCheckBox.TabIndex = 12;
             this.AbsolutePathCheckBox.Text = "Use Absolute Path Names";
             this.AbsolutePathCheckBox.UseVisualStyleBackColor = true;
-            this.AbsolutePathCheckBox.CheckedChanged += new System.EventHandler(this.AbsolutePathCheckBox_CheckedChanged);
             // 
             // dummy
             // 
@@ -186,7 +183,6 @@ namespace GP4GUI
             this.CustomPasscodeTextBox.Size = new System.Drawing.Size(340, 24);
             this.CustomPasscodeTextBox.TabIndex = 4;
             this.CustomPasscodeTextBox.Text = "Add Custom .pkg Passcode Here (Defaults To All Zeros)";
-            this.CustomPasscodeTextBox.TextChanged += new System.EventHandler(this.CustomPasscodeTextBox_TextChanged);
             this.CustomPasscodeTextBox.LostFocus += new System.EventHandler(this.CustomPasscodeTextBox_FocusChanged);
             // 
             // FilterTextBox
@@ -211,7 +207,6 @@ namespace GP4GUI
             this.BasePackagePathTextBox.Size = new System.Drawing.Size(340, 24);
             this.BasePackagePathTextBox.TabIndex = 2;
             this.BasePackagePathTextBox.Text = "Base Game .pkg Path... (For Game Patches)";
-            this.BasePackagePathTextBox.TextChanged += new System.EventHandler(this.BasePackagePathTextBox_TextChanged);
             // 
             // OutputPathTextBox
             // 
@@ -223,7 +218,6 @@ namespace GP4GUI
             this.OutputPathTextBox.Size = new System.Drawing.Size(340, 24);
             this.OutputPathTextBox.TabIndex = 1;
             this.OutputPathTextBox.Text = "Add A Custom .gp4 Output Directory Here...";
-            this.OutputPathTextBox.TextChanged += new System.EventHandler(this.OutputPathTextBox_TextChanged);
             // 
             // OptionsPage
             // 
@@ -300,11 +294,11 @@ namespace GP4GUI
         //--     Options-Related Functions     --\\
         //#######################################\\
         #region Options Related Functions
-        private void KeystoneToggleBox_CheckedChanged(object sender, EventArgs e) => gp4.Keystone = ((CheckBox)sender).Checked;
-        private void LimitedOutputBox_CheckedChanged(object sender, EventArgs e) => gp4.VerboseLogging = ((CheckBox)sender).Checked;
-        private void AbsolutePathCheckBox_CheckedChanged(object sender, EventArgs e) => gp4.AbsoluteFilePaths = ((CheckBox)sender).Checked;
-        private void OutputPathTextBox_TextChanged(object sender, EventArgs e)  => Gp4OutputDirectory = ((Control)sender).Text;
-        private void CustomPasscodeTextBox_TextChanged(object sender, EventArgs e) => gp4.Passcode = ((Control)sender).Text;
+        //private void KeystoneToggleBox_CheckedChanged(object sender, EventArgs e) => gp4.Keystone = ((CheckBox)sender).Checked;
+        //private void LimitedOutputBox_CheckedChanged(object sender, EventArgs e) => gp4.VerboseLogging = ((CheckBox)sender).Checked;
+        //private void AbsolutePathCheckBox_CheckedChanged(object sender, EventArgs e) => gp4.AbsoluteFilePaths = ((CheckBox)sender).Checked;
+        //private void OutputPathTextBox_TextChanged(object sender, EventArgs e)  => Gp4OutputDirectory = ((Control)sender).Text;
+        //private void CustomPasscodeTextBox_TextChanged(object sender, EventArgs e) => gp4.Passcode = ((Control)sender).Text;
 
         private void OutputPathBtn_Click(object sender, EventArgs e) {
             using(var Browser = new FolderBrowserDialog())
@@ -312,7 +306,7 @@ namespace GP4GUI
                     OutputPathTextBox.Text = Browser.SelectedPath;
         }
 
-        private void BasePackagePathTextBox_TextChanged(object sender, EventArgs e) => gp4.BasePackagePath = ((Control)sender).Text;
+        //private void BasePackagePathTextBox_TextChanged(object sender, EventArgs e) => gp4.BasePackagePath = ((Control)sender).Text;
 
         private void BasePackagePathBtn_Click(object sender, EventArgs e) {
             using(var Browser = new OpenFileDialog())
@@ -337,17 +331,10 @@ namespace GP4GUI
             Browser.Dispose();
         }
 
-        /* <summary>
-        /// Remove Trailing Seperators To Avoid Improperly Counting Filtered Items In The Method Below.
-        /// </summary>
-        private void FilterTextBox_FocusLeft(object control, EventArgs _) {
-            var textbox = ((TextBox)control);
-            if (!textbox.IsDefault)
-                textbox.Text = textbox.Text.TrimEnd(',', ';');
-        }*/
+
 
         /// <summary>
-        /// Parse Individual Items From Filter Text Box, And Add Them To The Blacklist
+        /// Parse Individual Items From Filter Text Box, And Add Them To The Blacklist.
         /// </summary>
         private void FilterTextBox_TextChanged(object sender, EventArgs _) { // tst : eboot.bin, keystone, discname.txt; param.sfo
             TextBox Sender;
