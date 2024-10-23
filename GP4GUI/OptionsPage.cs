@@ -1,8 +1,8 @@
 ﻿using System;
-using System.ComponentModel;
-using System.Drawing;
 using System.Text;
+using System.Drawing;
 using System.Windows.Forms;
+using System.ComponentModel;
 using static GP4GUI.Common;
 
 
@@ -10,14 +10,16 @@ namespace GP4GUI
 {
     public partial class OptionsPage : Form
     {
-        public OptionsPage(Point LastPos) {
+        public OptionsPage() {
             InitializeComponent();
             PostInit(); // Set Event Handlers and Other Form-Related Crap
             
             Paint += PaintBorder;
             TinyVersionLabel.Text = Version; // Set Version Label
 
-            CloseBtn.Click += new EventHandler((sender, e) => Visible = OptionsPageIsOpen = false);
+            CloseBtn.Click += new EventHandler((sender, e) =>
+                Azem.Visible = OptionsPageIsOpen = false
+            );
         }
 
 
@@ -252,18 +254,16 @@ namespace GP4GUI
         }
 
         /// <summary>
-        /// Post-InitializeComponent Configuration.<br/>
+        /// Post-InitializeComponent Configuration. (// TODO: Description)
         /// </summary>
         public void PostInit()
         {
-            Azem = this;
-            OptionsFormLocation = new Point((Venat.Size.Width - Azem.Size.Width)/2, Location.Y + 120);
-
+            OptionsFormLocation = new Point((Venat.Size.Width - Size.Width)/2, Location.Y + 120);
 
             // Set Event Handlers for Form Dragging
             MouseDown += new MouseEventHandler((sender, e) => {
-                    MouseDif = new Point(MousePosition.X - Azem.Location.X, MousePosition.Y - Azem.Location.Y);
-                    MouseIsDown = true;
+                MouseDif = new Point(MousePosition.X - Venat.Location.X, MousePosition.Y - Venat.Location.Y);
+                MouseIsDown = true;
             });
             MouseUp += new MouseEventHandler((sender, e) => 
                 MouseIsDown = false
@@ -288,7 +288,7 @@ namespace GP4GUI
                             Venat.Location = new Point(MousePosition.X - MouseDif.X, MousePosition.Y - MouseDif.Y);
                             Venat.Update();
 
-                            Azem.Location = new Point(MousePosition.X - MouseDif.X + OptionsFormLocation.X, MousePosition.Y - MouseDif.Y + OptionsFormLocation.Y);
+                            Location = new Point(MousePosition.X - MouseDif.X + OptionsFormLocation.X, MousePosition.Y - MouseDif.Y + OptionsFormLocation.Y);
                             Update();
                         }
                     });
@@ -307,24 +307,6 @@ namespace GP4GUI
         #endregion
         //======================================\\
 
-
-        //##########################\\
-        //--     .gp4 Options     --\\
-        //##########################\\
-        #region [.gp4 Options]
-        public static bool
-            Verbose,
-            Keystone,
-            UseAbsolutePaths
-        ;
-        public static string
-            GP4OutputDirectory,
-            BasePackagePath,
-            Passcode
-        ;
-        public static string[] BlacklistedItems;
-        #endregion
-        //==========================\\
 
 
 

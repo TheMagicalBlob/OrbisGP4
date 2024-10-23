@@ -12,24 +12,12 @@ namespace GP4GUI {
 
             // Initialize and Decorate Form, Then Set Event Handlers
             InitializeComponent();
-            CreateDropdownMenu();
+            CreateBrowseModeDropdownMenu();
             PostInit();
             Paint += PaintBorder;
             
-            MinimizeBtn.Click += new EventHandler((sender, e) => ActiveForm.WindowState = FormWindowState.Minimized);
-            MinimizeBtn.MouseEnter += new EventHandler((sender, e) => ((Control)sender).ForeColor = Color.FromArgb(90, 100, 255));
-            MinimizeBtn.MouseLeave += new EventHandler((sender, e) => ((Control)sender).ForeColor = Color.FromArgb(0, 0, 0));
-
-            ExitBtn.Click += new EventHandler((sender, e) => Environment.Exit(0));
-            ExitBtn.MouseEnter += new EventHandler((sender, e) => ((Control)sender).ForeColor = Color.FromArgb(230, 100, 100));
-            ExitBtn.MouseLeave += new EventHandler((sender, e) => ((Control)sender).ForeColor = Color.FromArgb(0, 0, 0));
-
-
-            OptionsPageIsOpen = false;
             Venat = this;
-            Azem = new OptionsPage(OutputWindow.Location);
-
-            //this.AddOwnedForm(Azem);
+            Azem = new OptionsPage();
 
             // Set Output Box Ptr
             _OutputWindow = OutputWindow;
@@ -161,7 +149,7 @@ namespace GP4GUI {
             this.CreateBtn.ForeColor = System.Drawing.SystemColors.WindowText;
             this.CreateBtn.Location = new System.Drawing.Point(373, 62);
             this.CreateBtn.Name = "CreateBtn";
-            this.CreateBtn.Size = new System.Drawing.Size(75, 23);
+            this.CreateBtn.Size = new System.Drawing.Size(75, 24);
             this.CreateBtn.TabIndex = 3;
             this.CreateBtn.Text = "Build .gp4";
             this.CreateBtn.UseVisualStyleBackColor = false;
@@ -212,9 +200,9 @@ namespace GP4GUI {
             this.BrowseBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.BrowseBtn.Font = new System.Drawing.Font("Gadugi", 8.25F, System.Drawing.FontStyle.Bold);
             this.BrowseBtn.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.BrowseBtn.Location = new System.Drawing.Point(296, 62);
+            this.BrowseBtn.Location = new System.Drawing.Point(283, 62);
             this.BrowseBtn.Name = "BrowseBtn";
-            this.BrowseBtn.Size = new System.Drawing.Size(65, 23);
+            this.BrowseBtn.Size = new System.Drawing.Size(78, 24);
             this.BrowseBtn.TabIndex = 7;
             this.BrowseBtn.Text = "Browse...";
             this.BrowseBtn.UseVisualStyleBackColor = false;
@@ -270,7 +258,7 @@ namespace GP4GUI {
             this.SwapBrowseModeBtn.ForeColor = System.Drawing.SystemColors.WindowText;
             this.SwapBrowseModeBtn.Location = new System.Drawing.Point(360, 62);
             this.SwapBrowseModeBtn.Name = "SwapBrowseModeBtn";
-            this.SwapBrowseModeBtn.Size = new System.Drawing.Size(11, 23);
+            this.SwapBrowseModeBtn.Size = new System.Drawing.Size(12, 24);
             this.SwapBrowseModeBtn.TabIndex = 16;
             this.SwapBrowseModeBtn.UseVisualStyleBackColor = false;
             this.SwapBrowseModeBtn.Click += new System.EventHandler(this.SwapBrowseModeBtn_Click);
@@ -334,19 +322,30 @@ namespace GP4GUI {
         //#######################################\\
         #region Basic Form Init Functions
 
+        /// <summary>
+        /// Post-InitializeComponent Configuration. (// TODO: Description)
+        /// </summary>
         public void PostInit()
         {
             Venat = this;
 
+            MinimizeBtn.Click += new EventHandler((sender, e) => ActiveForm.WindowState = FormWindowState.Minimized);
+            MinimizeBtn.MouseEnter += new EventHandler((sender, e) => ((Control)sender).ForeColor = Color.FromArgb(90, 100, 255));
+            MinimizeBtn.MouseLeave += new EventHandler((sender, e) => ((Control)sender).ForeColor = Color.FromArgb(0, 0, 0));
+
+            ExitBtn.Click += new EventHandler((sender, e) => Environment.Exit(0));
+            ExitBtn.MouseEnter += new EventHandler((sender, e) => ((Control)sender).ForeColor = Color.FromArgb(230, 100, 100));
+            ExitBtn.MouseLeave += new EventHandler((sender, e) => ((Control)sender).ForeColor = Color.FromArgb(0, 0, 0));
+
+
             // Set Event Handlers for Form Dragging
             MouseDown += new MouseEventHandler((sender, e) => {
-                    MouseDif = new Point(MousePosition.X - Venat.Location.X, MousePosition.Y - Venat.Location.Y);
-                    MouseIsDown = true;
-                    Azem?.BringToFront();
+                MouseDif = new Point(MousePosition.X - Venat.Location.X, MousePosition.Y - Venat.Location.Y);
+                MouseIsDown = true;
             });
             MouseUp += new MouseEventHandler((sender, e) => {
                 MouseIsDown = false;
-                Azem?.BringToFront();
+                Azem.BringToFront();
             });
             MouseMove += new MouseEventHandler((sender, e) => {
                 if(MouseIsDown) {
@@ -381,14 +380,15 @@ namespace GP4GUI {
                 Item.MouseDown += new MouseEventHandler((sender, e) => {
                     MouseDif = new Point(MousePosition.X - Venat.Location.X, MousePosition.Y - Venat.Location.Y);
                     MouseIsDown = true;
-                    Azem?.BringToFront();
                 });
                 Item.MouseUp   += new MouseEventHandler((sender, e) => {
                     MouseIsDown = false;
-                    Azem?.BringToFront();
+                    Azem.BringToFront();
                 });
             }
         }
+
+        
 
         #endregion
         //=======================================\\
@@ -407,9 +407,8 @@ namespace GP4GUI {
 
         private void ToggleOptionsWindowVisibility(object sender, EventArgs e)
         {
-            Azem.Location = OptionsFormLocation;
             Azem.Visible = OptionsPageIsOpen ^= true;
-            Azem.Location = OptionsFormLocation;
+		    Azem.Location = new Point(Location.X + ((Venat.Size.Width - Azem.Size.Width)/2), Location.Y + 120);
         }
 
         
@@ -448,27 +447,27 @@ namespace GP4GUI {
 
         private void SwapBrowseModeBtn_Click(object _, EventArgs __) => DropdownMenu[1].Visible = DropdownMenu[0].Visible ^= true;
 
-        private void CreateDropdownMenu() {
+        private void CreateBrowseModeDropdownMenu() {
             var extalignment = BrowseBtn.Size.Height;
             var alignment = BrowseBtn.Location;
 
             DropdownMenu[0] = new Button() {
-                Font = new Font("Gadugi", 7F),
+                Font = new Font("Gadugi", 7.25f, FontStyle.Bold),
                 Text = "Directory Tree*",
                 BackColor = AppColour,
                 ForeColor = Color.Black,
                 FlatStyle = FlatStyle.Flat,
                 Location = new Point(alignment.X, alignment.Y + extalignment),
-                Size = new Size(85, 25)
+                Size = new Size(90, 25)
             };
             DropdownMenu[1] = new Button() {
-                Font = new Font("Gadugi", 7F),
+                Font = new Font("Gadugi", 7.25F, FontStyle.Bold),
                 Text = "File Browser",
                 BackColor = AppColour,
                 ForeColor = Color.Black,
                 FlatStyle = FlatStyle.Flat,
                 Location = new Point(alignment.X, alignment.Y + extalignment + DropdownMenu[0].Size.Height + 1),
-                Size = new Size(85, 25)
+                Size = new Size(90, 25)
             };
 
             // Create and Assign Event Handlers
@@ -534,11 +533,12 @@ namespace GP4GUI {
 
 
             //! Assign An Output Directory For The .gp4 If None Has Been Set Yet.
-            if (Gp4OutputDirectory == null)
+            if (GP4OutputDirectory == null)
                 if (!gp4.AbsoluteFilePaths)
-                    Gp4OutputDirectory = gp4.GamedataFolder;
+                    GP4OutputDirectory = gp4.GamedataFolder;
                 else
-                    Gp4OutputDirectory = gp4.GamedataFolder.Remove(gp4.GamedataFolder.LastIndexOf('\\'));
+                    GP4OutputDirectory = gp4.GamedataFolder.Remove(gp4.GamedataFolder.LastIndexOf('\\'));
+
 
             return false;
         }
@@ -551,7 +551,7 @@ namespace GP4GUI {
             if (ApplyDefaults() && ApplyUserOptions())
 
             // Begin .gp4 Creation is all's well
-            gp4.CreateGP4(Gp4OutputDirectory, true);
+            gp4.CreateGP4(GP4OutputDirectory, true);
         }
         #endregion
         //===============================================\\
