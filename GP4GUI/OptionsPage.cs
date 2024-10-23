@@ -17,7 +17,7 @@ namespace GP4GUI
             Paint += PaintBorder;
             TinyVersionLabel.Text = Version; // Set Version Label
 
-            ExitBtn.Click += new EventHandler(ToggleOptionsWindowVisibility);
+            CloseBtn.Click += new EventHandler((sender, e) => Visible = OptionsPageIsOpen = false);
         }
 
 
@@ -34,7 +34,7 @@ namespace GP4GUI
         private void InitializeComponent() {
             this.KeystoneToggleBox = new System.Windows.Forms.CheckBox();
             this.Title = new System.Windows.Forms.Label();
-            this.ExitBtn = new System.Windows.Forms.Button();
+            this.CloseBtn = new System.Windows.Forms.Button();
             this.VerboseOutputBox = new System.Windows.Forms.CheckBox();
             this.OutputPathBtn = new System.Windows.Forms.Button();
             this.BasePackagePathBtn = new System.Windows.Forms.Button();
@@ -71,19 +71,19 @@ namespace GP4GUI
             this.Title.TabIndex = 0;
             this.Title.Text = "Options";
             // 
-            // ExitBtn
+            // CloseBtn
             // 
-            this.ExitBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(125)))), ((int)(((byte)(183)))), ((int)(((byte)(245)))));
-            this.ExitBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.ExitBtn.Font = new System.Drawing.Font("Gadugi", 8.25F, System.Drawing.FontStyle.Bold);
-            this.ExitBtn.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.ExitBtn.Location = new System.Drawing.Point(391, 2);
-            this.ExitBtn.Name = "ExitBtn";
-            this.ExitBtn.Size = new System.Drawing.Size(22, 22);
-            this.ExitBtn.TabIndex = 7;
-            this.ExitBtn.Text = "X";
-            this.ExitBtn.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.ExitBtn.UseVisualStyleBackColor = false;
+            this.CloseBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(125)))), ((int)(((byte)(183)))), ((int)(((byte)(245)))));
+            this.CloseBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.CloseBtn.Font = new System.Drawing.Font("Gadugi", 8.25F, System.Drawing.FontStyle.Bold);
+            this.CloseBtn.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.CloseBtn.Location = new System.Drawing.Point(391, 2);
+            this.CloseBtn.Name = "CloseBtn";
+            this.CloseBtn.Size = new System.Drawing.Size(22, 22);
+            this.CloseBtn.TabIndex = 7;
+            this.CloseBtn.Text = "X";
+            this.CloseBtn.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.CloseBtn.UseVisualStyleBackColor = false;
             // 
             // VerboseOutputBox
             // 
@@ -237,7 +237,7 @@ namespace GP4GUI
             this.Controls.Add(this.FilterTextBox);
             this.Controls.Add(this.BasePackagePathTextBox);
             this.Controls.Add(this.VerboseOutputBox);
-            this.Controls.Add(this.ExitBtn);
+            this.Controls.Add(this.CloseBtn);
             this.Controls.Add(this.Title);
             this.Controls.Add(this.OutputPathTextBox);
             this.Controls.Add(this.KeystoneToggleBox);
@@ -252,25 +252,22 @@ namespace GP4GUI
         }
 
         /// <summary>
-        /// Post-InitializeComponent Configuration (Event Handlers, Form-Related Variables)
+        /// Post-InitializeComponent Configuration.<br/>
         /// </summary>
-        /// <param name="form"> The Form Being Initialized. </param>
         public void PostInit()
         {
             Azem = this;
-            OptionsFormLocation = new Point((Venat.Size.Width - Size.Width)/2, Location.Y + 120);
+            OptionsFormLocation = new Point((Venat.Size.Width - Azem.Size.Width)/2, Location.Y + 120);
 
 
             // Set Event Handlers for Form Dragging
             MouseDown += new MouseEventHandler((sender, e) => {
-                    MouseDif = new Point(MousePosition.X - Venat.Location.X, MousePosition.Y - Venat.Location.Y);
+                    MouseDif = new Point(MousePosition.X - Azem.Location.X, MousePosition.Y - Azem.Location.Y);
                     MouseIsDown = true;
-                    BringToFront();
             });
-            MouseUp += new MouseEventHandler((sender, e) => {
-                MouseIsDown = false;
-                BringToFront();
-            });
+            MouseUp += new MouseEventHandler((sender, e) => 
+                MouseIsDown = false
+            );
             MouseMove += new MouseEventHandler((sender, e) => {
                 if(MouseIsDown) {
                     Venat.Location = new Point(MousePosition.X - MouseDif.X, MousePosition.Y - MouseDif.Y);
@@ -282,8 +279,8 @@ namespace GP4GUI
             });
 
             
-            // Grab Buffer Values For OptionsPage Positioning
             foreach(Control Item in Controls) {
+
                 // Avoid Applying MoveForm EventHandler to Text Containters (to retain the ability to drag-select text)
                 if (Item.GetType() != typeof(TextBox) && Item.GetType() != typeof(RichTextBox)) {
                     Item.MouseMove += new MouseEventHandler((sender, e) => {
@@ -291,7 +288,7 @@ namespace GP4GUI
                             Venat.Location = new Point(MousePosition.X - MouseDif.X, MousePosition.Y - MouseDif.Y);
                             Venat.Update();
 
-                            Location = new Point(MousePosition.X - MouseDif.X + OptionsFormLocation.X, MousePosition.Y - MouseDif.Y + OptionsFormLocation.Y);
+                            Azem.Location = new Point(MousePosition.X - MouseDif.X + OptionsFormLocation.X, MousePosition.Y - MouseDif.Y + OptionsFormLocation.Y);
                             Update();
                         }
                     });
@@ -300,12 +297,10 @@ namespace GP4GUI
                 Item.MouseDown += new MouseEventHandler((sender, e) => {
                     MouseDif = new Point(MousePosition.X - Venat.Location.X, MousePosition.Y - Venat.Location.Y);
                     MouseIsDown = true;
-                    BringToFront();
                 });
-                Item.MouseUp   += new MouseEventHandler((sender, e) => {
-                    MouseIsDown = false;
-                    BringToFront();
-                });
+                Item.MouseUp   += new MouseEventHandler((sender, e) => 
+                    MouseIsDown = false
+                );
             }
         }
 
@@ -437,7 +432,7 @@ namespace GP4GUI
         private Label TinyVersionLabel;
         private Label Title;
         private Button dummy; // I forget why this is here
-        private Button ExitBtn;
+        private Button CloseBtn;
         private Button OutputPathBtn;
         private Button BasePackagePathBtn;
         private Button FilterBrowseBtn;

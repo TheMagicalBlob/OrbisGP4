@@ -51,13 +51,6 @@ namespace GP4GUI {
         public static readonly Font DefaultTextFont = new Font("Segoe UI Semibold", 9f, FontStyle.Italic); // Gadugi, 8.25pt, style=Bold, Italic
 
 
-        // Show/Hide Options Window
-        public static void ToggleOptionsWindowVisibility(object sender, EventArgs e) {
-            Azem.Visible = OptionsPageIsOpen ^= true;
-
-            Azem.Location = OptionsFormLocation;
-            Azem.Update();
-        }
 
 
         // Draw a Thin Border for the Control On-Paint \\

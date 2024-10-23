@@ -14,14 +14,22 @@ namespace GP4GUI {
             InitializeComponent();
             CreateDropdownMenu();
             PostInit();
-
             Paint += PaintBorder;
-
-            this.AddOwnedForm(new OptionsPage(OutputWindow.Location));
-            OptionsPageIsOpen = false;
-            Azem.Visible = false;
-            Venat = this;
             
+            MinimizeBtn.Click += new EventHandler((sender, e) => ActiveForm.WindowState = FormWindowState.Minimized);
+            MinimizeBtn.MouseEnter += new EventHandler((sender, e) => ((Control)sender).ForeColor = Color.FromArgb(90, 100, 255));
+            MinimizeBtn.MouseLeave += new EventHandler((sender, e) => ((Control)sender).ForeColor = Color.FromArgb(0, 0, 0));
+
+            ExitBtn.Click += new EventHandler((sender, e) => Environment.Exit(0));
+            ExitBtn.MouseEnter += new EventHandler((sender, e) => ((Control)sender).ForeColor = Color.FromArgb(230, 100, 100));
+            ExitBtn.MouseLeave += new EventHandler((sender, e) => ((Control)sender).ForeColor = Color.FromArgb(0, 0, 0));
+
+
+            OptionsPageIsOpen = false;
+            Venat = this;
+            Azem = new OptionsPage(OutputWindow.Location);
+
+            //this.AddOwnedForm(Azem);
 
             // Set Output Box Ptr
             _OutputWindow = OutputWindow;
@@ -117,8 +125,6 @@ namespace GP4GUI {
             System.Diagnostics.Process.Start(newgp4path);
 #endif
         }
-
-
 
 
         //##########################################\\
@@ -227,7 +233,7 @@ namespace GP4GUI {
             this.OptionsBtn.TabIndex = 9;
             this.OptionsBtn.Text = "Tool Options";
             this.OptionsBtn.UseVisualStyleBackColor = false;
-            this.OptionsBtn.Click += new System.EventHandler(ToggleOptionsWindowVisibility);
+            this.OptionsBtn.Click += new System.EventHandler(this.ToggleOptionsWindowVisibility);
             // 
             // ClearLogBtn
             // 
@@ -382,16 +388,6 @@ namespace GP4GUI {
                     Azem?.BringToFront();
                 });
             }
-
-            try {
-                Controls.Find("MinimizeBtn", true)[0].Click += new EventHandler((sender, e) =>  ActiveForm.WindowState = FormWindowState.Minimized);
-                Controls.Find("MinimizeBtn", true)[0].MouseEnter += new EventHandler((sender, e) => ((Control)sender).ForeColor = Color.FromArgb(90, 100, 255));
-                Controls.Find("MinimizeBtn", true)[0].MouseLeave += new EventHandler((sender, e) => ((Control)sender).ForeColor = Color.FromArgb(0, 0, 0));
-                Controls.Find("ExitBtn", true)[0].Click += new EventHandler((sender, e) => Environment.Exit(0));
-                Controls.Find("ExitBtn", true)[0].MouseEnter += new EventHandler((sender, e) => ((Control)sender).ForeColor = Color.FromArgb(230, 100, 100));
-                Controls.Find("ExitBtn", true)[0].MouseLeave += new EventHandler((sender, e) => ((Control)sender).ForeColor = Color.FromArgb(0, 0, 0));
-            }
-            catch(IndexOutOfRangeException msg) { DLog($"!! ERROR [{msg.Source}]: You Deleted or Renamed The Minimize/Exit Button(s), Fucktard. (Message Below)\nException: {msg.Message}"); }
         }
 
         #endregion
@@ -408,6 +404,13 @@ namespace GP4GUI {
 
         private void ClearLogBtn_Click(object sender = null, EventArgs e = null) => OutputWindow.Clear();
 
+
+        private void ToggleOptionsWindowVisibility(object sender, EventArgs e)
+        {
+            Azem.Location = OptionsFormLocation;
+            Azem.Visible = OptionsPageIsOpen ^= true;
+            Azem.Location = OptionsFormLocation;
+        }
 
         
         // Use The Dummy File Method To Open A Folder.
@@ -427,7 +430,6 @@ namespace GP4GUI {
                     if (FBrowser.ShowDialog() == DialogResult.OK)
                         GamedataFolderPathBox.Text = FBrowser.SelectedPath;
             }
-
             // Use The Newer "Hackey" Method
             else {
                 var Browser = new OpenFileDialog() {
@@ -442,26 +444,6 @@ namespace GP4GUI {
                     GamedataFolderPathBox.Text = Browser.FileName.Remove(Browser.FileName.LastIndexOf('\\'));
             }
 
-        }
-        
-        private void MouseUpFunc(object sender, MouseEventArgs e) {
-            MouseIsDown = false;
-            Azem?.BringToFront();
-        }
-        private void MouseDownFunc(object sender, MouseEventArgs e) {
-            MouseDif = new Point(MousePosition.X - ActiveForm.Location.X, MousePosition.Y - ActiveForm.Location.Y);
-            MouseIsDown = true;
-        }
-        private void MoveForm(object sender, MouseEventArgs e) {
-            if(MouseIsDown) {
-                ActiveForm.Location = new Point(MousePosition.X - MouseDif.X, MousePosition.Y - MouseDif.Y);
-                ActiveForm.Update();
-
-                if (Azem != null) {
-                    Azem.Location = new Point(MousePosition.X - MouseDif.X + OptionsFormLocation.X, MousePosition.Y - MouseDif.Y + OptionsFormLocation.Y);
-                    Azem.Update();
-                }
-            }
         }
 
         private void SwapBrowseModeBtn_Click(object _, EventArgs __) => DropdownMenu[1].Visible = DropdownMenu[0].Visible ^= true;
