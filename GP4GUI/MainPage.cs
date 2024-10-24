@@ -12,8 +12,8 @@ namespace GP4GUI {
 
             // Initialize and Decorate Form, Then Set Event Handlers
             InitializeComponent();
+            PostInitFormLogic();
             CreateBrowseModeDropdownMenu();
-            PostInit();
             Paint += PaintBorder;
             
             Venat = this;
@@ -325,10 +325,8 @@ namespace GP4GUI {
         /// <summary>
         /// Post-InitializeComponent Configuration. (// TODO: Description)
         /// </summary>
-        public void PostInit()
+        public void PostInitFormLogic()
         {
-            Venat = this;
-
             MinimizeBtn.Click += new EventHandler((sender, e) => ActiveForm.WindowState = FormWindowState.Minimized);
             MinimizeBtn.MouseEnter += new EventHandler((sender, e) => ((Control)sender).ForeColor = Color.FromArgb(90, 100, 255));
             MinimizeBtn.MouseLeave += new EventHandler((sender, e) => ((Control)sender).ForeColor = Color.FromArgb(0, 0, 0));
@@ -340,8 +338,9 @@ namespace GP4GUI {
 
             // Set Event Handlers for Form Dragging
             MouseDown += new MouseEventHandler((sender, e) => {
-                MouseDif = new Point(MousePosition.X - Venat.Location.X, MousePosition.Y - Venat.Location.Y);
+                MouseDif = new Point(MousePosition.X - Location.X, MousePosition.Y - Location.Y);
                 MouseIsDown = true;
+                DropdownMenu[1].Visible = DropdownMenu[0].Visible = false;
             });
             MouseUp += new MouseEventHandler((sender, e) => {
                 MouseIsDown = false;
@@ -349,8 +348,8 @@ namespace GP4GUI {
             });
             MouseMove += new MouseEventHandler((sender, e) => {
                 if(MouseIsDown) {
-                    Venat.Location = new Point(MousePosition.X - MouseDif.X, MousePosition.Y - MouseDif.Y);
-                    Venat.Update();
+                    Location = new Point(MousePosition.X - MouseDif.X, MousePosition.Y - MouseDif.Y);
+                    Update();
 
                     if (Azem != null) {
                         Azem.Location = new Point(MousePosition.X - MouseDif.X + OptionsFormLocation.X, MousePosition.Y - MouseDif.Y + OptionsFormLocation.Y);
@@ -380,6 +379,7 @@ namespace GP4GUI {
                 Item.MouseDown += new MouseEventHandler((sender, e) => {
                     MouseDif = new Point(MousePosition.X - Venat.Location.X, MousePosition.Y - Venat.Location.Y);
                     MouseIsDown = true;
+                    DropdownMenu[1].Visible = DropdownMenu[0].Visible = false;
                 });
                 Item.MouseUp   += new MouseEventHandler((sender, e) => {
                     MouseIsDown = false;
@@ -409,6 +409,8 @@ namespace GP4GUI {
         {
             Azem.Visible = OptionsPageIsOpen ^= true;
 		    Azem.Location = new Point(Location.X + ((Venat.Size.Width - Azem.Size.Width)/2), Location.Y + 120);
+
+            DropdownMenu[1].Visible = DropdownMenu[0].Visible = false;
         }
 
         
@@ -487,6 +489,8 @@ namespace GP4GUI {
                     LegacyFolderSelectionDialogue ^= true;
                 }
             };
+
+
 
             //DropdownMenu[0].LostFocus += (still, hurt) =>
             //    DropdownMenu[1].Visible = DropdownMenu[0].Visible ^= true;

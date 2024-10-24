@@ -29,15 +29,17 @@ namespace GP4GUI {
             try { Debug.WriteLine($"#libgp4: {str}");
             }   
             catch (Exception){}
-
-            try { Console.WriteLine($"#libgp4: {str}");
-            }
-            catch (Exception){}
 #endif
         }
         #endregion
 
 
+
+        //###################################\\
+        //--     Variable Declarations     --\\
+        //###################################\\
+        #region [Variable Declarations]
+        public static Form Azem, Venat;
         public static bool OptionsPageIsOpen = false;
         public static GP4Creator gp4;
         public static RichTextBox _OutputWindow;
@@ -45,27 +47,24 @@ namespace GP4GUI {
         
         public static Point MouseDif;
         public static bool MouseIsDown = false;
-        public static Form Azem, Venat;
         public static Point OptionsFormLocation;
 
 
-        // Application Aesthetics-Related Variables & Functions
+        //#- Look/Feel-Related Variables & Functions
         # region
         public static Color AppColour = Color.FromArgb(125, 183, 245);
         public static Color AppColourLight = Color.FromArgb(210, 240, 250);
 
-        public static Pen pen = new Pen(AppColourLight);
+        public static Pen pen = new Pen(AppColourLight); // Colouring for Border Drawing
 
         public static readonly Font MainFont        = new Font("Gadugi", 8.25f, FontStyle.Bold); // Gadugi, 8.25pt, style=Bold, Italic
         public static readonly Font TextFont        = new Font("Segoe UI Semibold", 9f); // Segoe UI Semibold, 9pt, style=Bold
         public static readonly Font DefaultTextFont = new Font("Segoe UI Semibold", 9f, FontStyle.Italic); // Gadugi, 8.25pt, style=Bold, Italic
+        #endregion
 
-        
 
-        //##########################\\
-        //--     .gp4 Options     --\\
-        //##########################\\
-        #region [.gp4 Options]
+        //#- .gp4 Options 
+        #region
         public static bool
             Verbose,
             Keystone,
@@ -78,7 +77,8 @@ namespace GP4GUI {
         ;
         public static string[] BlacklistedItems;
         #endregion
-        //==========================\\
+        #endregion
+        //===================================\\
 
 
 
@@ -97,8 +97,6 @@ namespace GP4GUI {
             e.Graphics.Clear(Color.FromArgb(20, 20, 20));
             e.Graphics.DrawLines(pen, Border);
         }
-        #endregion
-        //====\\
     }
 
 

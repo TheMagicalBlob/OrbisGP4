@@ -12,10 +12,12 @@ namespace GP4GUI
     {
         public OptionsPage() {
             InitializeComponent();
-            PostInit(); // Set Event Handlers and Other Form-Related Crap
+            PostInitFormLogic(); // Set Event Handlers and Other Form-Related Crap
             
             Paint += PaintBorder;
             TinyVersionLabel.Text = Version; // Set Version Label
+
+            OptionsFormLocation = new Point((Venat.Size.Width - Size.Width)/2, Location.Y + 120);
 
             CloseBtn.Click += new EventHandler((sender, e) =>
                 Azem.Visible = OptionsPageIsOpen = false
@@ -254,16 +256,17 @@ namespace GP4GUI
         }
 
         /// <summary>
-        /// Post-InitializeComponent Configuration. (// TODO: Description)
+        /// Create And Subscriibe to Various Event Handlers for Basic Form Functionality.
         /// </summary>
-        public void PostInit()
+        public void PostInitFormLogic()
         {
-            OptionsFormLocation = new Point((Venat.Size.Width - Size.Width)/2, Location.Y + 120);
 
             // Set Event Handlers for Form Dragging
             MouseDown += new MouseEventHandler((sender, e) => {
                 MouseDif = new Point(MousePosition.X - Venat.Location.X, MousePosition.Y - Venat.Location.Y);
                 MouseIsDown = true;
+                MainForm.DropdownMenu[1].Visible = MainForm.DropdownMenu[0].Visible = false;
+
             });
             MouseUp += new MouseEventHandler((sender, e) => 
                 MouseIsDown = false
@@ -297,6 +300,7 @@ namespace GP4GUI
                 Item.MouseDown += new MouseEventHandler((sender, e) => {
                     MouseDif = new Point(MousePosition.X - Venat.Location.X, MousePosition.Y - Venat.Location.Y);
                     MouseIsDown = true;
+                    MainForm.DropdownMenu[1].Visible = MainForm.DropdownMenu[0].Visible = false;
                 });
                 Item.MouseUp   += new MouseEventHandler((sender, e) => 
                     MouseIsDown = false
@@ -390,9 +394,6 @@ namespace GP4GUI
             }
             catch (IndexOutOfRangeException ex) {
                 WLog($"\n{ex.StackTrace}");
-#if DEBUG
-                DLog($"\n{ex.StackTrace}");
-#endif
             }
         }
         
