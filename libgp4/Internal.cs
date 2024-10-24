@@ -1003,7 +1003,7 @@ namespace libgp4 {
         /// <param name="gamedataFolder"> The Folder Containing The Gamedata To Create A .gp4 Project File For. </param>
         public GP4Creator(string gamedataFolder) {
             Passcode = "00000000000000000000000000000000";
-            Keystone = true;
+            IgnoreKeystone = true;
 
             GamedataFolder = gamedataFolder;
         }
@@ -1015,7 +1015,7 @@ namespace libgp4 {
         /// </summary>
         public GP4Creator() {
             Passcode = "00000000000000000000000000000000";
-            Keystone = true;
+            IgnoreKeystone = true;
         }
 
 
@@ -1337,8 +1337,8 @@ namespace libgp4 {
                     playgo.Position = 0xE0;
                     playgo.Read(buffer, 0, 4);
                     var scenarioPointer = BitConverter.ToInt32(buffer, 0);
-                    for(short index = 0; index < scenario_count; index++, scenarioPointer += 0x20) {
-
+                    for(short index = 0; index < scenario_count; index++, scenarioPointer += 0x20)
+                    {
                         // Read Scenario Type
                         playgo.Position = scenarioPointer;
                         scenario_types[index] = (byte)playgo.ReadByte();
@@ -1398,8 +1398,8 @@ namespace libgp4 {
                     Builder = new StringBuilder();
 
                     while(buffer[byteIndex] != 0)
-                        Builder.Append(Encoding.UTF8.GetString(new byte[] { buffer[byteIndex++] })); // Just Take A Byte, You Fussy Prick
-                        // Builder.Append(Convert.ToChar(buffer[byteIndex++])); // Just Take A Byte, You Fussy Prick
+                        Builder.Append(Convert.ToChar(buffer[byteIndex++])); // Just Take A Byte, You Fussy Prick
+                        //Builder.Append(Encoding.UTF8.GetString(new byte[] { buffer[byteIndex++] })); // Just Take A Byte, You Fussy Prick
 
                     byteIndex++;
                     StringArray[index] = Builder.ToString();

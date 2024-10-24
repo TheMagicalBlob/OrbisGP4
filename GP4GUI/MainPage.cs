@@ -346,36 +346,12 @@ namespace GP4GUI {
                 MouseIsDown = false;
                 Azem.BringToFront();
             });
-            MouseMove += new MouseEventHandler((sender, e) => {
-                if(MouseIsDown) {
-                    Location = new Point(MousePosition.X - MouseDif.X, MousePosition.Y - MouseDif.Y);
-                    Update();
-
-                    if (Azem != null) {
-                        Azem.Location = new Point(MousePosition.X - MouseDif.X + OptionsFormLocation.X, MousePosition.Y - MouseDif.Y + OptionsFormLocation.Y);
-                        Azem.Update();
-                    }
-                }
-            });
+            MouseMove += new MouseEventHandler((sender, e) => DragForm());
 
             
             // Grab Buffer Values For OptionsPage Positioning
-            foreach(Control Item in Controls) {
-                // Avoid Applying MoveForm EventHandler to Text Containters (to retain the ability to drag-select text)
-                if (Item.GetType() != typeof(TextBox) && Item.GetType() != typeof(RichTextBox)) {
-                    Item.MouseMove += new MouseEventHandler((sender, e) => {
-                        if(MouseIsDown) {
-                            Venat.Location = new Point(MousePosition.X - MouseDif.X, MousePosition.Y - MouseDif.Y);
-                            Venat.Update();
-
-                            if (Azem != null) {
-                                Azem.Location = new Point(MousePosition.X - MouseDif.X + OptionsFormLocation.X, MousePosition.Y - MouseDif.Y + OptionsFormLocation.Y);
-                                Azem.Update();
-                            }
-                        }
-                    });
-                }
-
+            foreach(Control Item in Controls)
+            {
                 Item.MouseDown += new MouseEventHandler((sender, e) => {
                     MouseDif = new Point(MousePosition.X - Venat.Location.X, MousePosition.Y - Venat.Location.Y);
                     MouseIsDown = true;
@@ -385,6 +361,10 @@ namespace GP4GUI {
                     MouseIsDown = false;
                     Azem.BringToFront();
                 });
+
+                // Avoid Applying MoveForm EventHandler to Text Containters (to retain the ability to drag-select text)
+                if (Item.GetType() != typeof(TextBox) && Item.GetType() != typeof(RichTextBox))
+                Item.MouseMove += new MouseEventHandler((sender, e) => DragForm());
             }
         }
 
@@ -400,7 +380,6 @@ namespace GP4GUI {
         #region Main Form Functions & Variables
 
         public static Button[] DropdownMenu = new Button[2];
-        public static bool LegacyFolderSelectionDialogue = true;
 
         private void ClearLogBtn_Click(object sender = null, EventArgs e = null) => OutputWindow.Clear();
 
@@ -418,13 +397,6 @@ namespace GP4GUI {
         private void BrowseBtn_Click(object __, EventArgs _){}// The Winforms Designer Is Moronic
         private void BrowseBtn_Click(object sender, MouseEventArgs e)
         {
-            // Hide Dropdown Menu Buttons
-            if (DropdownMenu[0].Visible) {
-                DropdownMenu[1].Visible = DropdownMenu[0].Visible = false;
-                Update();
-            }
-
-
             // Use the ghastly Directory Tree Dialogue to Choose A Folder
             if (LegacyFolderSelectionDialogue) {
                 using (var FBrowser = new FolderBrowserDialog())
@@ -444,7 +416,6 @@ namespace GP4GUI {
                 if (Browser.ShowDialog() == DialogResult.OK)
                     GamedataFolderPathBox.Text = Browser.FileName.Remove(Browser.FileName.LastIndexOf('\\'));
             }
-
         }
 
         private void SwapBrowseModeBtn_Click(object _, EventArgs __) => DropdownMenu[1].Visible = DropdownMenu[0].Visible ^= true;
@@ -507,16 +478,16 @@ namespace GP4GUI {
         }
 
 
-        public bool ApplyUserOptions()
-        {
-            gp4.VerboseLogging = true; //!
-
-            return false;
-        }
-
         // Apply Defaults to Unassigned but Required .gp4 Variables
-        private bool ApplyDefaults()
+        private bool ApplyAndVerifyUserOptions()
         {
+
+            gp4.VerboseLogging = VerboseLogging;
+
+            gp4.IgnoreKeystone = IgnoreKeystone;
+
+
+
             // Check for Unassigned Gamedata Path
             if (GamedataFolderPathBox.IsDefault) {
                 WLog("Please Assign A Valid Gamedata Folder Before Building");
@@ -552,7 +523,7 @@ namespace GP4GUI {
         private void BuildProjectFile(object sender, EventArgs e) {
 
             // Apply Current Options to GP4Creator Instance, and Apply Defaults to Any Left Unassigned.
-            if (ApplyDefaults() && ApplyUserOptions())
+            if (ApplyAndVerifyUserOptions() && ApplyAndVerifyUserOptions())
 
             // Begin .gp4 Creation is all's well
             gp4.CreateGP4(GP4OutputDirectory, true);

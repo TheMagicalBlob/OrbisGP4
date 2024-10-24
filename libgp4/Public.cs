@@ -50,6 +50,7 @@ namespace libgp4 {
             set {
                 _GamedataFolder = value;
                 DLog($"GamedataFolder => [{_GamedataFolder}]");
+
                 SfoParams = new SfoParser(this, value);
                 PlaygoData = new PlaygoParameters(this, value);
             }
@@ -62,7 +63,7 @@ namespace libgp4 {
         /// <br/> Including The Original Is Recommended To Maintain Support For Savedata Created By The Original Application.
         /// <br/><br/> (True By Default)
         /// </summary>
-        public bool Keystone {
+        public bool IgnoreKeystone {
             get => _Keystone;
             set {
                 _Keystone = value;
@@ -305,27 +306,16 @@ namespace libgp4 {
             WLog($".gp4 Destination Path: {GP4OutputPath}\nSource .pkg Path: {BasePackagePath ?? "Not Applicable"}", true);
 #endif
 
-
+            // Ensure A GamedataFolder's Been Provided
             if(GamedataFolder == null || PlaygoData == null || SfoParams == null) {
                 WLog("No Valid Project Folder Was Assigned. Please Provide A Valid Project Folder On Class Ini Or Through Manual Assignment To GamedataFolder Param", false);
                 return null;
             }
 
+
             // Timestamp For GP4, Same Format Sony Used Though Sony's Technically Only Tracks The Date,
             // With The Time Left As 00:00, But Imma Just Add The Time. It Doesn't Break Anything).
             var gp4_timestamp = DateTime.Now.GetDateTimeFormats()[78];
-
-            string[] file_paths; // Array Of All Files In The Project Folder (Excluding Blacklisted Files/Directories)
-
-
-            // Get The Paths Of All Project Files & Subdirectories In The Given Project Folder. 
-            var file_info = new DirectoryInfo(GamedataFolder).GetFiles(".", SearchOption.AllDirectories); // The Period Is Needed To Search Every Single File/Folder Recursively, I Don't Even Know Why It Works That Way.
-            file_paths = new string[file_info.Length];
-
-            for(var index = 0; index < file_info.Length; ++index) {
-                file_paths[index] = file_info[index].FullName;
-            }
-            file_info = null;
 
 
             if(Directory.Exists(GP4OutputPath)) {
@@ -334,32 +324,29 @@ namespace libgp4 {
 
 
             // Check The Parsed Data For Any Potential Errors Before Building The .gp4 With It
-            if(VerifyIntegrity) {
-                VerifyGP4(GamedataFolder, PlaygoData.playgo_content_id, SfoParams);
-            }
-
-
+            if(VerifyIntegrity) VerifyGP4(GamedataFolder, PlaygoData.playgo_content_id, SfoParams);
 
 
             // Create Base .gp4 Elements (Up To Chunk/Scenario Data)
             var gp4 = new XmlDocument();
-            var basic_elements =
-                CreateBaseElements(
-                    SfoParams,
-                    PlaygoData,
-                    gp4,
-                    Passcode,
-                    BasePackagePath,
-                    gp4_timestamp
+            var basic_elements = CreateBaseElements
+            (
+                SfoParams,
+                PlaygoData,
+                gp4,
+                Passcode,
+                BasePackagePath,
+                gp4_timestamp
             );
 
             // Create The Actual .go4 Structure
-            BuildGp4Elements(
+            BuildGp4Elements
+            (
                 gp4,
                 basic_elements,
                 CreateChunksElement(PlaygoData, gp4),
                 CreateScenariosElement(PlaygoData, gp4),
-                CreateFilesElement(PlaygoData.chunk_count, extra_files, file_paths, GamedataFolder, gp4),
+                CreateFilesElement(PlaygoData.chunk_count, extra_files, GamedataFolder, gp4),
                 CreateRootDirectoryElement(GamedataFolder, gp4)
             );
 

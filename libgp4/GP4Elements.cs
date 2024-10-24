@@ -1,10 +1,11 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Xml;
 #pragma warning disable CS1587
 
 //##############################################\\
-/// Contents:                                    \\\
-//--> Functions to Create Various .gp4 Elements \\\
+// Contents:                                    \\
+//--> Functions to Create Various .gp4 Elements \\
 //##############################################\\
 
 namespace libgp4 {
@@ -73,30 +74,43 @@ namespace libgp4 {
         /// <summary>
         /// Create "files" Element Containing File Destination And Source Paths, Along With Whether To Enable PFS Compression.
         /// </summary>
-        private XmlNode CreateFilesElement(int chunk_count, string[][] extra_files, string[] file_paths, string gamedata_folder, XmlDocument gp4) {
-            var files = gp4.CreateElement("files");
+        private XmlNode CreateFilesElement(int chunk_count, string[][] extra_files, string gamedata_folder, XmlDocument gp4) {
+            
+            // Get The Paths Of All Project Files & Subdirectories In The Given Project Folder. 
+            var file_info = new DirectoryInfo(GamedataFolder).GetFiles(".", SearchOption.AllDirectories); // The Period Is Needed To Search Every Single File/Folder Recursively, I Don't Even Know Why It Works That Way.
+            // Array Of All Files In The Project Folder (Excluding Blacklisted Files/Directories)
+            var file_paths = new List<string>();
 
-            for(var index = 0; index < file_paths.Length; index++) {
-                if(FileShouldBeExcluded(file_paths[index]))
+            for(var index = 0; index < file_info.Length; ++index) {
+            }
+            
+
+            var files = gp4.CreateElement("files");
+            //foreach (var file in new DirectoryInfo(GamedataFolder).GetFiles(".", SearchOption.AllDirectories))
+            foreach (var file_path in Directory.GetFiles(GamedataFolder, ".", SearchOption.AllDirectories))
+            {
+                if(FileShouldBeExcluded(file_path))
                     continue;
 
                 var file = gp4.CreateElement("file");
-                file.SetAttribute("targ_path", file_paths[index].Remove(0, gamedata_folder.Length + 1).Replace('\\', '/'));
+                file.SetAttribute("targ_path", file_path.Remove(0, gamedata_folder.Length + 1).Replace('\\', '/'));
                 file.SetAttribute(
                     "orig_path",
                     AbsoluteFilePaths ?
-                    file_paths[index] :
-                    file_paths[index].Remove(0, gamedata_folder.Length + 1) // Strip
+                    file_path :
+                    file_path.Remove(0, gamedata_folder.Length + 1) // Strip
                 );
 
-                if(!SkipPfsCompressionForFile(file_paths[index]))
+                if(!SkipPfsCompressionForFile(file_path))
                     file.SetAttribute("pfs_compression", "enable");
 
-                if(!SkipChunkAttributeForFile(file_paths[index]) && chunk_count - 1 != 0)
+                if(!SkipChunkAttributeForFile(file_path) && chunk_count - 1 != 0)
                     file.SetAttribute("chunks", $"0-{chunk_count - 1}");
 
                 files.AppendChild(file);
             }
+            
+
 
 
             // Add Any Extra Files From The User (Test This)

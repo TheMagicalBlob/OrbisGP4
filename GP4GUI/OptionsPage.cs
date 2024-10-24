@@ -16,12 +16,6 @@ namespace GP4GUI
             
             Paint += PaintBorder;
             TinyVersionLabel.Text = Version; // Set Version Label
-
-            OptionsFormLocation = new Point((Venat.Size.Width - Size.Width)/2, Location.Y + 120);
-
-            CloseBtn.Click += new EventHandler((sender, e) =>
-                Azem.Visible = OptionsPageIsOpen = false
-            );
         }
 
 
@@ -63,6 +57,7 @@ namespace GP4GUI
             this.KeystoneToggleBox.TabIndex = 5;
             this.KeystoneToggleBox.Text = "Ignore Keystone";
             this.KeystoneToggleBox.UseVisualStyleBackColor = true;
+            this.KeystoneToggleBox.CheckedChanged += new System.EventHandler(this.KeystoneToggleBox_CheckedChanged);
             // 
             // Title
             // 
@@ -100,6 +95,7 @@ namespace GP4GUI
             this.VerboseOutputBox.TabIndex = 6;
             this.VerboseOutputBox.Text = "Verbose Output";
             this.VerboseOutputBox.UseVisualStyleBackColor = true;
+            this.VerboseOutputBox.CheckedChanged += new System.EventHandler(this.VerboseOutputBox_CheckedChanged);
             // 
             // OutputPathBtn
             // 
@@ -113,7 +109,7 @@ namespace GP4GUI
             this.OutputPathBtn.TabIndex = 8;
             this.OutputPathBtn.Text = "Browse...";
             this.OutputPathBtn.UseVisualStyleBackColor = false;
-            this.OutputPathBtn.Click += new System.EventHandler(this.OutputPathBtn_Click);
+            this.OutputPathBtn.Click += new System.EventHandler(this.OutputPathBrowseBtn_Click);
             // 
             // BasePackagePathBtn
             // 
@@ -127,7 +123,7 @@ namespace GP4GUI
             this.BasePackagePathBtn.TabIndex = 9;
             this.BasePackagePathBtn.Text = "Browse...";
             this.BasePackagePathBtn.UseVisualStyleBackColor = false;
-            this.BasePackagePathBtn.Click += new System.EventHandler(this.BasePackagePathBtn_Click);
+            this.BasePackagePathBtn.Click += new System.EventHandler(this.BasePackagePathBrowseBtn_Click);
             // 
             // FilterBrowseBtn
             // 
@@ -165,6 +161,7 @@ namespace GP4GUI
             this.AbsolutePathCheckBox.TabIndex = 12;
             this.AbsolutePathCheckBox.Text = "Use Absolute Path Names";
             this.AbsolutePathCheckBox.UseVisualStyleBackColor = true;
+            this.AbsolutePathCheckBox.CheckedChanged += new System.EventHandler(this.AbsolutePathCheckBox_CheckedChanged);
             // 
             // dummy
             // 
@@ -189,7 +186,6 @@ namespace GP4GUI
             this.CustomPasscodeTextBox.Size = new System.Drawing.Size(340, 24);
             this.CustomPasscodeTextBox.TabIndex = 4;
             this.CustomPasscodeTextBox.Text = "Add Custom .pkg Passcode Here (Defaults To All Zeros)";
-            this.CustomPasscodeTextBox.LostFocus += new System.EventHandler(this.CustomPasscodeTextBox_FocusChanged);
             // 
             // FilterTextBox
             // 
@@ -260,6 +256,9 @@ namespace GP4GUI
         /// </summary>
         public void PostInitFormLogic()
         {
+            CloseBtn.Click += new EventHandler((sender, e) => Azem.Visible = OptionsPageIsOpen = false);
+            OptionsFormLocation = new Point((Venat.Size.Width - Size.Width)/2, Location.Y + 120); // Store Expected Options Form Offset.
+
 
             // Set Event Handlers for Form Dragging
             MouseDown += new MouseEventHandler((sender, e) => {
@@ -271,32 +270,11 @@ namespace GP4GUI
             MouseUp += new MouseEventHandler((sender, e) => 
                 MouseIsDown = false
             );
-            MouseMove += new MouseEventHandler((sender, e) => {
-                if(MouseIsDown) {
-                    Venat.Location = new Point(MousePosition.X - MouseDif.X, MousePosition.Y - MouseDif.Y);
-                    Venat.Update();
-
-                    Location = new Point(MousePosition.X - MouseDif.X + OptionsFormLocation.X, MousePosition.Y - MouseDif.Y + OptionsFormLocation.Y);
-                    Update();
-                }
-            });
+            MouseMove += new MouseEventHandler((sender, e) => DragForm());
 
             
-            foreach(Control Item in Controls) {
-
-                // Avoid Applying MoveForm EventHandler to Text Containters (to retain the ability to drag-select text)
-                if (Item.GetType() != typeof(TextBox) && Item.GetType() != typeof(RichTextBox)) {
-                    Item.MouseMove += new MouseEventHandler((sender, e) => {
-                        if(MouseIsDown) {
-                            Venat.Location = new Point(MousePosition.X - MouseDif.X, MousePosition.Y - MouseDif.Y);
-                            Venat.Update();
-
-                            Location = new Point(MousePosition.X - MouseDif.X + OptionsFormLocation.X, MousePosition.Y - MouseDif.Y + OptionsFormLocation.Y);
-                            Update();
-                        }
-                    });
-                }
-
+            foreach(Control Item in Controls)
+            {
                 Item.MouseDown += new MouseEventHandler((sender, e) => {
                     MouseDif = new Point(MousePosition.X - Venat.Location.X, MousePosition.Y - Venat.Location.Y);
                     MouseIsDown = true;
@@ -305,6 +283,10 @@ namespace GP4GUI
                 Item.MouseUp   += new MouseEventHandler((sender, e) => 
                     MouseIsDown = false
                 );
+                
+                // Avoid Applying MoveForm EventHandler to Text Containters (to retain the ability to drag-select text)
+                if (Item.GetType() != typeof(TextBox) && Item.GetType() != typeof(RichTextBox))
+                Item.MouseMove += new MouseEventHandler((sender, e) => DragForm());
             }
         }
 
@@ -318,26 +300,52 @@ namespace GP4GUI
         //--     Options-Related Functions     --\\
         //#######################################\\
         #region Options Related Functions
+        
+        
+        private void AbsolutePathCheckBox_CheckedChanged(object sender, EventArgs e) => UseAbsolutePaths = AbsolutePathCheckBox.Checked;
 
-        private void OutputPathBtn_Click(object sender, EventArgs e) {
-            using(var Browser = new FolderBrowserDialog())
-                if(Browser.ShowDialog() == DialogResult.OK)
-                    OutputPathTextBox.Text = Browser.SelectedPath;
+        private void KeystoneToggleBox_CheckedChanged(object sender, EventArgs e)    => IgnoreKeystone = KeystoneToggleBox.Checked;
+        
+        private void VerboseOutputBox_CheckedChanged(object sender, EventArgs e)     => VerboseLogging = VerboseOutputBox.Checked;
+
+
+
+        // Choose a .gp4 Output Path Through Either a FolderBrowserDialogue, or OpenFileDialogue Instance (W/ the hackey Dummy File Method.
+        private void OutputPathBrowseBtn_Click(object sender, EventArgs e)
+        {
+            // Use the ghastly Directory Tree Dialogue to Choose A Folder
+            if (LegacyFolderSelectionDialogue) {
+                using (var ShitBrowser = new FolderBrowserDialog())
+                    if (ShitBrowser.ShowDialog() == DialogResult.OK)
+                        OutputPathTextBox.Text = ShitBrowser.SelectedPath;
+            }
+            // Use The Newer "Hackey" Method
+            else {
+                var CrapBrowser = new OpenFileDialog() {
+                    ValidateNames = false,
+                    CheckPathExists = false,
+                    CheckFileExists = false,
+                    FileName = "Press 'Open' Once Inside The Desired Folder.",
+                    Filter = "Folder Selection|*."
+                };
+
+                if (CrapBrowser.ShowDialog() == DialogResult.OK)
+                    OutputPathTextBox.Text = CrapBrowser.FileName.Remove(CrapBrowser.FileName.LastIndexOf('\\'));
+            }
         }
 
-        /// <summary>
-        /// Search for the Base Application Package Through an OpenFileDialogue Instance.
-        /// </summary>
-        private void BasePackagePathBtn_Click(object sender, EventArgs e) {
+
+
+        // Search for the Base Application Package Through an OpenFileDialogue Instance.
+        private void BasePackagePathBrowseBtn_Click(object sender, EventArgs e) {
             using(var Browser = new OpenFileDialog())
                 if(Browser.ShowDialog() == DialogResult.OK)
                     BasePackagePathTextBox.Text = Browser.FileName;
         }
 
+
         
-        /// <summary>
-        /// Build an Array of Files to Exclude from the .gp4 Project's File Listing From Those Selected Through an OpenFileDialogue Instance (W/ Multiselect).
-        /// </summary>
+        // Build an Array of Files to Exclude from the .gp4 Project's File Listing From Those Selected Through an OpenFileDialogue Instance (W/ Multiselect).
         private void FilterBrowseBtn_Click(object sender, EventArgs e) {
             var Browser = new OpenFileDialog() {
                 Multiselect = true,
@@ -396,12 +404,6 @@ namespace GP4GUI
                 WLog($"\n{ex.StackTrace}");
             }
         }
-        
-        private void CustomPasscodeTextBox_FocusChanged(object sender, EventArgs e) {
-            var Sender = ((TextBox)sender);
-            if(!Sender.IsDefault)
-                gp4.Passcode = Sender.Text;
-        }
 
         #endregion
         ///=======================================\\\
@@ -427,6 +429,7 @@ namespace GP4GUI
         private TextBox FilterTextBox;
         private TextBox CustomPasscodeTextBox;
         #endregion
+
         ///==================================\\\
     }
 }

@@ -39,18 +39,38 @@ namespace GP4GUI {
         //--     Variable Declarations     --\\
         //###################################\\
         #region [Variable Declarations]
-        public static Form Azem, Venat;
-        public static bool OptionsPageIsOpen = false;
-        public static GP4Creator gp4;
-        public static RichTextBox _OutputWindow;
-        
-        
-        public static Point MouseDif;
-        public static bool MouseIsDown = false;
+
+        #region FormFunctionalityVariables
+        public static bool
+            LegacyFolderSelectionDialogue = true, // 
+            OptionsPageIsOpen = false,            //
+            MouseIsDown = false                   //
+        ;
+
+
+        /// <summary> Store Expected Options Form Offset
+        /// </summary>
         public static Point OptionsFormLocation;
 
+        /// <summary> Variable for Smooth Form Dragging. </summary>
+        public static Point MouseDif;
+        
+        /// <summary> MainPage Form Pointer/Refference. </summary>
+        public static Form Venat;
+        /// <summary> OptionsPage Form Pointer/Refference. </summary>
+        public static Form Azem;
 
-        //#- Look/Feel-Related Variables & Functions
+        /// <summary> GP4Creator Instance for Project .gp4 File Creation. </summary>
+        public static GP4Creator gp4;
+
+        /// <summary> OutputWindow Pointer/Ref Because I'm Lazy. </summary>
+        public static RichTextBox _OutputWindow;
+        #endregion
+
+
+        //#
+        //## Look/Feel-Related Variables & Functions
+        //#
         # region
         public static Color AppColour = Color.FromArgb(125, 183, 245);
         public static Color AppColourLight = Color.FromArgb(210, 240, 250);
@@ -61,13 +81,15 @@ namespace GP4GUI {
         public static readonly Font TextFont        = new Font("Segoe UI Semibold", 9f); // Segoe UI Semibold, 9pt, style=Bold
         public static readonly Font DefaultTextFont = new Font("Segoe UI Semibold", 9f, FontStyle.Italic); // Gadugi, 8.25pt, style=Bold, Italic
         #endregion
-
-
-        //#- .gp4 Options 
-        #region
+        
+        
+        //#
+        //## libgp4 Options
+        //#
+        #region [libgp4 Options]
         public static bool
-            Verbose,
-            Keystone,
+            IgnoreKeystone,
+            VerboseLogging,
             UseAbsolutePaths
         ;
         public static string
@@ -77,9 +99,23 @@ namespace GP4GUI {
         ;
         public static string[] BlacklistedItems;
         #endregion
+
         #endregion
         //===================================\\
 
+
+        // Handle Form Dragging for Borderless Form
+        public static void DragForm() {
+            if(MouseIsDown) {
+                Venat.Location = new Point(Form.MousePosition.X - MouseDif.X, Form.MousePosition.Y - MouseDif.Y);
+                Venat.Update();
+
+                if (Azem != null) {
+                    Azem.Location = new Point(Form.MousePosition.X - MouseDif.X + OptionsFormLocation.X, Form.MousePosition.Y - MouseDif.Y + OptionsFormLocation.Y);
+                    Azem.Update();
+                }
+            }
+        }
 
 
         // Draw a Thin Border for the Control On-Paint \\
