@@ -11,36 +11,19 @@ namespace GP4GUI {
     /// </summary>
     public static class Common
     {
-        // Logging Bullshit
-        #region [Logging Bullshit]
-
-#if DEBUG
-        /// Output Misc. Messages to the Main Output Window (the big-ass richtext box).
-        public static void WLog(object str = null) {
-            _OutputWindow.AppendLine(str.ToString());
-            DLog(str);
-        }
-#else
-        public static void WLog(object str = null) => _OutputWindow.AppendLine(str.ToString());
-#endif
-        /// Basic Debug Output Function
-        public static void DLog(object str = null) {
-#if DEBUG
-            try { Debug.WriteLine($"#libgp4: {str}");
-            }   
-            catch (Exception){}
-#endif
-        }
-        #endregion
-
-
 
         //###################################\\
         //--     Variable Declarations     --\\
         //###################################\\
-        #region [Variable Declarations]
+        #region Variable Declarations
 
-        #region FormFunctionalityVariables
+        
+        //#
+        //## Form Functionality Variables
+        //#
+        #region [Form Functionality Variables]
+
+        // Label These
         public static bool
             LegacyFolderSelectionDialogue = true, // 
             OptionsPageIsOpen = false,            //
@@ -69,9 +52,9 @@ namespace GP4GUI {
 
 
         //#
-        //## Look/Feel-Related Variables & Functions
+        //## Look/Feel-Related Variables
         //#
-        # region
+        # region [Look/Feel-Related Variables]
         public static Color AppColour = Color.FromArgb(125, 183, 245);
         public static Color AppColourLight = Color.FromArgb(210, 240, 250);
 
@@ -89,8 +72,8 @@ namespace GP4GUI {
         #region [libgp4 Options]
         public static bool
             IgnoreKeystone,
-            VerboseLogging,
-            UseAbsolutePaths
+            VerboseOutput,
+            UseAbsoluteFilePaths
         ;
         public static string
             GP4OutputDirectory,
@@ -100,9 +83,22 @@ namespace GP4GUI {
         public static string[] BlacklistedItems;
         #endregion
 
-        #endregion
+
+        #endregion Variable Declarations
         //===================================\\
 
+
+
+        //###################################\\
+        //--     Function Declarations     --\\
+        //###################################\\
+        #region Function Declarations
+
+
+        //#
+        //## Form Functionality Functions
+        //#
+        #region [Form Functionality Functions]
 
         // Handle Form Dragging for Borderless Form
         public static void DragForm() {
@@ -117,8 +113,8 @@ namespace GP4GUI {
             }
         }
 
-
-        // Draw a Thin Border for the Control On-Paint \\
+        
+        // Draw a Thin Border for the Control On-Paint
         public static void PaintBorder(object sender, PaintEventArgs e) {
             var ItemPtr = (Form)sender;
 
@@ -133,6 +129,37 @@ namespace GP4GUI {
             e.Graphics.Clear(Color.FromArgb(20, 20, 20));
             e.Graphics.DrawLines(pen, Border);
         }
+        #endregion [Form Functionality Functions]
+
+
+        //#
+        //## Logging Bullshit
+        //#
+        #region [Logging Bullshit]
+
+#if DEBUG
+        /// Output Misc. Messages to the Main Output Window (the big-ass richtext box).
+        public static void WLog(object str = null) {
+            _OutputWindow.AppendLine(str.ToString());
+            DLog(str);
+        }
+#else
+        public static void WLog(object str = null) => _OutputWindow.AppendLine(str.ToString());
+#endif
+        /// Basic Debug Output Function
+        public static void DLog(object str = null) {
+#if DEBUG
+            try { Debug.WriteLine($"#libgp4: {str}");
+            }   
+            catch (Exception){}
+#endif
+        }
+        #endregion [Logging Bullshit]
+
+
+        #endregion Function Declarations
+        //===================================\\
+
     }
 
 

@@ -482,10 +482,11 @@ namespace GP4GUI {
         private bool ApplyAndVerifyUserOptions()
         {
 
-            gp4.VerboseLogging = VerboseLogging;
+            gp4.VerboseLogging = VerboseOutput;
 
             gp4.IgnoreKeystone = IgnoreKeystone;
 
+            gp4.AbsoluteFilePaths = UseAbsoluteFilePaths;
 
 
             // Check for Unassigned Gamedata Path
@@ -494,7 +495,7 @@ namespace GP4GUI {
                 return false;
             }
 
-            // Verify Provided Gamedata Folder Path
+            // Verify Provided Gamedata Folder Path (After Stripping Quotes)
             else if (!Directory.Exists(gp4.GamedataFolder = GamedataFolderPathBox.Text.Replace("\"", string.Empty)))
             {
                 WLog("The Directory Application Folder Provided Could Not Be Found.");
@@ -509,10 +510,14 @@ namespace GP4GUI {
 
             //! Assign An Output Directory For The .gp4 If None Has Been Set Yet.
             if (GP4OutputDirectory == null)
+            {
                 if (!gp4.AbsoluteFilePaths)
                     GP4OutputDirectory = gp4.GamedataFolder;
                 else
                     GP4OutputDirectory = gp4.GamedataFolder.Remove(gp4.GamedataFolder.LastIndexOf('\\'));
+
+                WLog($"Assigned \"{GP4OutputDirectory} as .gp4 Project Output Directory.\"\n");
+            }
 
 
             return false;
@@ -523,7 +528,7 @@ namespace GP4GUI {
         private void BuildProjectFile(object sender, EventArgs e) {
 
             // Apply Current Options to GP4Creator Instance, and Apply Defaults to Any Left Unassigned.
-            if (ApplyAndVerifyUserOptions() && ApplyAndVerifyUserOptions())
+            if (ApplyAndVerifyUserOptions())
 
             // Begin .gp4 Creation is all's well
             gp4.CreateGP4(GP4OutputDirectory, true);

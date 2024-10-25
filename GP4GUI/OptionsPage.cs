@@ -302,11 +302,11 @@ namespace GP4GUI
         #region Options Related Functions
         
         
-        private void AbsolutePathCheckBox_CheckedChanged(object sender, EventArgs e) => UseAbsolutePaths = AbsolutePathCheckBox.Checked;
+        private void AbsolutePathCheckBox_CheckedChanged(object sender, EventArgs e) => UseAbsoluteFilePaths = AbsolutePathCheckBox.Checked;
 
         private void KeystoneToggleBox_CheckedChanged(object sender, EventArgs e)    => IgnoreKeystone = KeystoneToggleBox.Checked;
         
-        private void VerboseOutputBox_CheckedChanged(object sender, EventArgs e)     => VerboseLogging = VerboseOutputBox.Checked;
+        private void VerboseOutputBox_CheckedChanged(object sender, EventArgs e)     => VerboseOutput = VerboseOutputBox.Checked;
 
 
 
