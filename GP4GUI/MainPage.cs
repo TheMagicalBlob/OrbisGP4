@@ -5,6 +5,7 @@ using System.IO;
 using System.Windows.Forms;
 using static GP4GUI.Common;
 using libgp4;
+using System.Reflection;
 
 namespace GP4GUI {
     public partial class MainForm : Form {
@@ -29,11 +30,17 @@ namespace GP4GUI {
                     OutputWindow.Update();
                 }
             };
+
+
         }
+
+        private Button NoRunBtn;
+        public static Button[] DropdownMenu = new Button[2];
 
 
         private void TestBtn_Click(object sender, EventArgs e) {
-#if DEBUG
+            #if DEBUG
+
             gp4.VerboseLogging = true;
             var newgp4path = gp4.CreateGP4(@"C:\Users\msblob\gp4", true);
             if (newgp4path == null) {
@@ -111,9 +118,10 @@ namespace GP4GUI {
             ///=============\\\
 
             System.Diagnostics.Process.Start(newgp4path);
-#endif
+            
+            #endif
         }
-
+        
 
         //##########################################\\
         //--      Designer Managed Functions      --\\
@@ -139,6 +147,7 @@ namespace GP4GUI {
             this.SwapBrowseModeBtn = new System.Windows.Forms.Button();
             this.OutputWindow = new GP4GUI.RichTextBox();
             this.GamedataFolderPathBox = new GP4GUI.TextBox();
+            this.NoRunBtn = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // CreateBtn
@@ -153,7 +162,7 @@ namespace GP4GUI {
             this.CreateBtn.TabIndex = 3;
             this.CreateBtn.Text = "Build .gp4";
             this.CreateBtn.UseVisualStyleBackColor = false;
-            this.CreateBtn.Click += new System.EventHandler(this.BuildProjectFile);
+            this.CreateBtn.Click += new System.EventHandler(this.SetupAndCreateProjectFile);
             // 
             // Title
             // 
@@ -287,12 +296,29 @@ namespace GP4GUI {
             this.GamedataFolderPathBox.TabIndex = 2;
             this.GamedataFolderPathBox.Text = "Paste The Gamedata Folder Path Here, Or Use The Browse Button...";
             // 
+            // NoRunBtn
+            // 
+            this.NoRunBtn.BackColor = System.Drawing.SystemColors.ControlText;
+            this.NoRunBtn.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(240)))), ((int)(((byte)(250)))));
+            this.NoRunBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.NoRunBtn.Font = new System.Drawing.Font("Segoe UI Semibold", 7F, System.Drawing.FontStyle.Bold);
+            this.NoRunBtn.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(240)))), ((int)(((byte)(250)))));
+            this.NoRunBtn.Location = new System.Drawing.Point(46, 79);
+            this.NoRunBtn.Name = "NoRunBtn";
+            this.NoRunBtn.Size = new System.Drawing.Size(103, 23);
+            this.NoRunBtn.TabIndex = 17;
+            this.NoRunBtn.Tag = "";
+            this.NoRunBtn.Text = "DEBUG: no-run: Yes";
+            this.NoRunBtn.UseVisualStyleBackColor = false;
+            this.NoRunBtn.Click += new System.EventHandler(this.NoRunBtn_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
             this.ClientSize = new System.Drawing.Size(452, 371);
+            this.Controls.Add(this.NoRunBtn);
             this.Controls.Add(this.SwapBrowseModeBtn);
             this.Controls.Add(this.dummy);
             this.Controls.Add(this.ClearLogBtn);
@@ -315,7 +341,7 @@ namespace GP4GUI {
         #endregion
         //==========================================\\
 
-
+        
 
         //#######################################\\
         //--     Basic Form Init Functions     --\\
@@ -379,12 +405,13 @@ namespace GP4GUI {
         //###############################################\\
         #region Main Form Functions & Variables
 
-        public static Button[] DropdownMenu = new Button[2];
 
-        private void ClearLogBtn_Click(object sender = null, EventArgs e = null) => OutputWindow.Clear();
+        // Wipe the Text in OutputWindow
+        private void ClearLogBtn_Click(object _, EventArgs __) => OutputWindow.Clear();
 
 
-        private void ToggleOptionsWindowVisibility(object sender, EventArgs e)
+        // Toggle The OptionsPage Window for .gp4 Option Editing
+        private void ToggleOptionsWindowVisibility(object _, EventArgs __)
         {
             Azem.Visible = OptionsPageIsOpen ^= true;
 		    Azem.Location = new Point(Location.X + ((Venat.Size.Width - Azem.Size.Width)/2), Location.Y + 120);
@@ -394,14 +421,17 @@ namespace GP4GUI {
 
         
         // Use The Dummy File Method To Open A Folder.
-        private void BrowseBtn_Click(object __, EventArgs _){}// The Winforms Designer Is Moronic
-        private void BrowseBtn_Click(object sender, MouseEventArgs e)
+        private void BrowseBtn_Click(object _, EventArgs __)
         {
             // Use the ghastly Directory Tree Dialogue to Choose A Folder
             if (LegacyFolderSelectionDialogue) {
                 using (var FBrowser = new FolderBrowserDialog())
-                    if (FBrowser.ShowDialog() == DialogResult.OK)
+                    if (FBrowser.ShowDialog() == DialogResult.OK) {
+                        GamedataFolderPathBox.Focus();
                         GamedataFolderPathBox.Text = FBrowser.SelectedPath;
+                        GamedataFolderPathBox.Focus();
+                        BrowseBtn.Focus();
+                    }
             }
             // Use The Newer "Hackey" Method
             else {
@@ -418,8 +448,15 @@ namespace GP4GUI {
             }
         }
 
-        private void SwapBrowseModeBtn_Click(object _, EventArgs __) => DropdownMenu[1].Visible = DropdownMenu[0].Visible ^= true;
 
+        // Toggle Dowpdown Menu Visibility
+        private void SwapBrowseModeBtn_Click(object _, EventArgs __)
+        {
+            DropdownMenu[1].Visible = DropdownMenu[0].Visible ^= true;
+        }
+
+
+        // Initialize Dropdown Menu Used for Toggling of Folder Browser Method
         private void CreateBrowseModeDropdownMenu() {
             var extalignment = BrowseBtn.Size.Height;
             var alignment = BrowseBtn.Location;
@@ -443,6 +480,8 @@ namespace GP4GUI {
                 Size = new Size(90, 25)
             };
 
+
+
             // Create and Assign Event Handlers
             DropdownMenu[0].Click += (why, does) => {
                 if (!LegacyFolderSelectionDialogue) {
@@ -463,9 +502,6 @@ namespace GP4GUI {
 
 
 
-            //DropdownMenu[0].LostFocus += (still, hurt) =>
-            //    DropdownMenu[1].Visible = DropdownMenu[0].Visible ^= true;
-
             // Add Controls to MainForm Control Collection
             Controls.Add(DropdownMenu[0]);
             Controls.Add(DropdownMenu[1]);
@@ -478,34 +514,34 @@ namespace GP4GUI {
         }
 
 
-        // Apply Defaults to Unassigned but Required .gp4 Variables
-        private bool ApplyAndVerifyUserOptions()
+
+        // Create the .gp4 Project File.
+        private void SetupAndCreateProjectFile(object sender, EventArgs e)
         {
-
-            gp4.VerboseLogging = VerboseOutput;
-
-            gp4.IgnoreKeystone = IgnoreKeystone;
-
-            gp4.AbsoluteFilePaths = UseAbsoluteFilePaths;
-
-
-            // Check for Unassigned Gamedata Path
+            // Check for Unassigned Gamedata Path Before Proceeding
             if (GamedataFolderPathBox.IsDefault) {
-                WLog("Please Assign A Valid Gamedata Folder Before Building");
-                return false;
+                WLog("Please Assign A Valid Gamedata Folder Before Building.");
+                return;
             }
-
             // Verify Provided Gamedata Folder Path (After Stripping Quotes)
-            else if (!Directory.Exists(gp4.GamedataFolder = GamedataFolderPathBox.Text.Replace("\"", string.Empty)))
+            else if (!Directory.Exists(GamedataFolder = GamedataFolderPathBox.Text.Replace("\"", string.Empty)))
             {
-                WLog("The Directory Application Folder Provided Could Not Be Found.");
-
-                if (File.Exists(gp4.GamedataFolder))
-                    WLog($"(Path: {gp4.GamedataFolder} Leads To A File, Not A Folder)");
-                else
-                    WLog($"(Folder: {gp4.GamedataFolder} Does Not Exist)");
-                return false;
+                WLog($"The Provided Gamedata Folder Path Was Not Valid ({(File.Exists(GamedataFolder) ? $"Path: {GamedataFolder} Leads To A File, Not A Folder" : $"Directory \"{GamedataFolder}\" Does Not Exist")}).");
+                return;
             }
+
+
+            
+            //#
+            //## Apply Current Options to GP4Creator Instance, and Apply Defaults to Any Left Unassigned.
+            //#
+            gp4.GamedataFolder    = GamedataFolder;
+            gp4.AbsoluteFilePaths = UseAbsoluteFilePaths;
+            gp4.IgnoreKeystone    = IgnoreKeystone;
+            gp4.VerboseLogging    = VerboseOutput;
+
+            gp4.BasePackagePath   = BasePackagePath;
+
 
 
             //! Assign An Output Directory For The .gp4 If None Has Been Set Yet.
@@ -520,17 +556,23 @@ namespace GP4GUI {
             }
 
 
-            return false;
-        }
+            
+            //# DEBUG/TESTING SHIT
+            #if DEBUG
+            // Print GP4Creator Options
+            WLog($"\n===============================================");
+            foreach (var param in typeof(GP4Creator.SfoParser).GetFields())
+            WLog($"{param.Name} == {param.GetValue(gp4.SfoParams)}");
+            WLog($"===============================================\n");
+
+            // Conditional Debug Exit
+            if (NoRunBtn.Text.Contains("Yes")) return;
+            #endif
 
 
-        // Create the .gp4 Project File.
-        private void BuildProjectFile(object sender, EventArgs e) {
-
-            // Apply Current Options to GP4Creator Instance, and Apply Defaults to Any Left Unassigned.
-            if (ApplyAndVerifyUserOptions())
-
-            // Begin .gp4 Creation is all's well
+            //#
+            //## Begin .gp4 Creation if all's well
+            //#
             gp4.CreateGP4(GP4OutputDirectory, true);
         }
         #endregion
@@ -558,5 +600,12 @@ namespace GP4GUI {
 
 
         private readonly Button DesignerManip; // Manipulate Designer Stupidity (Stop Creating Methods Inside Existing Code, You Fucking Moron)
+
+        private void NoRunBtn_Click(object sender, EventArgs e) {
+            if (NoRunBtn.Text.Contains("Yes"))
+                NoRunBtn.Text = NoRunBtn.Text.Replace("Yes", "No");
+            else
+                NoRunBtn.Text = NoRunBtn.Text.Replace("No", "Yes");
+        }
     }
 }

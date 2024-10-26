@@ -37,7 +37,7 @@ namespace libgp4 {
             get => _PlaygoData;
             private set {
                 _PlaygoData = value;
-                DLog($"PlaygoData => [{string.Join(", ", _PlaygoData)}]");
+                DLog($"PlaygoData => [{string.Join("\n#> ", _PlaygoData)}]");
             }
         }
         private PlaygoParameters _PlaygoData;
@@ -51,8 +51,12 @@ namespace libgp4 {
                 _GamedataFolder = value;
                 DLog($"GamedataFolder => [{_GamedataFolder}]");
 
-                SfoParams = new SfoParser(this, value);
-                PlaygoData = new PlaygoParameters(this, value);
+            
+                if (!Directory.Exists(GamedataFolder))
+                    throw new DirectoryNotFoundException($"Invalid Gamedata Folder Path Provided. [{(File.Exists(GamedataFolder) ? $"Path \"{GamedataFolder}\" Leads to a File, Not a Folder." : $"Directory \"{GamedataFolder}\" Does Not Exist.")}]");
+
+                SfoParams = new SfoParser(this, GamedataFolder);
+                PlaygoData = new PlaygoParameters(this, GamedataFolder);
             }
         }
         private string _GamedataFolder;
@@ -288,6 +292,7 @@ namespace libgp4 {
             extra_files = new string[][] { new string[] { OriginalPath, TargetPath } };
         }
         #endregion
+
 
 
         /// <summary>

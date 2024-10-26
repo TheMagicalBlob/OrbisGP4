@@ -1094,7 +1094,7 @@ namespace libgp4 {
                     ParamOffsets = new int[ParameterCount];
 
                     // Load Related Data For Each Parameter
-                    for(int i = 0; i < ParameterCount; ++i) { // Skip Param Offset Each Run
+                    for(int i = 0; i < ParameterCount; ++i) {
 
                         sfo.Position += 3; // Skip Label Offset
 

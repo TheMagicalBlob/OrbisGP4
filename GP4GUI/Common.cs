@@ -3,6 +3,8 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Diagnostics;
+using System.Runtime.Remoting.Channels;
+using System.Runtime.CompilerServices;
 
 namespace GP4GUI {
 
@@ -78,6 +80,7 @@ namespace GP4GUI {
         public static string
             GP4OutputDirectory,
             BasePackagePath,
+            GamedataFolder,
             Passcode
         ;
         public static string[] BlacklistedItems;
@@ -187,19 +190,23 @@ namespace GP4GUI {
 
     // Custom TextBox Class to Better Handle Default TextBox Contents
     public class TextBox : System.Windows.Forms.TextBox {
+        /// <summary> Yoink Default Text From First Text Assignment (Ideally right after being created). </summary>
+        private void Set(object _, EventArgs __) {
+            DefaultText = Text;
+            TextChanged -= Set;
+            TextChanged += (sender, e) => {
+                Text = Text.Replace("\"", string.Empty);
+                IsDefault = false;
+                Common.DLog($"Control Text Has Changed => {Text}");
+            };
+        }
 
-        // Create Controll Instance
+        // Create Control Instance
         public TextBox()
         {
             IsDefault = true;
             TextChanged += Set;
 
-            GotFocus += (bite, me) => {
-                if(IsDefault) {
-                    Font = Common.TextFont;
-                    Clear();
-                }
-            };
             LostFocus += (bite, me) => {
                 // Reset control if nothing different was entered
                 if(Text.Trim().Length == 0 || DefaultText.Contains(Text)) {
@@ -207,16 +214,22 @@ namespace GP4GUI {
                     Text = DefaultText;
                     IsDefault = true;
                 }
-                else {
-                    IsDefault = false;
-                }
+                Common.DLog($"Control Lost Focus {IsDefault}");
             };
-
-            Click += (bite, me) => {
+            
+            GotFocus += (bite, me) => {
                 if(IsDefault) {
                     Font = Common.TextFont;
                     Clear();
                 }
+                Common.DLog($"Control Gained Focus {IsDefault}");
+            };
+            Click += (bite, me) => { // Both Events, Just-In-Case.
+                if(IsDefault) {
+                    Font = Common.TextFont;
+                    Clear();
+                }
+                Common.DLog($"Control Has Been Clicked {IsDefault}");
             };
         }
 
@@ -226,14 +239,7 @@ namespace GP4GUI {
 
         // Help Better Keep Track of Whether the User's Changed the Text, Because I'm a Moron.
         public bool IsDefault { get; private set; }
-
-
-        /// <summary> Yoink Default Text From First Text Assignment (Ideally right after being created).
-        ///</summary>
-        private void Set(object _, EventArgs __) {
-            DefaultText = Text;
-            TextChanged -= Set;
-        }
+        
     }
 
     #endregion
