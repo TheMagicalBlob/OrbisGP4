@@ -51,7 +51,6 @@ namespace libgp4 {
                 _GamedataFolder = value;
                 DLog($"GamedataFolder => [{_GamedataFolder}]");
 
-            
                 if (!Directory.Exists(GamedataFolder))
                     throw new DirectoryNotFoundException($"Invalid Gamedata Folder Path Provided. [{(File.Exists(GamedataFolder) ? $"Path \"{GamedataFolder}\" Leads to a File, Not a Folder." : $"Directory \"{GamedataFolder}\" Does Not Exist.")}]");
 
@@ -78,7 +77,7 @@ namespace libgp4 {
 
 
         /// <summary>
-        /// The 32-bit Key Used To Encrypt The .pkg. Required For Extraction With orbis-pub-chk.
+        /// The 32-bit Key Used To Encrypt The .pkg.  (Required For Extraction With orbis-pub-chk)
         /// <br/><br/> (No Effect On Dumping)
         /// </summary>
         public string Passcode {
@@ -329,7 +328,7 @@ namespace libgp4 {
 
 
             // Check The Parsed Data For Any Potential Errors Before Building The .gp4 With It
-            if(VerifyIntegrity) VerifyGP4(GamedataFolder, PlaygoData.playgo_content_id, SfoParams);
+            if(VerifyIntegrity) VerifyProjectData(GamedataFolder, PlaygoData.playgo_content_id, SfoParams);
 
 
             // Create Base .gp4 Elements (Up To Chunk/Scenario Data)

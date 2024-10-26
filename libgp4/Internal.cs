@@ -1483,7 +1483,8 @@ namespace libgp4 {
         /// <summary>
         /// Check Various Parts Of The Parsed .gp4 Parameters To Try And Find Any Possible Errors In The Project Files/Structure.
         ///</summary>
-        private void VerifyGP4(string gamedata_folder, string playgo_content_id, SfoParser data) {
+        private void VerifyProjectData(string gamedata_folder, string playgo_content_id, SfoParser sfo)
+        {// TODO: Expand This.
             var Errors = string.Empty;
             int ErrorCount;
 
@@ -1494,16 +1495,16 @@ namespace libgp4 {
 
             
             // Check for Mismatched Content ID's
-            if(playgo_content_id != data.content_id)
-                Errors += $"Content ID Mismatch Detected, Process Aborted\n[playgo-chunk.dat: {playgo_content_id} != param.sfo: {data.content_id}]\n\n";
+            if(playgo_content_id != sfo.content_id)
+                Errors += $"Content ID Mismatch Detected, Process Aborted\n[playgo-chunk.dat: {playgo_content_id} != param.sfo: {sfo.content_id}]\n\n";
 
             
             // Catch Conflicting Project Type Information
-            if (data.category == "gp" && data.app_ver == "01.00") {
+            if (sfo.category == "gp" && sfo.app_ver == "01.00") {
                 Errors += $"Invalid App Version For Patch Package. App Version Must Be Passed 1.00.\n\n";
             }
-            else if(data.category == "gd" && data.app_ver != "01.00") {
-                Errors += $"Invalid App Version For Application Package. App Version Was {data.app_ver}, Must Be 1.00.\n\n";
+            else if(sfo.category == "gd" && sfo.app_ver != "01.00") {
+                Errors += $"Invalid App Version For Application Package. App Version Was {sfo.app_ver}, Must Be 1.00.\n\n";
             }
 
             // Verify Passcode Length
@@ -1511,13 +1512,20 @@ namespace libgp4 {
                 Errors += $"Invalid Password Length, Must Be A 32-Character String.\n\n";
 
             // Make Sure A Folder Path Wasn't Provided In Place of the Base Game Package (In case they thought the tool would detect the right one? idk.)
-            if(BasePackagePath != null && BasePackagePath[BasePackagePath.Length - 1] == '\\')
-                Errors += $"Invalid Base Application .pkg Path.\nDirectory \"{BasePackagePath}\" Was Given.\n\n";
+            if (sfo.category == "gp") {
+                if (BasePackagePath == null) 
+                    Errors += $"Gamedata Is For A Title Update, But No Path Was Provided For The Required Base Game Package.\n\n";
+
+                else if(!File.Exists(BasePackagePath))
+                    Errors += $"Invalid Base Game Package Path Provided. (File \"{BasePackagePath}\" Does Not Exist)\n\n";
+                else if (Directory.Exists(BasePackagePath))
+                    Errors += $"Invalid Base Game Package Path Provided. (Directory \"{BasePackagePath}\" Was Provided Instead)\n\n";
+            }
 
 
 
             //##################################################\\
-            ///  Throw An Exception If Any Errors Were Detected  \\\
+            //  Throw An Exception If Any Errors Were Detected  \\
             //##################################################\\
             if (Errors != string.Empty) {
                 if((ErrorCount = (Errors.Length - Errors.Replace("\n\n", string.Empty).Length) / 2) == 1)
