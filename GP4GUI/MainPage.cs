@@ -216,7 +216,6 @@ namespace GP4GUI {
             this.BrowseBtn.Text = "Browse...";
             this.BrowseBtn.UseVisualStyleBackColor = false;
             this.BrowseBtn.Click += new System.EventHandler(this.BrowseBtn_Click);
-            this.BrowseBtn.MouseClick += new System.Windows.Forms.MouseEventHandler(this.BrowseBtn_Click);
             // 
             // OptionsBtn
             // 
