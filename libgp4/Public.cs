@@ -54,7 +54,7 @@ namespace libgp4 {
                 if (!Directory.Exists(GamedataFolder))
                     throw new DirectoryNotFoundException($"Invalid Gamedata Folder Path Provided. [{(File.Exists(GamedataFolder) ? $"Path \"{GamedataFolder}\" Leads to a File, Not a Folder." : $"Directory \"{GamedataFolder}\" Does Not Exist.")}]");
 
-                SfoParams = new SfoParser(this, GamedataFolder);
+                SfoParams  = new SfoParser(this, GamedataFolder);
                 PlaygoData = new PlaygoParameters(this, GamedataFolder);
             }
         }
@@ -109,7 +109,7 @@ namespace libgp4 {
         public string BasePackagePath {
             get => _BasePackagePath;
             set {
-                _BasePackagePath = value.Replace("\"", string.Empty);
+                _BasePackagePath = value?.Replace("\"", string.Empty);
                 DLog($"BasePackagePath => [{_BasePackagePath}]");
             }
         }
