@@ -120,7 +120,7 @@ namespace libgp4 {
         /// [Defaults to: True]<br/><br/> 
         /// Set Whether Or Not To Use Absolute Or Relative Pathnames For The .gp4 Project's File Listing 
         /// </summary>
-        public bool AbsoluteFilePaths {
+        public bool UseAbsoluteFilePaths {
             get => _AbsoluteFilePaths;
             set {
                 _AbsoluteFilePaths = value;

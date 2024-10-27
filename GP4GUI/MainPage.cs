@@ -28,10 +28,11 @@ namespace GP4GUI {
                 LoggingMethod = (object str) => {
                     OutputWindow.AppendLine($"#libgp4: {str}");
                     OutputWindow.Update();
-                }
+                },
+                #if DEBUG
+                VerboseLogging = true
+                #endif
             };
-
-
         }
 
         private Button NoRunBtn;
@@ -526,61 +527,77 @@ namespace GP4GUI {
             }
 
 
-            
+
             //#
             //## Apply Current Options to GP4Creator Instance, and Apply Defaults to Any Left Unassigned.
             //#
-            gp4.GamedataFolder    = GamedataFolder;
-            gp4.AbsoluteFilePaths = UseAbsoluteFilePaths;
-            gp4.IgnoreKeystone    = IgnoreKeystone;
-            gp4.VerboseLogging    = VerboseOutput;
-
-            // Ensure a Base Game Package Was Specified if a Patch Package is Being Created.
-            if (gp4.SfoParams.category == "gp")
-            gp4.BasePackagePath   = BasePackagePath;
+            #region [.gp4 Options]
+            gp4.GamedataFolder       = GamedataFolder;
+            gp4.UseAbsoluteFilePaths = UseAbsoluteFilePaths;
+            gp4.IgnoreKeystone       = IgnoreKeystone;
+            gp4.VerboseLogging       = VerboseOutput;
+            gp4.BasePackagePath      = BasePackagePath;
+            gp4.Passcode             = Passcode;
+            #endregion
             //#^
 
 
-            
-            //#
-            //## Verify Options.
-            //#
-
-            // Ensure a Base Game Package Was Specified if a Patch Package is Being Created.
-            if (gp4.SfoParams.category == "gp")
-            gp4.BasePackagePath   = BasePackagePath;
-
-            //#^
-
-            //! Assign An Output Directory For The .gp4 If None Has Been Set Yet.
-            if (GP4OutputDirectory == null)
-            {
-                if (!gp4.AbsoluteFilePaths)
-                    GP4OutputDirectory = gp4.GamedataFolder;
-                else
-                    GP4OutputDirectory = gp4.GamedataFolder.Remove(gp4.GamedataFolder.LastIndexOf('\\'));
-
-                WLog($"Assigned \"{GP4OutputDirectory} as .gp4 Project Output Directory.\"\n");
-            }
-
-
-            
-            //# DEBUG/TESTING SHIT
+            //# Print GP4Creator Options
             #if DEBUG
-            // Print GP4Creator Options
             WLog($"\n===============================================");
             foreach (var param in typeof(GP4Creator.SfoParser).GetFields())
             WLog($"{param.Name} == {param.GetValue(gp4.SfoParams)}");
             WLog($"===============================================\n");
-
-            // Conditional Debug Exit
-            if (NoRunBtn.Text.Contains("Yes")) return;
             #endif
+
+
+            //#
+            //## Assign Defaults/Verify Options.
+            //#
+            # region [Assign Defaults/Verify Options]
+
+            // Ensure a Base Game Package Was Specified if a Patch Package is Being Created.
+            if (gp4.SfoParams.category == "gp" && gp4.BasePackagePath.Contains(@"\") && !File.Exists(gp4.BasePackagePath))
+            {
+                WLog($"Warning; Provided Base Package Path isn't Valid (Remedy)");
+            }
+
+            // Assign Default .gp4 Output Directory if Unset
+            if (GP4OutputDirectory == null)
+            {
+                GP4OutputDirectory = gp4.UseAbsoluteFilePaths ?  gp4.GamedataFolder : gp4.GamedataFolder.Remove(gp4.GamedataFolder.LastIndexOf('\\'));
+
+                WLog($"Assigned \"{GP4OutputDirectory} as .gp4 Project Output Directory.\n\n");
+            }
+            else if (!Directory.Exists(GP4OutputDirectory))
+            {
+                WLog($"Error; Invalid .gp4 Output Directory Provided (Directory \"{GP4OutputDirectory}\" Does not Exist).\n\n");
+                return;
+            }
+
+            if (!gp4.IgnoreKeystone && !File.Exists($@"{GamedataFolder}\sce_sys\keystone"))
+            {
+                WLog($"Error; No keystone File Found In Project Folder.\n\n");
+                return;
+            }
+
+            if (gp4.Passcode.Length != 32)
+            {
+                WLog($"Error; Invalid Passcode Length (Should Be 32, Currently {gp4.Passcode.Length})\n\n");
+                return;
+            }
+            #endregion
+            //#^
+
+
 
 
             //#
             //## Begin .gp4 Creation if all's well
             //#
+            #if DEBUG
+            if (!NoRunBtn.Text.Contains("Yes")) // Conditional Debug Exit
+            #endif
             gp4.CreateGP4(GP4OutputDirectory, true);
         }
         #endregion

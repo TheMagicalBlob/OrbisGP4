@@ -96,7 +96,7 @@ namespace libgp4 {
                 file.SetAttribute("targ_path", file_path.Remove(0, gamedata_folder.Length + 1).Replace('\\', '/'));
                 file.SetAttribute(
                     "orig_path",
-                    AbsoluteFilePaths ?
+                    UseAbsoluteFilePaths ?
                     file_path :
                     file_path.Remove(0, gamedata_folder.Length + 1) // Strip
                 );
