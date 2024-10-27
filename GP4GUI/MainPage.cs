@@ -346,19 +346,18 @@ namespace GP4GUI {
         //--     Basic Form Init Functions     --\\
         //#######################################\\
         #region Basic Form Init Functions
-
-        /// <summary>
-        /// Post-InitializeComponent Configuration. (// TODO: Description)
+                                                                    // deng
+        /// <summary> Post-InitializeComponent Configuration.<br/><br/>
+        /// Create Assign Anonomous Event Handlers to Parent and Children.
         /// </summary>
         public void PostInitFormLogic()
         {
-            MinimizeBtn.Click += new EventHandler((sender, e) => ActiveForm.WindowState = FormWindowState.Minimized);
-            MinimizeBtn.MouseEnter += new EventHandler((sender, e) => ((Control)sender).ForeColor = Color.FromArgb(90, 100, 255));
-            MinimizeBtn.MouseLeave += new EventHandler((sender, e) => ((Control)sender).ForeColor = Color.FromArgb(0, 0, 0));
-
-            ExitBtn.Click += new EventHandler((sender, e) => Environment.Exit(0));
-            ExitBtn.MouseEnter += new EventHandler((sender, e) => ((Control)sender).ForeColor = Color.FromArgb(230, 100, 100));
-            ExitBtn.MouseLeave += new EventHandler((sender, e) => ((Control)sender).ForeColor = Color.FromArgb(0, 0, 0));
+            MinimizeBtn.Click      += new EventHandler((sender, e) => ActiveForm.WindowState      = FormWindowState.Minimized     );
+            MinimizeBtn.MouseEnter += new EventHandler((sender, e) => ((Control)sender).ForeColor = Color.FromArgb(90, 100, 255  ));
+            MinimizeBtn.MouseLeave += new EventHandler((sender, e) => ((Control)sender).ForeColor = Color.FromArgb(0 , 0  , 0    ));
+            ExitBtn.Click          += new EventHandler((sender, e) => Environment.Exit(                            0             ));
+            ExitBtn.MouseEnter     += new EventHandler((sender, e) => ((Control)sender).ForeColor = Color.FromArgb(230, 100, 100 ));
+            ExitBtn.MouseLeave     += new EventHandler((sender, e) => ((Control)sender).ForeColor = Color.FromArgb(0  , 0  , 0   ));
 
 
             // Set Event Handlers for Form Dragging
@@ -367,9 +366,7 @@ namespace GP4GUI {
                 MouseIsDown = true;
                 DropdownMenu[1].Visible = DropdownMenu[0].Visible = false;
             });
-            MouseUp += new MouseEventHandler((sender, e) => {
-                MouseIsDown = false;
-            });
+            MouseUp   += new MouseEventHandler((sender, e) => MouseIsDown = false);
             MouseMove += new MouseEventHandler((sender, e) => DragForm());
 
             
@@ -381,13 +378,11 @@ namespace GP4GUI {
                     MouseIsDown = true;
                     DropdownMenu[1].Visible = DropdownMenu[0].Visible = false;
                 });
-                Item.MouseUp   += new MouseEventHandler((sender, e) => {
-                    MouseIsDown = false;
-                });
-
+                Item.MouseUp   += new MouseEventHandler((sender, e) => MouseIsDown = false);
+                
                 // Avoid Applying MoveForm EventHandler to Text Containters (to retain the ability to drag-select text)
                 if (Item.GetType() != typeof(TextBox) && Item.GetType() != typeof(RichTextBox))
-                Item.MouseMove += new MouseEventHandler((sender, e) => DragForm());
+                    Item.MouseMove += new MouseEventHandler((sender, e) => DragForm());
             }
         }
 
