@@ -136,7 +136,7 @@ namespace GP4GUI {
         }
 
         private void InitializeComponent() {
-            this.CreateBtn = new System.Windows.Forms.Button();
+            this.CreateProjectFileBtn = new System.Windows.Forms.Button();
             this.Title = new System.Windows.Forms.Label();
             this.MinimizeBtn = new System.Windows.Forms.Button();
             this.ExitBtn = new System.Windows.Forms.Button();
@@ -150,19 +150,19 @@ namespace GP4GUI {
             this.NoRunBtn = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
-            // CreateBtn
+            // CreateProjectFileBtn
             // 
-            this.CreateBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(125)))), ((int)(((byte)(183)))), ((int)(((byte)(245)))));
-            this.CreateBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.CreateBtn.Font = new System.Drawing.Font("Gadugi", 8.25F, System.Drawing.FontStyle.Bold);
-            this.CreateBtn.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.CreateBtn.Location = new System.Drawing.Point(373, 62);
-            this.CreateBtn.Name = "CreateBtn";
-            this.CreateBtn.Size = new System.Drawing.Size(75, 24);
-            this.CreateBtn.TabIndex = 3;
-            this.CreateBtn.Text = "Build .gp4";
-            this.CreateBtn.UseVisualStyleBackColor = false;
-            this.CreateBtn.Click += new System.EventHandler(this.SetupAndCreateProjectFile);
+            this.CreateProjectFileBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(125)))), ((int)(((byte)(183)))), ((int)(((byte)(245)))));
+            this.CreateProjectFileBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.CreateProjectFileBtn.Font = new System.Drawing.Font("Gadugi", 8.25F, System.Drawing.FontStyle.Bold);
+            this.CreateProjectFileBtn.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.CreateProjectFileBtn.Location = new System.Drawing.Point(373, 62);
+            this.CreateProjectFileBtn.Name = "CreateProjectFileBtn";
+            this.CreateProjectFileBtn.Size = new System.Drawing.Size(75, 24);
+            this.CreateProjectFileBtn.TabIndex = 3;
+            this.CreateProjectFileBtn.Text = "Build .gp4";
+            this.CreateProjectFileBtn.UseVisualStyleBackColor = false;
+            this.CreateProjectFileBtn.Click += new System.EventHandler(this.SetupAndCreateProjectFile);
             // 
             // Title
             // 
@@ -328,7 +328,7 @@ namespace GP4GUI {
             this.Controls.Add(this.MinimizeBtn);
             this.Controls.Add(this.Title);
             this.Controls.Add(this.GamedataFolderPathBox);
-            this.Controls.Add(this.CreateBtn);
+            this.Controls.Add(this.CreateProjectFileBtn);
             this.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "MainForm";
@@ -369,7 +369,6 @@ namespace GP4GUI {
             });
             MouseUp += new MouseEventHandler((sender, e) => {
                 MouseIsDown = false;
-                Azem.BringToFront();
             });
             MouseMove += new MouseEventHandler((sender, e) => DragForm());
 
@@ -384,7 +383,6 @@ namespace GP4GUI {
                 });
                 Item.MouseUp   += new MouseEventHandler((sender, e) => {
                     MouseIsDown = false;
-                    Azem.BringToFront();
                 });
 
                 // Avoid Applying MoveForm EventHandler to Text Containters (to retain the ability to drag-select text)
@@ -413,7 +411,8 @@ namespace GP4GUI {
         private void ToggleOptionsWindowVisibility(object _, EventArgs __)
         {
             Azem.Visible = OptionsPageIsOpen ^= true;
-		    Azem.Location = new Point(Location.X + ((Venat.Size.Width - Azem.Size.Width)/2), Location.Y + 120);
+		    Azem.Location = new Point(Venat.Location.X + (Venat.Size.Width - Azem.Size.Width)/2, Venat.Location.Y + 130);
+            Azem.Update();
 
             DropdownMenu[1].Visible = DropdownMenu[0].Visible = false;
         }
@@ -423,17 +422,19 @@ namespace GP4GUI {
         private void BrowseBtn_Click(object _, EventArgs __)
         {
             // Use the ghastly Directory Tree Dialogue to Choose A Folder
-            if (LegacyFolderSelectionDialogue) {
+            if (LegacyFolderSelectionDialogue)
+            {
                 using (var FBrowser = new FolderBrowserDialog())
-                    if (FBrowser.ShowDialog() == DialogResult.OK) {
-                        GamedataFolderPathBox.Focus();
-                        GamedataFolderPathBox.Text = FBrowser.SelectedPath;
-                        GamedataFolderPathBox.Focus();
-                        BrowseBtn.Focus();
-                    }
+                if (FBrowser.ShowDialog() == DialogResult.OK) {
+                    GamedataFolderPathBox.Focus();
+                    GamedataFolderPathBox.Text = FBrowser.SelectedPath;
+                    GamedataFolderPathBox.Focus();
+                    BrowseBtn.Focus();
+                }
             }
             // Use The Newer "Hackey" Method
-            else {
+            else
+            {
                 var Browser = new OpenFileDialog() {
                     ValidateNames = false,
                     CheckPathExists = false,
@@ -539,9 +540,22 @@ namespace GP4GUI {
             gp4.IgnoreKeystone    = IgnoreKeystone;
             gp4.VerboseLogging    = VerboseOutput;
 
+            // Ensure a Base Game Package Was Specified if a Patch Package is Being Created.
+            if (gp4.SfoParams.category == "gp")
+            gp4.BasePackagePath   = BasePackagePath;
+            //#^
+
+
+            
+            //#
+            //## Verify Options.
+            //#
+
+            // Ensure a Base Game Package Was Specified if a Patch Package is Being Created.
+            if (gp4.SfoParams.category == "gp")
             gp4.BasePackagePath   = BasePackagePath;
 
-
+            //#^
 
             //! Assign An Output Directory For The .gp4 If None Has Been Set Yet.
             if (GP4OutputDirectory == null)
@@ -586,7 +600,7 @@ namespace GP4GUI {
         private TextBox GamedataFolderPathBox;
         private Button BrowseBtn;
         private Button SwapBrowseModeBtn;
-        private Button CreateBtn;
+        private Button CreateProjectFileBtn;
         private Button OptionsBtn;
         private Button ClearLogBtn;
         private Button MinimizeBtn;

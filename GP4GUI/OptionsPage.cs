@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.ComponentModel;
 using static GP4GUI.Common;
+using System.Security.Cryptography.X509Certificates;
 
 
 namespace GP4GUI
@@ -18,6 +19,8 @@ namespace GP4GUI
             TinyVersionLabel.Text = Version; // Set Version Label
         }
 
+        public TextBox BasePackagePathTextBox;
+
 
         //######################################\\
         //--     Design-Related Functions     --\\
@@ -30,34 +33,34 @@ namespace GP4GUI
             base.Dispose(disposing);
         }
         private void InitializeComponent() {
-            this.KeystoneToggleBox = new System.Windows.Forms.CheckBox();
+            this.IgnoreKeystoneCheckBox = new System.Windows.Forms.CheckBox();
             this.Title = new System.Windows.Forms.Label();
             this.CloseBtn = new System.Windows.Forms.Button();
-            this.VerboseOutputBox = new System.Windows.Forms.CheckBox();
-            this.OutputPathBtn = new System.Windows.Forms.Button();
-            this.BasePackagePathBtn = new System.Windows.Forms.Button();
-            this.FilterBrowseBtn = new System.Windows.Forms.Button();
+            this.VerboseOutputCheckBox = new System.Windows.Forms.CheckBox();
+            this.GP4OutputDirectoryBrowseBtn = new System.Windows.Forms.Button();
+            this.BasePackagePathBrowseBtn = new System.Windows.Forms.Button();
+            this.FileBlacklistBrowseBtn = new System.Windows.Forms.Button();
             this.TinyVersionLabel = new System.Windows.Forms.Label();
-            this.AbsolutePathCheckBox = new System.Windows.Forms.CheckBox();
+            this.UseAbsolutePathsCheckBox = new System.Windows.Forms.CheckBox();
             this.dummy = new System.Windows.Forms.Button();
-            this.CustomPasscodeTextBox = new GP4GUI.TextBox();
-            this.FilterTextBox = new GP4GUI.TextBox();
+            this.PackagePasscodeTextBox = new GP4GUI.TextBox();
+            this.FileBlacklistTextBox = new GP4GUI.TextBox();
+            this.GP4OutputDirectoryTextBox = new GP4GUI.TextBox();
             this.BasePackagePathTextBox = new GP4GUI.TextBox();
-            this.OutputPathTextBox = new GP4GUI.TextBox();
             this.SuspendLayout();
             // 
-            // KeystoneToggleBox
+            // IgnoreKeystoneCheckBox
             // 
-            this.KeystoneToggleBox.AutoSize = true;
-            this.KeystoneToggleBox.Font = new System.Drawing.Font("Gadugi", 8.25F);
-            this.KeystoneToggleBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(240)))), ((int)(((byte)(250)))));
-            this.KeystoneToggleBox.Location = new System.Drawing.Point(172, 97);
-            this.KeystoneToggleBox.Name = "KeystoneToggleBox";
-            this.KeystoneToggleBox.Size = new System.Drawing.Size(109, 18);
-            this.KeystoneToggleBox.TabIndex = 5;
-            this.KeystoneToggleBox.Text = "Ignore Keystone";
-            this.KeystoneToggleBox.UseVisualStyleBackColor = true;
-            this.KeystoneToggleBox.CheckedChanged += new System.EventHandler(this.KeystoneToggleBox_CheckedChanged);
+            this.IgnoreKeystoneCheckBox.AutoSize = true;
+            this.IgnoreKeystoneCheckBox.Font = new System.Drawing.Font("Gadugi", 8.25F);
+            this.IgnoreKeystoneCheckBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(240)))), ((int)(((byte)(250)))));
+            this.IgnoreKeystoneCheckBox.Location = new System.Drawing.Point(172, 97);
+            this.IgnoreKeystoneCheckBox.Name = "IgnoreKeystoneCheckBox";
+            this.IgnoreKeystoneCheckBox.Size = new System.Drawing.Size(109, 18);
+            this.IgnoreKeystoneCheckBox.TabIndex = 5;
+            this.IgnoreKeystoneCheckBox.Text = "Ignore Keystone";
+            this.IgnoreKeystoneCheckBox.UseVisualStyleBackColor = true;
+            this.IgnoreKeystoneCheckBox.CheckedChanged += new System.EventHandler(this.KeystoneToggleBox_CheckedChanged);
             // 
             // Title
             // 
@@ -84,60 +87,60 @@ namespace GP4GUI
             this.CloseBtn.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.CloseBtn.UseVisualStyleBackColor = false;
             // 
-            // VerboseOutputBox
+            // VerboseOutputCheckBox
             // 
-            this.VerboseOutputBox.AutoSize = true;
-            this.VerboseOutputBox.Font = new System.Drawing.Font("Gadugi", 8.25F);
-            this.VerboseOutputBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(240)))), ((int)(((byte)(250)))));
-            this.VerboseOutputBox.Location = new System.Drawing.Point(291, 97);
-            this.VerboseOutputBox.Name = "VerboseOutputBox";
-            this.VerboseOutputBox.Size = new System.Drawing.Size(109, 18);
-            this.VerboseOutputBox.TabIndex = 6;
-            this.VerboseOutputBox.Text = "Verbose Output";
-            this.VerboseOutputBox.UseVisualStyleBackColor = true;
-            this.VerboseOutputBox.CheckedChanged += new System.EventHandler(this.VerboseOutputBox_CheckedChanged);
+            this.VerboseOutputCheckBox.AutoSize = true;
+            this.VerboseOutputCheckBox.Font = new System.Drawing.Font("Gadugi", 8.25F);
+            this.VerboseOutputCheckBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(240)))), ((int)(((byte)(250)))));
+            this.VerboseOutputCheckBox.Location = new System.Drawing.Point(291, 97);
+            this.VerboseOutputCheckBox.Name = "VerboseOutputCheckBox";
+            this.VerboseOutputCheckBox.Size = new System.Drawing.Size(109, 18);
+            this.VerboseOutputCheckBox.TabIndex = 6;
+            this.VerboseOutputCheckBox.Text = "Verbose Output";
+            this.VerboseOutputCheckBox.UseVisualStyleBackColor = true;
+            this.VerboseOutputCheckBox.CheckedChanged += new System.EventHandler(this.VerboseOutputBox_CheckedChanged);
             // 
-            // OutputPathBtn
+            // GP4OutputDirectoryBrowseBtn
             // 
-            this.OutputPathBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(125)))), ((int)(((byte)(183)))), ((int)(((byte)(245)))));
-            this.OutputPathBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.OutputPathBtn.Font = new System.Drawing.Font("Gadugi", 8.25F, System.Drawing.FontStyle.Bold);
-            this.OutputPathBtn.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.OutputPathBtn.Location = new System.Drawing.Point(347, 34);
-            this.OutputPathBtn.Name = "OutputPathBtn";
-            this.OutputPathBtn.Size = new System.Drawing.Size(62, 24);
-            this.OutputPathBtn.TabIndex = 8;
-            this.OutputPathBtn.Text = "Browse...";
-            this.OutputPathBtn.UseVisualStyleBackColor = false;
-            this.OutputPathBtn.Click += new System.EventHandler(this.OutputPathBrowseBtn_Click);
+            this.GP4OutputDirectoryBrowseBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(125)))), ((int)(((byte)(183)))), ((int)(((byte)(245)))));
+            this.GP4OutputDirectoryBrowseBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.GP4OutputDirectoryBrowseBtn.Font = new System.Drawing.Font("Gadugi", 8.25F, System.Drawing.FontStyle.Bold);
+            this.GP4OutputDirectoryBrowseBtn.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.GP4OutputDirectoryBrowseBtn.Location = new System.Drawing.Point(347, 34);
+            this.GP4OutputDirectoryBrowseBtn.Name = "GP4OutputDirectoryBrowseBtn";
+            this.GP4OutputDirectoryBrowseBtn.Size = new System.Drawing.Size(62, 24);
+            this.GP4OutputDirectoryBrowseBtn.TabIndex = 8;
+            this.GP4OutputDirectoryBrowseBtn.Text = "Browse...";
+            this.GP4OutputDirectoryBrowseBtn.UseVisualStyleBackColor = false;
+            this.GP4OutputDirectoryBrowseBtn.Click += new System.EventHandler(this.OutputPathBrowseBtn_Click);
             // 
-            // BasePackagePathBtn
+            // BasePackagePathBrowseBtn
             // 
-            this.BasePackagePathBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(125)))), ((int)(((byte)(183)))), ((int)(((byte)(245)))));
-            this.BasePackagePathBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.BasePackagePathBtn.Font = new System.Drawing.Font("Gadugi", 8.25F, System.Drawing.FontStyle.Bold);
-            this.BasePackagePathBtn.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.BasePackagePathBtn.Location = new System.Drawing.Point(347, 62);
-            this.BasePackagePathBtn.Name = "BasePackagePathBtn";
-            this.BasePackagePathBtn.Size = new System.Drawing.Size(62, 24);
-            this.BasePackagePathBtn.TabIndex = 9;
-            this.BasePackagePathBtn.Text = "Browse...";
-            this.BasePackagePathBtn.UseVisualStyleBackColor = false;
-            this.BasePackagePathBtn.Click += new System.EventHandler(this.BasePackagePathBrowseBtn_Click);
+            this.BasePackagePathBrowseBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(125)))), ((int)(((byte)(183)))), ((int)(((byte)(245)))));
+            this.BasePackagePathBrowseBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.BasePackagePathBrowseBtn.Font = new System.Drawing.Font("Gadugi", 8.25F, System.Drawing.FontStyle.Bold);
+            this.BasePackagePathBrowseBtn.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.BasePackagePathBrowseBtn.Location = new System.Drawing.Point(347, 62);
+            this.BasePackagePathBrowseBtn.Name = "BasePackagePathBrowseBtn";
+            this.BasePackagePathBrowseBtn.Size = new System.Drawing.Size(62, 24);
+            this.BasePackagePathBrowseBtn.TabIndex = 9;
+            this.BasePackagePathBrowseBtn.Text = "Browse...";
+            this.BasePackagePathBrowseBtn.UseVisualStyleBackColor = false;
+            this.BasePackagePathBrowseBtn.Click += new System.EventHandler(this.BasePackagePathBrowseBtn_Click);
             // 
-            // FilterBrowseBtn
+            // FileBlacklistBrowseBtn
             // 
-            this.FilterBrowseBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(125)))), ((int)(((byte)(183)))), ((int)(((byte)(245)))));
-            this.FilterBrowseBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.FilterBrowseBtn.Font = new System.Drawing.Font("Gadugi", 8.25F, System.Drawing.FontStyle.Bold);
-            this.FilterBrowseBtn.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.FilterBrowseBtn.Location = new System.Drawing.Point(347, 127);
-            this.FilterBrowseBtn.Name = "FilterBrowseBtn";
-            this.FilterBrowseBtn.Size = new System.Drawing.Size(62, 24);
-            this.FilterBrowseBtn.TabIndex = 10;
-            this.FilterBrowseBtn.Text = "Browse...";
-            this.FilterBrowseBtn.UseVisualStyleBackColor = false;
-            this.FilterBrowseBtn.Click += new System.EventHandler(this.FilterBrowseBtn_Click);
+            this.FileBlacklistBrowseBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(125)))), ((int)(((byte)(183)))), ((int)(((byte)(245)))));
+            this.FileBlacklistBrowseBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.FileBlacklistBrowseBtn.Font = new System.Drawing.Font("Gadugi", 8.25F, System.Drawing.FontStyle.Bold);
+            this.FileBlacklistBrowseBtn.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.FileBlacklistBrowseBtn.Location = new System.Drawing.Point(347, 127);
+            this.FileBlacklistBrowseBtn.Name = "FileBlacklistBrowseBtn";
+            this.FileBlacklistBrowseBtn.Size = new System.Drawing.Size(62, 24);
+            this.FileBlacklistBrowseBtn.TabIndex = 10;
+            this.FileBlacklistBrowseBtn.Text = "Browse...";
+            this.FileBlacklistBrowseBtn.UseVisualStyleBackColor = false;
+            this.FileBlacklistBrowseBtn.Click += new System.EventHandler(this.FilterBrowseBtn_Click);
             // 
             // TinyVersionLabel
             // 
@@ -150,18 +153,18 @@ namespace GP4GUI
             this.TinyVersionLabel.TabIndex = 0;
             this.TinyVersionLabel.Text = "placeholder";
             // 
-            // AbsolutePathCheckBox
+            // UseAbsolutePathsCheckBox
             // 
-            this.AbsolutePathCheckBox.AutoSize = true;
-            this.AbsolutePathCheckBox.Font = new System.Drawing.Font("Gadugi", 8.25F);
-            this.AbsolutePathCheckBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(240)))), ((int)(((byte)(250)))));
-            this.AbsolutePathCheckBox.Location = new System.Drawing.Point(9, 97);
-            this.AbsolutePathCheckBox.Name = "AbsolutePathCheckBox";
-            this.AbsolutePathCheckBox.Size = new System.Drawing.Size(157, 18);
-            this.AbsolutePathCheckBox.TabIndex = 12;
-            this.AbsolutePathCheckBox.Text = "Use Absolute Path Names";
-            this.AbsolutePathCheckBox.UseVisualStyleBackColor = true;
-            this.AbsolutePathCheckBox.CheckedChanged += new System.EventHandler(this.AbsolutePathCheckBox_CheckedChanged);
+            this.UseAbsolutePathsCheckBox.AutoSize = true;
+            this.UseAbsolutePathsCheckBox.Font = new System.Drawing.Font("Gadugi", 8.25F);
+            this.UseAbsolutePathsCheckBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(240)))), ((int)(((byte)(250)))));
+            this.UseAbsolutePathsCheckBox.Location = new System.Drawing.Point(9, 97);
+            this.UseAbsolutePathsCheckBox.Name = "UseAbsolutePathsCheckBox";
+            this.UseAbsolutePathsCheckBox.Size = new System.Drawing.Size(157, 18);
+            this.UseAbsolutePathsCheckBox.TabIndex = 12;
+            this.UseAbsolutePathsCheckBox.Text = "Use Absolute Path Names";
+            this.UseAbsolutePathsCheckBox.UseVisualStyleBackColor = true;
+            this.UseAbsolutePathsCheckBox.CheckedChanged += new System.EventHandler(this.AbsolutePathCheckBox_CheckedChanged);
             // 
             // dummy
             // 
@@ -175,29 +178,40 @@ namespace GP4GUI
             this.dummy.TabIndex = 0;
             this.dummy.UseVisualStyleBackColor = false;
             // 
-            // CustomPasscodeTextBox
+            // PackagePasscodeTextBox
             // 
-            this.CustomPasscodeTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(240)))), ((int)(((byte)(250)))));
-            this.CustomPasscodeTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.CustomPasscodeTextBox.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Italic);
-            this.CustomPasscodeTextBox.Location = new System.Drawing.Point(6, 155);
-            this.CustomPasscodeTextBox.MaxLength = 32;
-            this.CustomPasscodeTextBox.Name = "CustomPasscodeTextBox";
-            this.CustomPasscodeTextBox.Size = new System.Drawing.Size(340, 24);
-            this.CustomPasscodeTextBox.TabIndex = 4;
-            this.CustomPasscodeTextBox.Text = "Add Custom .pkg Passcode Here (Defaults To All Zeros)";
+            this.PackagePasscodeTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(240)))), ((int)(((byte)(250)))));
+            this.PackagePasscodeTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.PackagePasscodeTextBox.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Italic);
+            this.PackagePasscodeTextBox.Location = new System.Drawing.Point(6, 155);
+            this.PackagePasscodeTextBox.MaxLength = 32;
+            this.PackagePasscodeTextBox.Name = "PackagePasscodeTextBox";
+            this.PackagePasscodeTextBox.Size = new System.Drawing.Size(340, 24);
+            this.PackagePasscodeTextBox.TabIndex = 4;
+            this.PackagePasscodeTextBox.Text = "Add Custom .pkg Passcode Here (Defaults To All Zeros)";
             // 
-            // FilterTextBox
+            // FileBlacklistTextBox
             // 
-            this.FilterTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(240)))), ((int)(((byte)(250)))));
-            this.FilterTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.FilterTextBox.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Italic);
-            this.FilterTextBox.Location = new System.Drawing.Point(7, 127);
-            this.FilterTextBox.Name = "FilterTextBox";
-            this.FilterTextBox.Size = new System.Drawing.Size(339, 24);
-            this.FilterTextBox.TabIndex = 3;
-            this.FilterTextBox.Text = "Blacklisted Files/Folders To Exclude, Seperated By ; or ,";
-            this.FilterTextBox.TextChanged += new System.EventHandler(this.FilterTextBox_TextChanged);
+            this.FileBlacklistTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(240)))), ((int)(((byte)(250)))));
+            this.FileBlacklistTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.FileBlacklistTextBox.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Italic);
+            this.FileBlacklistTextBox.Location = new System.Drawing.Point(7, 127);
+            this.FileBlacklistTextBox.Name = "FileBlacklistTextBox";
+            this.FileBlacklistTextBox.Size = new System.Drawing.Size(339, 24);
+            this.FileBlacklistTextBox.TabIndex = 3;
+            this.FileBlacklistTextBox.Text = "Blacklisted Files/Folders To Exclude, Seperated By ; or ,";
+            this.FileBlacklistTextBox.TextChanged += new System.EventHandler(this.FilterTextBox_TextChanged);
+            // 
+            // GP4OutputDirectoryTextBox
+            // 
+            this.GP4OutputDirectoryTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(240)))), ((int)(((byte)(250)))));
+            this.GP4OutputDirectoryTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.GP4OutputDirectoryTextBox.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Italic);
+            this.GP4OutputDirectoryTextBox.Location = new System.Drawing.Point(6, 34);
+            this.GP4OutputDirectoryTextBox.Name = "GP4OutputDirectoryTextBox";
+            this.GP4OutputDirectoryTextBox.Size = new System.Drawing.Size(340, 24);
+            this.GP4OutputDirectoryTextBox.TabIndex = 1;
+            this.GP4OutputDirectoryTextBox.Text = "Add A Custom .gp4 Output Directory Here...";
             // 
             // BasePackagePathTextBox
             // 
@@ -210,17 +224,6 @@ namespace GP4GUI
             this.BasePackagePathTextBox.TabIndex = 2;
             this.BasePackagePathTextBox.Text = "Base Game .pkg Path... (For Game Patches)";
             // 
-            // OutputPathTextBox
-            // 
-            this.OutputPathTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(240)))), ((int)(((byte)(250)))));
-            this.OutputPathTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.OutputPathTextBox.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Italic);
-            this.OutputPathTextBox.Location = new System.Drawing.Point(6, 34);
-            this.OutputPathTextBox.Name = "OutputPathTextBox";
-            this.OutputPathTextBox.Size = new System.Drawing.Size(340, 24);
-            this.OutputPathTextBox.TabIndex = 1;
-            this.OutputPathTextBox.Text = "Add A Custom .gp4 Output Directory Here...";
-            // 
             // OptionsPage
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -228,19 +231,19 @@ namespace GP4GUI
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(18)))), ((int)(((byte)(18)))), ((int)(((byte)(18)))));
             this.ClientSize = new System.Drawing.Size(415, 188);
             this.Controls.Add(this.dummy);
-            this.Controls.Add(this.AbsolutePathCheckBox);
+            this.Controls.Add(this.UseAbsolutePathsCheckBox);
             this.Controls.Add(this.TinyVersionLabel);
-            this.Controls.Add(this.FilterBrowseBtn);
-            this.Controls.Add(this.BasePackagePathBtn);
-            this.Controls.Add(this.OutputPathBtn);
-            this.Controls.Add(this.CustomPasscodeTextBox);
-            this.Controls.Add(this.FilterTextBox);
+            this.Controls.Add(this.FileBlacklistBrowseBtn);
+            this.Controls.Add(this.BasePackagePathBrowseBtn);
+            this.Controls.Add(this.GP4OutputDirectoryBrowseBtn);
+            this.Controls.Add(this.PackagePasscodeTextBox);
+            this.Controls.Add(this.FileBlacklistTextBox);
             this.Controls.Add(this.BasePackagePathTextBox);
-            this.Controls.Add(this.VerboseOutputBox);
+            this.Controls.Add(this.VerboseOutputCheckBox);
             this.Controls.Add(this.CloseBtn);
             this.Controls.Add(this.Title);
-            this.Controls.Add(this.OutputPathTextBox);
-            this.Controls.Add(this.KeystoneToggleBox);
+            this.Controls.Add(this.GP4OutputDirectoryTextBox);
+            this.Controls.Add(this.IgnoreKeystoneCheckBox);
             this.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "OptionsPage";
@@ -256,8 +259,32 @@ namespace GP4GUI
         /// </summary>
         public void PostInitFormLogic()
         {
-            CloseBtn.Click += new EventHandler((sender, e) => Azem.Visible = OptionsPageIsOpen = false);
-            OptionsFormLocation = new Point((Venat.Size.Width - Size.Width)/2, Location.Y + 120); // Store Expected Options Form Offset.
+            // tst
+            this.TopMost = true;
+
+            // Anonomously Create and Set CloseBtn Event Handler
+            CloseBtn.Click += new EventHandler((sender, e) =>
+            {
+                // Hide OptionsPage Form
+                Azem.Visible = OptionsPageIsOpen = false;    
+                
+                // .gp4 Project Output Directory
+                if (!GP4OutputDirectoryTextBox.IsDefault) GP4OutputDirectory = GP4OutputDirectoryTextBox.Text;
+                // Base .pkg Path
+                if (!BasePackagePathTextBox.IsDefault)    BasePackagePath = BasePackagePathTextBox.Text;
+                // File Filter
+                if (!FileBlacklistTextBox.IsDefault)      BlacklistedItems = FileBlacklistTextBox.Text.Replace("\"", string.Empty).Split(',', ';');
+                // Base .pkg Path
+                if (!BasePackagePathTextBox.IsDefault)    BasePackagePath = BasePackagePathTextBox.Text;
+                
+                // File Path Mode
+                UseAbsoluteFilePaths = UseAbsolutePathsCheckBox.Checked;
+                // Keystone Setting
+                IgnoreKeystone       = IgnoreKeystoneCheckBox.Checked;
+                // Verbosity
+                VerboseOutput        = VerboseOutputCheckBox.Checked;
+
+            });
 
 
             // Set Event Handlers for Form Dragging
@@ -302,11 +329,11 @@ namespace GP4GUI
         #region Options Related Functions
         
         
-        private void AbsolutePathCheckBox_CheckedChanged(object sender, EventArgs e) => UseAbsoluteFilePaths = AbsolutePathCheckBox.Checked;
+        private void AbsolutePathCheckBox_CheckedChanged(object sender, EventArgs e) => UseAbsoluteFilePaths = UseAbsolutePathsCheckBox.Checked;
 
-        private void KeystoneToggleBox_CheckedChanged(object sender, EventArgs e)    => IgnoreKeystone = KeystoneToggleBox.Checked;
+        private void KeystoneToggleBox_CheckedChanged(object sender, EventArgs e)    => IgnoreKeystone = IgnoreKeystoneCheckBox.Checked;
         
-        private void VerboseOutputBox_CheckedChanged(object sender, EventArgs e)     => VerboseOutput = VerboseOutputBox.Checked;
+        private void VerboseOutputBox_CheckedChanged(object sender, EventArgs e)     => VerboseOutput = VerboseOutputCheckBox.Checked;
 
 
 
@@ -317,7 +344,7 @@ namespace GP4GUI
             if (LegacyFolderSelectionDialogue) {
                 using (var ShitBrowser = new FolderBrowserDialog())
                     if (ShitBrowser.ShowDialog() == DialogResult.OK)
-                        OutputPathTextBox.Text = ShitBrowser.SelectedPath;
+                        GP4OutputDirectoryTextBox.Text = ShitBrowser.SelectedPath;
             }
             // Use The Newer "Hackey" Method
             else {
@@ -330,7 +357,7 @@ namespace GP4GUI
                 };
 
                 if (CrapBrowser.ShowDialog() == DialogResult.OK)
-                    OutputPathTextBox.Text = CrapBrowser.FileName.Remove(CrapBrowser.FileName.LastIndexOf('\\'));
+                    GP4OutputDirectoryTextBox.Text = CrapBrowser.FileName.Remove(CrapBrowser.FileName.LastIndexOf('\\'));
             }
         }
 
@@ -353,11 +380,11 @@ namespace GP4GUI
             };
 
             if(Browser.ShowDialog() == DialogResult.OK) {
-                if(FilterTextBox.IsDefault)
+                if(FileBlacklistTextBox.IsDefault)
                     ((TextBox)sender).Clear();
 
                 foreach(string file in Browser.FileNames)
-                    FilterTextBox.Text += $"{file},";
+                    FileBlacklistTextBox.Text += $"{file},";
             }
 
             Browser.Dispose();
@@ -380,14 +407,14 @@ namespace GP4GUI
 
             // Get Amount Of Filtered Files/Paths
             var filter_strings_length = 1;
-            foreach(var c in (FilterTextBox.Text.Trim(',', ';')).ToCharArray())
+            foreach(var c in (FileBlacklistTextBox.Text.Trim(',', ';')).ToCharArray())
                 if(c == ';' || c == ',')
                     filter_strings_length++;
 
 
             gp4.BlacklistedFilesOrFolders = new string[filter_strings_length];
 
-            var buffer = Encoding.UTF8.GetBytes((FilterTextBox.Text + ';').ToCharArray());
+            var buffer = Encoding.UTF8.GetBytes((FileBlacklistTextBox.Text + ';').ToCharArray());
 
             try {
                 for(int array_index = 0, char_index = 0; array_index < gp4.BlacklistedFilesOrFolders.Length; array_index++) {
@@ -416,18 +443,22 @@ namespace GP4GUI
         #region ControlDeclarations
         private Label TinyVersionLabel;
         private Label Title;
-        private Button dummy; // I forget why this is here
         private Button CloseBtn;
-        private Button OutputPathBtn;
-        private Button BasePackagePathBtn;
-        private Button FilterBrowseBtn;
-        private CheckBox KeystoneToggleBox;
-        private CheckBox VerboseOutputBox;
-        private CheckBox AbsolutePathCheckBox;
-        private TextBox OutputPathTextBox;
-        private TextBox BasePackagePathTextBox;
-        private TextBox FilterTextBox;
-        private TextBox CustomPasscodeTextBox;
+        private Button GP4OutputDirectoryBrowseBtn;
+        private Button BasePackagePathBrowseBtn;
+        private Button FileBlacklistBrowseBtn;
+        public CheckBox IgnoreKeystoneCheckBox;
+        public CheckBox VerboseOutputCheckBox;
+        public CheckBox UseAbsolutePathsCheckBox;
+        public TextBox GP4OutputDirectoryTextBox;
+        public TextBox FileBlacklistTextBox;
+        public TextBox PackagePasscodeTextBox;
+        private Button dummy; // I forget why this is here
+
+        private void BasePackagePathTextBox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
         #endregion
 
         ///==================================\\\

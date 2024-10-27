@@ -105,21 +105,21 @@ namespace GP4GUI {
 
         // Handle Form Dragging for Borderless Form
         public static void DragForm() {
-            if(MouseIsDown) {
+            if(MouseIsDown)
+            {
                 Venat.Location = new Point(Form.MousePosition.X - MouseDif.X, Form.MousePosition.Y - MouseDif.Y);
-                Venat.Update();
+                if (Azem != null)
+                    Azem.Location = new Point(Form.MousePosition.X - MouseDif.X + (Venat.Size.Width - Azem.Size.Width)/2, Venat.Location.Y + 130);
 
-                if (Azem != null) {
-                    Azem.Location = new Point(Form.MousePosition.X - MouseDif.X + OptionsFormLocation.X, Form.MousePosition.Y - MouseDif.Y + OptionsFormLocation.Y);
-                    Azem.Update();
-                }
+                
+                Venat.Update();
             }
         }
 
         
         // Draw a Thin Border for the Control On-Paint
         public static void PaintBorder(object sender, PaintEventArgs e) {
-            var ItemPtr = (Form)sender;
+            var ItemPtr = sender as Form;
 
             Point[] Border = new Point[] {
                 Point.Empty,
