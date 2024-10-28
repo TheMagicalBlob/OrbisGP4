@@ -5,7 +5,6 @@ using System.IO;
 using System.Windows.Forms;
 using static GP4GUI.Common;
 using libgp4;
-using System.Reflection;
 
 namespace GP4GUI {
     public partial class MainForm : Form {
@@ -24,13 +23,13 @@ namespace GP4GUI {
             _OutputWindow = OutputWindow;
 
             // Initialize .gp4 Creator Instance, and Set Logging Method to OutputWindow
-            gp4 = new GP4Creator() {
+            gp4 = new GP4Creator {
                 LoggingMethod = (object str) => {
                     OutputWindow.AppendLine($"#libgp4: {str}");
                     OutputWindow.Update();
                 },
                 #if DEBUG
-                VerboseLogging = true
+                VerboseOutput = true
                 #endif
             };
         }
@@ -42,7 +41,7 @@ namespace GP4GUI {
         private void TestBtn_Click(object sender, EventArgs e) {
             #if DEBUG
 
-            gp4.VerboseLogging = true;
+            gp4.VerboseOutput = true;
             var newgp4path = gp4.CreateGP4(@"C:\Users\msblob\gp4", true);
             if (newgp4path == null) {
                 WLog("Error: CreateGP4() Returned Null, Aborting.");
@@ -420,27 +419,26 @@ namespace GP4GUI {
             // Use the ghastly Directory Tree Dialogue to Choose A Folder
             if (LegacyFolderSelectionDialogue)
             {
-                using (var FBrowser = new FolderBrowserDialog())
-                if (FBrowser.ShowDialog() == DialogResult.OK) {
-                    GamedataFolderPathBox.Focus();
-                    GamedataFolderPathBox.Text = FBrowser.SelectedPath;
-                    GamedataFolderPathBox.Focus();
-                    BrowseBtn.Focus();
+                using (var FBrowser = new FolderBrowserDialog { Description = "Please Select the Desired Gamedata Folder" })
+                {
+                    if (FBrowser.ShowDialog() == DialogResult.OK) {
+                        GamedataFolderPathBox.Set(FBrowser.SelectedPath);
+                    }
                 }
+
             }
             // Use The Newer "Hackey" Method
-            else
-            {
-                var Browser = new OpenFileDialog() {
-                    ValidateNames = false,
+            else {
+                using(var Browser = new OpenFileDialog {
+                    ValidateNames   = false,
                     CheckPathExists = false,
                     CheckFileExists = false,
-                    FileName = "Press 'Open' Once Inside The Desired Folder.",
-                    Filter = "Folder Selection|*."
-                };
-
+                    Title    = "(Don't click anything IN the desired folder, this dialogue is terrible)", 
+                    Filter   = "Folder Selection|*.",
+                    FileName = "Press 'Open' Inside The Desired Folder."
+                })
                 if (Browser.ShowDialog() == DialogResult.OK)
-                    GamedataFolderPathBox.Text = Browser.FileName.Remove(Browser.FileName.LastIndexOf('\\'));
+                    GamedataFolderPathBox.Set(Browser.FileName.Remove(Browser.FileName.LastIndexOf('\\')));
             }
         }
 
@@ -532,10 +530,12 @@ namespace GP4GUI {
             //## Apply Current Options to GP4Creator Instance, and Apply Defaults to Any Left Unassigned.
             //#
             #region [.gp4 Options]
+            if (OptionsPageIsOpen) Azem.SaveOptions();
+
             gp4.GamedataFolder       = GamedataFolder;
             gp4.UseAbsoluteFilePaths = UseAbsoluteFilePaths;
             gp4.IgnoreKeystone       = IgnoreKeystone;
-            gp4.VerboseLogging       = VerboseOutput;
+            gp4.VerboseOutput       = VerboseOutput;
             gp4.BasePackagePath      = BasePackagePath;
             gp4.Passcode             = Passcode;
             #endregion
@@ -562,31 +562,38 @@ namespace GP4GUI {
                 WLog($"Warning; Provided Base Package Path isn't Valid (Remedy)");
             }
 
+
             // Assign Default .gp4 Output Directory if Unset
             if (GP4OutputDirectory == null)
             {
                 GP4OutputDirectory = gp4.UseAbsoluteFilePaths ?  gp4.GamedataFolder : gp4.GamedataFolder.Remove(gp4.GamedataFolder.LastIndexOf('\\'));
 
-                WLog($"Assigned \"{GP4OutputDirectory} as .gp4 Project Output Directory.\n\n");
+                WLog($"Assigned \"{GP4OutputDirectory}\" as .gp4 Project Output Directory.\n\n");
             }
+            // Verify Provided GP4OutputDirectory Path
             else if (!Directory.Exists(GP4OutputDirectory))
             {
                 WLog($"Error; Invalid .gp4 Output Directory Provided (Directory \"{GP4OutputDirectory}\" Does not Exist).\n\n");
                 return;
             }
 
+
+            // Ensure Keystone is Present if Applicable
             if (!gp4.IgnoreKeystone && !File.Exists($@"{GamedataFolder}\sce_sys\keystone"))
             {
                 WLog($"Error; No keystone File Found In Project Folder.\n\n");
                 return;
             }
 
+
+            // Verify Passcode Length
             if (gp4.Passcode.Length != 32)
             {
                 WLog($"Error; Invalid Passcode Length (Should Be 32, Currently {gp4.Passcode.Length})\n\n");
                 return;
             }
-            #endregion
+
+            #endregion [Assign Defaults/Verify Options]
             //#^
 
 

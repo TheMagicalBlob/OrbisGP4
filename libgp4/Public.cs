@@ -48,7 +48,7 @@ namespace libgp4 {
         public string GamedataFolder {
             get => _GamedataFolder;
             set {
-                _GamedataFolder = value;
+                _GamedataFolder = value ?? string.Empty;
                 DLog($"GamedataFolder => [{_GamedataFolder}]");
 
                 if (!Directory.Exists(GamedataFolder))
@@ -59,6 +59,22 @@ namespace libgp4 {
             }
         }
         private string _GamedataFolder;
+
+        
+        /// <summary> Output Directory for the .go4 Project File.
+        ///</summary>
+        public string OutputDirectory {
+            get => _OutputDirectory;
+            set {
+                _OutputDirectory = value ?? string.Empty;
+                DLog($"OutputDirectory => [{_OutputDirectory}]");
+
+                // TODO: make sure this works as intended
+                if (!Directory.Exists(OutputDirectory) && !Directory.CreateDirectory(OutputDirectory).Exists)
+                    throw new DirectoryNotFoundException($"Invalid Output Directory Provided for .gp4 Project. [{(File.Exists(OutputDirectory) ? $"Path \"{OutputDirectory}\" Leads to a File, Not a Folder." : $"Directory \"{OutputDirectory}\" Does Not Exist.")}]");
+            }
+        }
+        private string _OutputDirectory;
 
 
         /// <summary>
@@ -77,13 +93,13 @@ namespace libgp4 {
 
 
         /// <summary>
-        /// The 32-bit Key Used To Encrypt The .pkg.  (Required For Extraction With orbis-pub-chk)
-        /// <br/><br/> (No Effect On Dumping)
+        /// The Key Used To Encrypt The Package The Generated .gp4 Project Is For.
+        /// <br/>(must be 32 characters long, required for extraction with orbis-pub-chk. no effect on dumping)
         /// </summary>
         public string Passcode {
             get => _Passcode;
-            set {
-                _Passcode = value;
+            set {                     
+                _Passcode = value ?? string.Empty;
                 DLog($"Passcode => [{_Passcode}]");
             }
         }
@@ -93,10 +109,10 @@ namespace libgp4 {
         /// <summary>
         /// An Array Containing The Names Of Any Files Or Folders That Are To Be Excluded From The .gp4 Project.
         /// </summary>
-        public string[] BlacklistedFilesOrFolders {
+        public string[] FileBlacklist {
             get => _BlacklistedFilesOrFolders;
             set {
-                _BlacklistedFilesOrFolders = value;
+                _BlacklistedFilesOrFolders = value ?? Array.Empty<string>();
                 DLog($"BlacklistedFilesOrFolders => [{string.Join(", ", _BlacklistedFilesOrFolders ?? Array.Empty<string>())}]");
             }
         }
@@ -137,7 +153,7 @@ namespace libgp4 {
         public string AppTitle {
             get => _AppTitle;
             private set {
-                _AppTitle = value;
+                _AppTitle = value ?? string.Empty;
                 DLog($"AppTitle => [{_AppTitle}]");
             }
         }
@@ -176,7 +192,7 @@ namespace libgp4 {
         public string TargetAppVer {
             get => _TargetAppVer;
             private set {
-                _TargetAppVer = value;
+                _TargetAppVer = value ?? string.Empty;
                 DLog($"TargetAppVer => [{_TargetAppVer}]");
             }
         }
@@ -189,7 +205,7 @@ namespace libgp4 {
         public string SfoCreationDate {
             get => _SfoCreationDate;
             private set {
-                _SfoCreationDate = value;
+                _SfoCreationDate = value ?? string.Empty;
                 DLog($"SfoCreationDate => [{_SfoCreationDate}]");
             }
         }
@@ -202,7 +218,7 @@ namespace libgp4 {
         public string SdkVersion {
             get => _SdkVersion;
             private set {
-                _SdkVersion = value;
+                _SdkVersion = value ?? string.Empty;
                 DLog($"SdkVersion => [{_SdkVersion}]");
             }
         }
@@ -210,6 +226,18 @@ namespace libgp4 {
 
 #endif
 #if Log
+        /// <summary>
+        /// Set GP4Creator Output Verbosity.
+        /// </summary>
+        public bool VerboseOutput {
+            get => _VerboseOutput;
+            set {
+                _VerboseOutput = value;
+                DLog($"VerboseLogging => [{_VerboseOutput}]");
+            }
+        }
+        private bool _VerboseOutput;
+        
         /// <summary>
         /// Optional Method To Use For Logging. [Function(string s)]
         /// </summary>
@@ -221,19 +249,6 @@ namespace libgp4 {
             }
         }
         private Action<object> _LoggingMethod;
-
-
-        /// <summary>
-        /// Set GP4 Log Verbosity.
-        /// </summary>
-        public bool VerboseLogging {
-            get => _VerboseLogging;
-            set {
-                _VerboseLogging = value;
-                DLog($"VerboseLogging => [{_VerboseLogging}]");
-            }
-        }
-        private bool _VerboseLogging;
 #endif
         #endregion
         ///========================\\\

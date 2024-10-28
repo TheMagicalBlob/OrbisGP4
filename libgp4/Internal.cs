@@ -1116,7 +1116,7 @@ namespace libgp4 {
                         var ByteList = new List<byte>();
 
                         // Read To End Of Label
-                        for(; (@byte = sfo.ReadByte()) != 0; ByteList.Add((byte)@byte)) ;
+                        for(; (@byte = sfo.ReadByte()) != 0; ByteList.Add((byte)@byte)) continue;
 
                         SfoParamLabels[index] = Encoding.UTF8.GetString(ByteList.ToArray());
                     }
@@ -1454,7 +1454,7 @@ namespace libgp4 {
         ///</summary>
         private void WLog(object o, bool IsVerboseMsg) {
 #if Log
-            if(LoggingMethod != null && !(VerboseLogging ^ IsVerboseMsg))
+            if(LoggingMethod != null && !(VerboseOutput ^ IsVerboseMsg))
                 LoggingMethod(o);
 #endif
 #if DEBUG

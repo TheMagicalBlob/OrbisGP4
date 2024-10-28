@@ -3,8 +3,6 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Diagnostics;
-using System.Runtime.Remoting.Channels;
-using System.Runtime.CompilerServices;
 
 namespace GP4GUI {
 
@@ -41,9 +39,9 @@ namespace GP4GUI {
         public static Point MouseDif;
         
         /// <summary> MainPage Form Pointer/Refference. </summary>
-        public static Form Venat;
+        public static MainForm Venat;
         /// <summary> OptionsPage Form Pointer/Refference. </summary>
-        public static Form Azem;
+        public static OptionsPage Azem;
 
         /// <summary> GP4Creator Instance for Project .gp4 File Creation. </summary>
         public static GP4Creator gp4;
@@ -71,7 +69,7 @@ namespace GP4GUI {
         //#
         //## libgp4 Options
         //#
-        #region [libgp4 Options]
+#region [libgp4 Options]
         public static bool
             IgnoreKeystone,
             VerboseOutput,
@@ -81,10 +79,11 @@ namespace GP4GUI {
             GP4OutputDirectory,
             BasePackagePath,
             GamedataFolder,
+            FileBlacklist,
             Passcode
         ;
-        public static string[] BlacklistedItems;
-        #endregion
+        //#^
+#endregion [libgp4 Options]
 
 
         #endregion Variable Declarations
@@ -188,50 +187,56 @@ namespace GP4GUI {
     }
 
 
-    // Custom TextBox Class to Better Handle Default TextBox Contents
-    public class TextBox : System.Windows.Forms.TextBox {
-        /// <summary> Yoink Default Text From First Text Assignment (Ideally right after being created). </summary>
-        private void Set(object _, EventArgs __) {
-            DefaultText = Text;
-            TextChanged -= Set;
-            TextChanged += (sender, e) => {
-                Text = Text.Replace("\"", string.Empty);
-                IsDefault = false;
-                Common.DLog($"Control Text Has Changed => {Text}");
-            };
-        }
-
-        // Create Control Instance
+    /// <summary> Custom TextBox Class to Better Handle Default TextBox Contents. </summary>
+    public class TextBox : System.Windows.Forms.TextBox
+    {
+        /// <summary> Create New Control Instance. </summary>
         public TextBox()
         {
             IsDefault = true;
             TextChanged += Set;
-
-            LostFocus += (bite, me) => {
-                // Reset control if nothing different was entered
-                if(Text.Trim().Length == 0 || DefaultText.Contains(Text)) {
-                    Font = Common.DefaultTextFont;
-                    Text = DefaultText;
-                    IsDefault = true;
-                }
-                Common.DLog($"Control Lost Focus {IsDefault}");
-            };
-            
+                        
             GotFocus += (bite, me) => {
                 if(IsDefault) {
                     Font = Common.TextFont;
                     Clear();
                 }
-                Common.DLog($"Control Gained Focus {IsDefault}");
             };
             Click += (bite, me) => { // Both Events, Just-In-Case.
                 if(IsDefault) {
                     Font = Common.TextFont;
                     Clear();
                 }
-                Common.DLog($"Control Has Been Clicked {IsDefault}");
+            };
+            // Reset control if nothing different was entered
+            LostFocus += (bite, me) => {
+                if(Text.Trim().Length == 0 || DefaultText.Contains(Text)) {
+                    Font = Common.DefaultTextFont;
+                    Text = DefaultText;
+                    IsDefault = true;
+                }
             };
         }
+        /// <summary> Yoink Default Text From First Text Assignment (Ideally right after being created). </summary>
+        private void Set(object _, EventArgs __) {
+            DefaultText = Text;
+            TextChanged -= Set;
+            TextChanged += (sender, e) => Text = Text.Replace("\"", string.Empty);
+        }
+
+        /// <summary> Set Control Text and State Properly (meh). </summary>
+        public void Set(string text) {
+            if (text != string.Empty && !DefaultText.Contains(text))
+            {   
+                Font = Common.DefaultTextFont;
+                Text = text;
+                IsDefault = false;
+            }
+        }
+
+
+
+
 
 
         // Default Control Text to Be Displayed When "Empty".

@@ -249,8 +249,8 @@ namespace libgp4 {
                     return true;
                 }
 
-            if(BlacklistedFilesOrFolders != null)
-                foreach(var blacklisted_file_or_folder in BlacklistedFilesOrFolders) {
+            if(FileBlacklist != null)
+                foreach(var blacklisted_file_or_folder in FileBlacklist) {
                     if(filepath.Contains(blacklisted_file_or_folder)) {
 #if Log
                         WLog($"User Ignoring: {filepath}", true);

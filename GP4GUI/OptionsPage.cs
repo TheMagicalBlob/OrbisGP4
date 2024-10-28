@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Text;
 using System.Drawing;
 using System.Windows.Forms;
 using System.ComponentModel;
 using static GP4GUI.Common;
-using System.Security.Cryptography.X509Certificates;
+using System.Linq;
 
 
 namespace GP4GUI
@@ -19,7 +18,6 @@ namespace GP4GUI
             TinyVersionLabel.Text = Version; // Set Version Label
         }
 
-        public TextBox BasePackagePathTextBox;
 
 
         //######################################\\
@@ -43,7 +41,7 @@ namespace GP4GUI
             this.TinyVersionLabel = new System.Windows.Forms.Label();
             this.UseAbsolutePathsCheckBox = new System.Windows.Forms.CheckBox();
             this.dummy = new System.Windows.Forms.Button();
-            this.PackagePasscodeTextBox = new GP4GUI.TextBox();
+            this.PasscodeTextBox = new GP4GUI.TextBox();
             this.FileBlacklistTextBox = new GP4GUI.TextBox();
             this.GP4OutputDirectoryTextBox = new GP4GUI.TextBox();
             this.BasePackagePathTextBox = new GP4GUI.TextBox();
@@ -112,7 +110,7 @@ namespace GP4GUI
             this.GP4OutputDirectoryBrowseBtn.TabIndex = 8;
             this.GP4OutputDirectoryBrowseBtn.Text = "Browse...";
             this.GP4OutputDirectoryBrowseBtn.UseVisualStyleBackColor = false;
-            this.GP4OutputDirectoryBrowseBtn.Click += new System.EventHandler(this.OutputPathBrowseBtn_Click);
+            this.GP4OutputDirectoryBrowseBtn.Click += new System.EventHandler(this.GP4OutputDirectoryBrowseBtn_Click);
             // 
             // BasePackagePathBrowseBtn
             // 
@@ -140,7 +138,7 @@ namespace GP4GUI
             this.FileBlacklistBrowseBtn.TabIndex = 10;
             this.FileBlacklistBrowseBtn.Text = "Browse...";
             this.FileBlacklistBrowseBtn.UseVisualStyleBackColor = false;
-            this.FileBlacklistBrowseBtn.Click += new System.EventHandler(this.FilterBrowseBtn_Click);
+            this.FileBlacklistBrowseBtn.Click += new System.EventHandler(this.FileBlacklistBrowseBtn_Click);
             // 
             // TinyVersionLabel
             // 
@@ -178,17 +176,18 @@ namespace GP4GUI
             this.dummy.TabIndex = 0;
             this.dummy.UseVisualStyleBackColor = false;
             // 
-            // PackagePasscodeTextBox
+            // PasscodeTextBox
             // 
-            this.PackagePasscodeTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(240)))), ((int)(((byte)(250)))));
-            this.PackagePasscodeTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.PackagePasscodeTextBox.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Italic);
-            this.PackagePasscodeTextBox.Location = new System.Drawing.Point(6, 155);
-            this.PackagePasscodeTextBox.MaxLength = 32;
-            this.PackagePasscodeTextBox.Name = "PackagePasscodeTextBox";
-            this.PackagePasscodeTextBox.Size = new System.Drawing.Size(340, 24);
-            this.PackagePasscodeTextBox.TabIndex = 4;
-            this.PackagePasscodeTextBox.Text = "Add Custom .pkg Passcode Here (Defaults To All Zeros)";
+            this.PasscodeTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(240)))), ((int)(((byte)(250)))));
+            this.PasscodeTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.PasscodeTextBox.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Italic);
+            this.PasscodeTextBox.Location = new System.Drawing.Point(6, 155);
+            this.PasscodeTextBox.MaxLength = 32;
+            this.PasscodeTextBox.Name = "PasscodeTextBox";
+            this.PasscodeTextBox.Size = new System.Drawing.Size(340, 24);
+            this.PasscodeTextBox.TabIndex = 4;
+            this.PasscodeTextBox.Text = "Add Custom .pkg Passcode Here (Defaults To All Zeros)";
+            this.PasscodeTextBox.TextChanged += new System.EventHandler(this.PasscodeTextBox_TextChanged);
             // 
             // FileBlacklistTextBox
             // 
@@ -200,7 +199,7 @@ namespace GP4GUI
             this.FileBlacklistTextBox.Size = new System.Drawing.Size(339, 24);
             this.FileBlacklistTextBox.TabIndex = 3;
             this.FileBlacklistTextBox.Text = "Blacklisted Files/Folders To Exclude, Seperated By ; or ,";
-            this.FileBlacklistTextBox.TextChanged += new System.EventHandler(this.FilterTextBox_TextChanged);
+            this.FileBlacklistTextBox.TextChanged += new System.EventHandler(this.FileBlacklistTextBox_TextChanged);
             // 
             // GP4OutputDirectoryTextBox
             // 
@@ -212,6 +211,7 @@ namespace GP4GUI
             this.GP4OutputDirectoryTextBox.Size = new System.Drawing.Size(340, 24);
             this.GP4OutputDirectoryTextBox.TabIndex = 1;
             this.GP4OutputDirectoryTextBox.Text = "Add A Custom .gp4 Output Directory Here...";
+            this.GP4OutputDirectoryTextBox.TextChanged += new System.EventHandler(this.GP4OutputDirectoryTextBox_TextChanged);
             // 
             // BasePackagePathTextBox
             // 
@@ -223,6 +223,7 @@ namespace GP4GUI
             this.BasePackagePathTextBox.Size = new System.Drawing.Size(340, 24);
             this.BasePackagePathTextBox.TabIndex = 2;
             this.BasePackagePathTextBox.Text = "Base Game .pkg Path... (For Game Patches)";
+            this.BasePackagePathTextBox.TextChanged += new System.EventHandler(this.BasePackagePathTextBox_TextChanged);
             // 
             // OptionsPage
             // 
@@ -236,7 +237,7 @@ namespace GP4GUI
             this.Controls.Add(this.FileBlacklistBrowseBtn);
             this.Controls.Add(this.BasePackagePathBrowseBtn);
             this.Controls.Add(this.GP4OutputDirectoryBrowseBtn);
-            this.Controls.Add(this.PackagePasscodeTextBox);
+            this.Controls.Add(this.PasscodeTextBox);
             this.Controls.Add(this.FileBlacklistTextBox);
             this.Controls.Add(this.BasePackagePathTextBox);
             this.Controls.Add(this.VerboseOutputCheckBox);
@@ -259,7 +260,7 @@ namespace GP4GUI
         /// </summary>
         public void PostInitFormLogic()
         {
-            // tst
+            // Stop OptionsPage Form From Being Hidden Whenever the Parent Is Clicked
             this.TopMost = true;
 
             // Anonomously Create and Set CloseBtn Event Handler
@@ -267,23 +268,7 @@ namespace GP4GUI
             {
                 // Hide OptionsPage Form
                 Azem.Visible = OptionsPageIsOpen = false;    
-                
-                // .gp4 Project Output Directory
-                if (!GP4OutputDirectoryTextBox.IsDefault) GP4OutputDirectory = GP4OutputDirectoryTextBox.Text;
-                // Base .pkg Path
-                if (!BasePackagePathTextBox.IsDefault)    BasePackagePath = BasePackagePathTextBox.Text;
-                // File Filter
-                if (!FileBlacklistTextBox.IsDefault)      BlacklistedItems = FileBlacklistTextBox.Text.Replace("\"", string.Empty).Split(',', ';');
-                // Base .pkg Path
-                if (!BasePackagePathTextBox.IsDefault)    BasePackagePath = BasePackagePathTextBox.Text;
-                
-                // File Path Mode
-                UseAbsoluteFilePaths = UseAbsolutePathsCheckBox.Checked;
-                // Keystone Setting
-                IgnoreKeystone       = IgnoreKeystoneCheckBox.Checked;
-                // Verbosity
-                VerboseOutput        = VerboseOutputCheckBox.Checked;
-
+                SaveOptions();
             });
 
 
@@ -328,23 +313,42 @@ namespace GP4GUI
         //#######################################\\
         #region Options Related Functions
         
+        // Save Options Page Control States to Options
+        public void SaveOptions()
+        {
+            // .gp4 Project Output Directory
+            if (!GP4OutputDirectoryTextBox.IsDefault) gp4.OutputDirectory = GP4OutputDirectoryTextBox.Text;
+            // Base .pkg Path
+            if (!BasePackagePathTextBox.IsDefault)    gp4.BasePackagePath = BasePackagePathTextBox.Text;
+            // File Filter
+            if (!FileBlacklistTextBox.IsDefault)      gp4.FileBlacklist   = FileBlacklistTextBox.Text.Replace("\"", string.Empty).Split(',', ';');
+            // Base .pkg Path
+            if (!BasePackagePathTextBox.IsDefault)    gp4.BasePackagePath = BasePackagePathTextBox.Text;
+            // Package Passcode
+            if (!PasscodeTextBox.IsDefault)           gp4.Passcode        = PasscodeTextBox.Text;
+                
+            // File Path Mode
+            gp4.UseAbsoluteFilePaths = UseAbsolutePathsCheckBox.Checked;
+            // Keystone Setting
+            gp4.IgnoreKeystone       = IgnoreKeystoneCheckBox.Checked;
+            // Verbosity
+            gp4.VerboseOutput        = VerboseOutputCheckBox.Checked;
+
+        }
+
+
         
-        private void AbsolutePathCheckBox_CheckedChanged(object sender, EventArgs e) => UseAbsoluteFilePaths = UseAbsolutePathsCheckBox.Checked;
-
-        private void KeystoneToggleBox_CheckedChanged(object sender, EventArgs e)    => IgnoreKeystone = IgnoreKeystoneCheckBox.Checked;
-        
-        private void VerboseOutputBox_CheckedChanged(object sender, EventArgs e)     => VerboseOutput = VerboseOutputCheckBox.Checked;
-
-
+        // Manually Set .gp4 Project Output Directory
+        private void GP4OutputDirectoryTextBox_TextChanged(object sender, EventArgs e) => GP4OutputDirectory = GP4OutputDirectoryTextBox.Text;
 
         // Choose a .gp4 Output Path Through Either a FolderBrowserDialogue, or OpenFileDialogue Instance (W/ the hackey Dummy File Method.
-        private void OutputPathBrowseBtn_Click(object sender, EventArgs e)
+        private void GP4OutputDirectoryBrowseBtn_Click(object sender, EventArgs e)
         {
             // Use the ghastly Directory Tree Dialogue to Choose A Folder
             if (LegacyFolderSelectionDialogue) {
                 using (var ShitBrowser = new FolderBrowserDialog())
                     if (ShitBrowser.ShowDialog() == DialogResult.OK)
-                        GP4OutputDirectoryTextBox.Text = ShitBrowser.SelectedPath;
+                        GP4OutputDirectoryTextBox.Set(ShitBrowser.SelectedPath);
             }
             // Use The Newer "Hackey" Method
             else {
@@ -357,80 +361,50 @@ namespace GP4GUI
                 };
 
                 if (CrapBrowser.ShowDialog() == DialogResult.OK)
-                    GP4OutputDirectoryTextBox.Text = CrapBrowser.FileName.Remove(CrapBrowser.FileName.LastIndexOf('\\'));
+                    GP4OutputDirectoryTextBox.Set(CrapBrowser.FileName.Remove(CrapBrowser.FileName.LastIndexOf('\\')));
             }
         }
 
 
+        // Manually Input Base Package Path
+        private void BasePackagePathTextBox_TextChanged(object sender, EventArgs e) => BasePackagePath = BasePackagePathTextBox.Text;
 
         // Search for the Base Application Package Through an OpenFileDialogue Instance.
         private void BasePackagePathBrowseBtn_Click(object sender, EventArgs e) {
-            using(var Browser = new OpenFileDialog())
+            using(var Browser = new OpenFileDialog{ Title = "Please Select the Base-Game Package You're Creating a Patch Package for." })
                 if(Browser.ShowDialog() == DialogResult.OK)
-                    BasePackagePathTextBox.Text = Browser.FileName;
+                    BasePackagePathTextBox.Set(Browser.FileName);
         }
 
+
+        private void AbsolutePathCheckBox_CheckedChanged(object sender, EventArgs e) => UseAbsoluteFilePaths = UseAbsolutePathsCheckBox.Checked;
+
+
+        private void KeystoneToggleBox_CheckedChanged(object sender, EventArgs e) => IgnoreKeystone = IgnoreKeystoneCheckBox.Checked;
+        
+
+        private void VerboseOutputBox_CheckedChanged(object sender, EventArgs e) => VerboseOutput = VerboseOutputCheckBox.Checked;
 
         
+        // Manually Input Files to Blacklist
+        private void FileBlacklistTextBox_TextChanged(object sender, EventArgs _) => FileBlacklist = ((Control)sender).Text;
+
         // Build an Array of Files to Exclude from the .gp4 Project's File Listing From Those Selected Through an OpenFileDialogue Instance (W/ Multiselect).
-        private void FilterBrowseBtn_Click(object sender, EventArgs e) {
-            var Browser = new OpenFileDialog() {
+        private void FileBlacklistBrowseBtn_Click(object sender, EventArgs e) {
+            using (var Browser = new OpenFileDialog {
                 Multiselect = true,
                 Title = "Folders Must Be Added Manually To The Text Box (Blame Microsoft)"
-            };
+            })
 
-            if(Browser.ShowDialog() == DialogResult.OK) {
-                if(FileBlacklistTextBox.IsDefault)
-                    ((TextBox)sender).Clear();
-
-                foreach(string file in Browser.FileNames)
-                    FileBlacklistTextBox.Text += $"{file},";
-            }
-
-            Browser.Dispose();
+            if(Browser.ShowDialog() == DialogResult.OK)
+                FileBlacklistTextBox.Set($"{string.Join(",", Browser.FileNames)}");
         }
 
+               
+        // Manually Input Package Passcode
+        private void PasscodeTextBox_TextChanged(object sender, EventArgs e) => Passcode = PasscodeTextBox.Text;
 
-
-        /// <summary>
-        /// Parse Individual Items From Filter Text Box, And Add Them To The Blacklist.
-        /// </summary>
-        private void FilterTextBox_TextChanged(object sender, EventArgs _) { // tst : eboot.bin, keystone, discname.txt; param.sfo
-            TextBox Sender;
-            if((Sender = ((TextBox)sender)).IsDefault) {
-                gp4.BlacklistedFilesOrFolders = null;
-                return;
-            }
-
-            StringBuilder Builder;
-
-
-            // Get Amount Of Filtered Files/Paths
-            var filter_strings_length = 1;
-            foreach(var c in (FileBlacklistTextBox.Text.Trim(',', ';')).ToCharArray())
-                if(c == ';' || c == ',')
-                    filter_strings_length++;
-
-
-            gp4.BlacklistedFilesOrFolders = new string[filter_strings_length];
-
-            var buffer = Encoding.UTF8.GetBytes((FileBlacklistTextBox.Text + ';').ToCharArray());
-
-            try {
-                for(int array_index = 0, char_index = 0; array_index < gp4.BlacklistedFilesOrFolders.Length; array_index++) {
-                    Builder = new StringBuilder();
-
-                    while(buffer[char_index] != 0x3B && buffer[char_index] != 0x2C)
-                        Builder.Append(Encoding.UTF8.GetString(new byte[] { buffer[char_index++] }));
-
-                    char_index++;
-                    gp4.BlacklistedFilesOrFolders[array_index] = Builder.ToString().Trim(' ');
-                }
-            }
-            catch (IndexOutOfRangeException ex) {
-                WLog($"\n{ex.StackTrace}");
-            }
-        }
+        
 
         #endregion
         ///=======================================\\\
@@ -447,18 +421,14 @@ namespace GP4GUI
         private Button GP4OutputDirectoryBrowseBtn;
         private Button BasePackagePathBrowseBtn;
         private Button FileBlacklistBrowseBtn;
-        public CheckBox IgnoreKeystoneCheckBox;
-        public CheckBox VerboseOutputCheckBox;
-        public CheckBox UseAbsolutePathsCheckBox;
-        public TextBox GP4OutputDirectoryTextBox;
-        public TextBox FileBlacklistTextBox;
-        public TextBox PackagePasscodeTextBox;
+        private CheckBox IgnoreKeystoneCheckBox;
+        private CheckBox VerboseOutputCheckBox;
+        private CheckBox UseAbsolutePathsCheckBox;
+        private TextBox GP4OutputDirectoryTextBox;
+        private TextBox BasePackagePathTextBox;
+        private TextBox FileBlacklistTextBox;
+        private TextBox PasscodeTextBox;
         private Button dummy; // I forget why this is here
-
-        private void BasePackagePathTextBox_TextChanged(object sender, EventArgs e)
-        {
-
-        }
         #endregion
 
         ///==================================\\\
