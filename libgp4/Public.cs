@@ -68,13 +68,11 @@ namespace libgp4 {
             set {
                 _OutputDirectory = value ?? string.Empty;
                 DLog($"OutputDirectory => [{_OutputDirectory}]");
-
-                // TODO: make sure this works as intended
-                if (!Directory.Exists(OutputDirectory) && !Directory.CreateDirectory(OutputDirectory).Exists)
-                    throw new DirectoryNotFoundException($"Invalid Output Directory Provided for .gp4 Project. [{(File.Exists(OutputDirectory) ? $"Path \"{OutputDirectory}\" Leads to a File, Not a Folder." : $"Directory \"{OutputDirectory}\" Does Not Exist.")}]");
             }
         }
-        private string _OutputDirectory;
+        private string _OutputDirectory = string.Empty;
+
+        private string OutputPath;
 
 
         /// <summary>
@@ -103,7 +101,7 @@ namespace libgp4 {
                 DLog($"Passcode => [{_Passcode}]");
             }
         }
-        private string _Passcode;
+        private string _Passcode = string.Empty;
 
 
         /// <summary>
@@ -129,7 +127,7 @@ namespace libgp4 {
                 DLog($"BasePackagePath => [{_BasePackagePath}]");
             }
         }
-        private string _BasePackagePath;
+        private string _BasePackagePath = string.Empty;
 
 
         /// <summary>
@@ -157,7 +155,7 @@ namespace libgp4 {
                 DLog($"AppTitle => [{_AppTitle}]");
             }
         }
-        private string _AppTitle;
+        private string _AppTitle = string.Empty;
 
 
         /// <summary>
@@ -196,7 +194,7 @@ namespace libgp4 {
                 DLog($"TargetAppVer => [{_TargetAppVer}]");
             }
         }
-        private string _TargetAppVer;
+        private string _TargetAppVer = string.Empty;
 
 
         /// <summary>
@@ -209,7 +207,7 @@ namespace libgp4 {
                 DLog($"SfoCreationDate => [{_SfoCreationDate}]");
             }
         }
-        private string _SfoCreationDate;
+        private string _SfoCreationDate = string.Empty;
 
 
         /// <summary>
@@ -222,7 +220,7 @@ namespace libgp4 {
                 DLog($"SdkVersion => [{_SdkVersion}]");
             }
         }
-        private string _SdkVersion;
+        private string _SdkVersion = string.Empty;
 
 #endif
 #if Log
@@ -320,7 +318,7 @@ namespace libgp4 {
         /// <param name="VerifyIntegrity"> Set Whether Or Not To Abort The Creation Process If An Error Is Found That Would Cause .pkg Creation To Fail, Or Simply Log It To The Standard Console Output And/Or LogOutput(string) Action. </param>
         /// 
         /// <returns> The Absolute Path to the Created .gp4 Project File. </returns>
-        public string CreateGP4(bool VerifyIntegrity) {
+        public string CreateGP4(bool VerifyIntegrity = true) {
 #if Log
             WLog($"Starting .gp4 Creation. PKG Passcode: {Passcode}\n", false);
             WLog($".gp4 Destination Path: {OutputDirectory}\nSource .pkg Path: {BasePackagePath ?? "Not Applicable"}", true);
@@ -338,8 +336,8 @@ namespace libgp4 {
                 return null;
             }
 
-            // 
-            if (!Directory.Exists(OutputDirectory))
+            // Create Output Directory if it's Not Already Present
+            if (!Directory.Exists(OutputDirectory) && !Directory.CreateDirectory(OutputDirectory).Exists)
             {
                 if (OutputDirectory == string.Empty)
                 {
@@ -347,12 +345,12 @@ namespace libgp4 {
                 }
                 else
                 {
-                    WLog($"Error; Invalid .gp4 Output Directory Provided (Directory \"{OutputDirectory}\" Does not Exist).\n\n", false);
+                    WLog($"Error; Invalid Output Directory Provided for .gp4 Project. [{(File.Exists(OutputDirectory) ? $"Path \"{OutputDirectory}\" Leads to a File, Not a Folder." : $"Directory \"{OutputDirectory}\" Does Not Exist.")}]", false);
                     return null;
                 }
             }
-            // Add File Name to Output Directory
-            else OutputDirectory += $"\\{SfoParams.title_id}-{((SfoParams.category == "gd") ? "app" : "patch")}.gp4";
+            // Set Output Path
+            else OutputPath = $"{OutputDirectory}\\{SfoParams.title_id}-{((SfoParams.category == "gd") ? "app" : "patch")}.gp4";
 
             #endregion [set/verify options]
             
@@ -392,12 +390,12 @@ namespace libgp4 {
 
 
             // Write The .go4 File To The Provided Folder / As The Provided Filename
-            gp4.Save(OutputDirectory);
+            gp4.Save(OutputPath);
 
 #if Log
-            WLog($"GP4 Creation Successful, File Saved As {OutputDirectory}", false);
+            WLog($"GP4 Creation Successful, File Saved As {OutputPath}", false);
 #endif
-            return OutputDirectory;
+            return OutputPath;
         }
         #endregion
         ///============================\\\

@@ -15,12 +15,6 @@ namespace GP4GUI {
             PostInitFormLogic();
             CreateBrowseModeDropdownMenu();
             Paint += PaintBorder;
-            
-            Venat = this;
-            Azem = new OptionsPage();
-
-            // Set Output Box Ptr
-            _OutputWindow = OutputWindow;
 
             // Initialize .gp4 Creator Instance, and Set Logging Method to OutputWindow
             gp4 = new GP4Creator {
@@ -28,10 +22,14 @@ namespace GP4GUI {
                     OutputWindow.AppendLine($"#libgp4: {str}");
                     OutputWindow.Update();
                 },
-                #if DEBUG
-                VerboseOutput = true
-                #endif
             };
+            
+
+            Venat = this;
+            Azem = new OptionsPage();
+
+            // Set Output Box Ptr
+            _OutputWindow = OutputWindow;
         }
         public static Button[] DropdownMenu = new Button[2];
 
@@ -499,10 +497,12 @@ namespace GP4GUI {
 
             //# Print GP4Creator Options
             #if DEBUG
+/*
             WLog($"\n===============================================");
             foreach (var param in typeof(GP4Creator.SfoParser).GetFields())
-            WLog($"{param.Name} == {param.GetValue(gp4.SfoParams)}");
+            WLog($"{param.Name} == {param.GetValue(gp4?.SfoParams)}");
             WLog($"===============================================\n");
+*/
             #endif
 
 
@@ -536,17 +536,11 @@ namespace GP4GUI {
 
 
             // Assign Default .gp4 Output Directory if Unset
-            if (gp4.OutputDirectory == null)
+            if (gp4.OutputDirectory == string.Empty)
             {
-                gp4.OutputDirectory = gp4.UseAbsoluteFilePaths ?  gp4.GamedataFolder : gp4.GamedataFolder.Remove(gp4.GamedataFolder.LastIndexOf('\\'));
+                gp4.OutputDirectory = gp4.UseAbsoluteFilePaths ? gp4.GamedataFolder : gp4.GamedataFolder.Remove(gp4.GamedataFolder.LastIndexOf('\\'));
 
                 WLog($"Assigned \"{gp4.OutputDirectory}\" as .gp4 Project Output Directory.\n\n");
-            }
-            // Verify Provided GP4OutputDirectory Path
-            else if (!Directory.Exists(gp4.OutputDirectory))
-            {
-                WLog($"Error; Invalid .gp4 Output Directory Provided (Directory \"{gp4.OutputDirectory}\" Does not Exist).\n\n");
-                return;
             }
 
 

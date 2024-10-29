@@ -1003,8 +1003,6 @@ namespace libgp4 {
         /// <param name="gamedataFolder"> The Folder Containing The Gamedata To Create A .gp4 Project File For. </param>
         public GP4Creator(string gamedataFolder) {
             Passcode = "00000000000000000000000000000000";
-            IgnoreKeystone = true;
-
             GamedataFolder = gamedataFolder;
         }
 
@@ -1015,7 +1013,6 @@ namespace libgp4 {
         /// </summary>
         public GP4Creator() {
             Passcode = "00000000000000000000000000000000";
-            IgnoreKeystone = true;
         }
 
 

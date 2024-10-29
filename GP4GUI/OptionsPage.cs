@@ -16,6 +16,11 @@ namespace GP4GUI
             
             Paint += PaintBorder;
             TinyVersionLabel.Text = Version; // Set Version Label
+
+            
+            #if DEBUG
+            VerboseOutputCheckBox.Checked = true;
+            #endif
         }
 
 

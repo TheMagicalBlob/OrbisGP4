@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Xml;
 #pragma warning disable CS1587
 
@@ -240,24 +241,27 @@ namespace libgp4 {
                 WLog("Ignoring .dds In System Folder.", true);
                 return true;
             }
+            else if (filepath.Contains("keystone") && IgnoreKeystone) {
+                WLog("Ignoring keystone File.", true);
+                return true;
+            }
 
-            foreach(var blacklisted_file_or_folder in DefaultBlacklist)
-                if(filepath.Contains(blacklisted_file_or_folder)) {
-#if Log
-                    WLog($"Ignoring: {filepath}", true);
-#endif
-                    return true;
-                }
 
-            if(FileBlacklist != null)
-                foreach(var blacklisted_file_or_folder in FileBlacklist) {
-                    if(filepath.Contains(blacklisted_file_or_folder)) {
+            // Exclude Default Items.
+            if(DefaultBlacklist.Any(filepath.Contains)) {
 #if Log
-                        WLog($"User Ignoring: {filepath}", true);
+                WLog($"Ignoring: {filepath}", true);
 #endif
-                        return true;
-                    }
-                }
+                return true;
+            }
+
+            // Exclude User-Specified Items
+            if(FileBlacklist != null && FileBlacklist.Any(filepath.Contains)) {
+#if Log
+                WLog($"User Ignoring: {filepath}", true);
+#endif
+                return true;
+            }
             return false;
         }
 
