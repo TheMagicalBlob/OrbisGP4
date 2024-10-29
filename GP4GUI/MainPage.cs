@@ -33,8 +33,6 @@ namespace GP4GUI {
                 #endif
             };
         }
-
-        private Button NoRunBtn;
         public static Button[] DropdownMenu = new Button[2];
 
 
@@ -148,7 +146,6 @@ namespace GP4GUI {
             this.SwapBrowseModeBtn = new System.Windows.Forms.Button();
             this.OutputWindow = new GP4GUI.RichTextBox();
             this.GamedataFolderPathBox = new GP4GUI.TextBox();
-            this.NoRunBtn = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // CreateProjectFileBtn
@@ -296,29 +293,12 @@ namespace GP4GUI {
             this.GamedataFolderPathBox.TabIndex = 2;
             this.GamedataFolderPathBox.Text = "Paste The Gamedata Folder Path Here, Or Use The Browse Button...";
             // 
-            // NoRunBtn
-            // 
-            this.NoRunBtn.BackColor = System.Drawing.SystemColors.ControlText;
-            this.NoRunBtn.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(240)))), ((int)(((byte)(250)))));
-            this.NoRunBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.NoRunBtn.Font = new System.Drawing.Font("Segoe UI Semibold", 7F, System.Drawing.FontStyle.Bold);
-            this.NoRunBtn.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(240)))), ((int)(((byte)(250)))));
-            this.NoRunBtn.Location = new System.Drawing.Point(46, 79);
-            this.NoRunBtn.Name = "NoRunBtn";
-            this.NoRunBtn.Size = new System.Drawing.Size(103, 23);
-            this.NoRunBtn.TabIndex = 17;
-            this.NoRunBtn.Tag = "";
-            this.NoRunBtn.Text = "DEBUG: no-run: Yes";
-            this.NoRunBtn.UseVisualStyleBackColor = false;
-            this.NoRunBtn.Click += new System.EventHandler(this.NoRunBtn_Click);
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
             this.ClientSize = new System.Drawing.Size(452, 371);
-            this.Controls.Add(this.NoRunBtn);
             this.Controls.Add(this.SwapBrowseModeBtn);
             this.Controls.Add(this.dummy);
             this.Controls.Add(this.ClearLogBtn);
@@ -592,9 +572,6 @@ namespace GP4GUI {
             //#
             //## Begin .gp4 Creation if all's well
             //#
-            #if DEBUG
-            if (!NoRunBtn.Text.Contains("Yes")) // Conditional Debug Exit
-            #endif
             gp4.CreateGP4(true);
         }
         #endregion
@@ -622,12 +599,5 @@ namespace GP4GUI {
 
 
         private readonly Button DesignerManip; // Manipulate Designer Stupidity (Stop Creating Methods Inside Existing Code, You Fucking Moron)
-
-        private void NoRunBtn_Click(object sender, EventArgs e) {
-            if (NoRunBtn.Text.Contains("Yes"))
-                NoRunBtn.Text = NoRunBtn.Text.Replace("Yes", "No");
-            else
-                NoRunBtn.Text = NoRunBtn.Text.Replace("No", "Yes");
-        }
     }
 }

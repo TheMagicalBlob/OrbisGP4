@@ -321,7 +321,7 @@ namespace GP4GUI
             // Base .pkg Path
             if (!BasePackagePathTextBox.IsDefault)    gp4.BasePackagePath = BasePackagePathTextBox.Text;
             // File Filter
-            if (!FileBlacklistTextBox.IsDefault)      gp4.FileBlacklist   = FileBlacklistTextBox.Text.Replace("\"", string.Empty).Split(',', ';');
+            if (!FileBlacklistTextBox.IsDefault)      gp4.FileBlacklist   = FileBlacklistTextBox.Text.Replace("\"", string.Empty).Split(';', '|', ',');
             // Base .pkg Path
             if (!BasePackagePathTextBox.IsDefault)    gp4.BasePackagePath = BasePackagePathTextBox.Text;
             // Package Passcode
@@ -390,12 +390,10 @@ namespace GP4GUI
         // Manually Input Files to Blacklist
         private void FileBlacklistTextBox_TextChanged(object sender, EventArgs _)
         {
-            var Control = ((Control)sender);
-            if (",;".Any(p => Control.Text.Contains(p) && Control.Text.Last() != p))
-            {
-                DLog($"Splitting COntrol text [{Control.Text}]");
+            var Control = sender as Control;
+
+            if (";|,".Any(@char => Control.Text.Contains(@char) && Control.Text.Last() != @char))
                 gp4.FileBlacklist = Control.Text.Split(',', ';');
-            }
         }
 
         // Build an Array of Files to Exclude from the .gp4 Project's File Listing From Those Selected Through an OpenFileDialogue Instance (W/ Multiselect).
