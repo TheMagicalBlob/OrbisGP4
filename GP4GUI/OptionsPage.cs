@@ -339,7 +339,7 @@ namespace GP4GUI
 
         
         // Manually Set .gp4 Project Output Directory
-        private void GP4OutputDirectoryTextBox_TextChanged(object sender, EventArgs e) => GP4OutputDirectory = GP4OutputDirectoryTextBox.Text;
+        private void GP4OutputDirectoryTextBox_TextChanged(object sender, EventArgs e) => gp4.OutputDirectory = GP4OutputDirectoryTextBox.Text;
 
         // Choose a .gp4 Output Path Through Either a FolderBrowserDialogue, or OpenFileDialogue Instance (W/ the hackey Dummy File Method.
         private void GP4OutputDirectoryBrowseBtn_Click(object sender, EventArgs e)
@@ -356,6 +356,7 @@ namespace GP4GUI
                     ValidateNames = false,
                     CheckPathExists = false,
                     CheckFileExists = false,
+                    Title = "",
                     FileName = "Press 'Open' Once Inside The Desired Folder.",
                     Filter = "Folder Selection|*."
                 };
@@ -367,7 +368,7 @@ namespace GP4GUI
 
 
         // Manually Input Base Package Path
-        private void BasePackagePathTextBox_TextChanged(object sender, EventArgs e) => BasePackagePath = BasePackagePathTextBox.Text;
+        private void BasePackagePathTextBox_TextChanged(object sender, EventArgs e) => gp4.BasePackagePath = BasePackagePathTextBox.Text;
 
         // Search for the Base Application Package Through an OpenFileDialogue Instance.
         private void BasePackagePathBrowseBtn_Click(object sender, EventArgs e) {
@@ -377,17 +378,25 @@ namespace GP4GUI
         }
 
 
-        private void AbsolutePathCheckBox_CheckedChanged(object sender, EventArgs e) => UseAbsoluteFilePaths = UseAbsolutePathsCheckBox.Checked;
+        private void AbsolutePathCheckBox_CheckedChanged(object sender, EventArgs e) => gp4.UseAbsoluteFilePaths = UseAbsolutePathsCheckBox.Checked;
 
 
-        private void KeystoneToggleBox_CheckedChanged(object sender, EventArgs e) => IgnoreKeystone = IgnoreKeystoneCheckBox.Checked;
+        private void KeystoneToggleBox_CheckedChanged(object sender, EventArgs e) => gp4.IgnoreKeystone = IgnoreKeystoneCheckBox.Checked;
         
 
-        private void VerboseOutputBox_CheckedChanged(object sender, EventArgs e) => VerboseOutput = VerboseOutputCheckBox.Checked;
+        private void VerboseOutputBox_CheckedChanged(object sender, EventArgs e) => gp4.VerboseOutput = VerboseOutputCheckBox.Checked;
 
         
         // Manually Input Files to Blacklist
-        private void FileBlacklistTextBox_TextChanged(object sender, EventArgs _) => FileBlacklist = ((Control)sender).Text;
+        private void FileBlacklistTextBox_TextChanged(object sender, EventArgs _)
+        {
+            var Control = ((Control)sender);
+            if (",;".Any(p => Control.Text.Contains(p) && Control.Text.Last() != p))
+            {
+                DLog($"Splitting COntrol text [{Control.Text}]");
+                gp4.FileBlacklist = Control.Text.Split(',', ';');
+            }
+        }
 
         // Build an Array of Files to Exclude from the .gp4 Project's File Listing From Those Selected Through an OpenFileDialogue Instance (W/ Multiselect).
         private void FileBlacklistBrowseBtn_Click(object sender, EventArgs e) {
@@ -402,7 +411,7 @@ namespace GP4GUI
 
                
         // Manually Input Package Passcode
-        private void PasscodeTextBox_TextChanged(object sender, EventArgs e) => Passcode = PasscodeTextBox.Text;
+        private void PasscodeTextBox_TextChanged(object sender, EventArgs e) => gp4.Passcode = PasscodeTextBox.Text;
 
         
 

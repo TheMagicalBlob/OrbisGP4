@@ -46,7 +46,7 @@ namespace libgp4 {
         /// <summary> Root Path Of The PS4 Package Project The .gp4 Is To Be Created For. (Should Contain At Least An Executable And sce_sys Folder)
         ///</summary>
         public string GamedataFolder {
-            get => _GamedataFolder;
+            get => _GamedataFolder ?? string.Empty;
             set {
                 _GamedataFolder = value ?? string.Empty;
                 DLog($"GamedataFolder => [{_GamedataFolder}]");
@@ -64,7 +64,7 @@ namespace libgp4 {
         /// <summary> Output Directory for the .go4 Project File.
         ///</summary>
         public string OutputDirectory {
-            get => _OutputDirectory;
+            get => _OutputDirectory ?? string.Empty;
             set {
                 _OutputDirectory = value ?? string.Empty;
                 DLog($"OutputDirectory => [{_OutputDirectory}]");
@@ -97,7 +97,7 @@ namespace libgp4 {
         /// <br/>(must be 32 characters long, required for extraction with orbis-pub-chk. no effect on dumping)
         /// </summary>
         public string Passcode {
-            get => _Passcode;
+            get => _Passcode ?? string.Empty;
             set {                     
                 _Passcode = value ?? string.Empty;
                 DLog($"Passcode => [{_Passcode}]");
@@ -110,7 +110,7 @@ namespace libgp4 {
         /// An Array Containing The Names Of Any Files Or Folders That Are To Be Excluded From The .gp4 Project.
         /// </summary>
         public string[] FileBlacklist {
-            get => _BlacklistedFilesOrFolders;
+            get => _BlacklistedFilesOrFolders ?? Array.Empty<string>();
             set {
                 _BlacklistedFilesOrFolders = value ?? Array.Empty<string>();
                 DLog($"BlacklistedFilesOrFolders => [{string.Join(", ", _BlacklistedFilesOrFolders ?? Array.Empty<string>())}]");
@@ -123,7 +123,7 @@ namespace libgp4 {
         /// Path To The Base Application Package The New Package Is To Be Married To.
         /// </summary>
         public string BasePackagePath {
-            get => _BasePackagePath;
+            get => _BasePackagePath ?? string.Empty;
             set {
                 _BasePackagePath = value?.Replace("\"", string.Empty);
                 DLog($"BasePackagePath => [{_BasePackagePath}]");
@@ -151,7 +151,7 @@ namespace libgp4 {
         /// The Application's Default Name, Read From The param.sfo In The Provided Gamedata Folder.
         /// </summary>
         public string AppTitle {
-            get => _AppTitle;
+            get => _AppTitle ?? string.Empty;
             private set {
                 _AppTitle = value ?? string.Empty;
                 DLog($"AppTitle => [{_AppTitle}]");
@@ -190,7 +190,7 @@ namespace libgp4 {
         /// Target Application Version.
         /// </summary>
         public string TargetAppVer {
-            get => _TargetAppVer;
+            get => _TargetAppVer ?? string.Empty;
             private set {
                 _TargetAppVer = value ?? string.Empty;
                 DLog($"TargetAppVer => [{_TargetAppVer}]");
@@ -203,7 +203,7 @@ namespace libgp4 {
         /// Creation Date Of The param.sfo File.
         /// </summary>
         public string SfoCreationDate {
-            get => _SfoCreationDate;
+            get => _SfoCreationDate ?? string.Empty;
             private set {
                 _SfoCreationDate = value ?? string.Empty;
                 DLog($"SfoCreationDate => [{_SfoCreationDate}]");
@@ -216,7 +216,7 @@ namespace libgp4 {
         /// The PS4/Orbis SDK Version Of The Application.
         /// </summary>
         public string SdkVersion {
-            get => _SdkVersion;
+            get => _SdkVersion ?? string.Empty;
             private set {
                 _SdkVersion = value ?? string.Empty;
                 DLog($"SdkVersion => [{_SdkVersion}]");
@@ -261,6 +261,7 @@ namespace libgp4 {
         #region User Functions
 
         #region WIP AddFile(s) Shit
+/*
         // TODO: TEST THESE TWO THINGS
         /// <summary>
         /// Add External Files To The Project's File Listing (wip, this wouldn't work the way it is lol)
@@ -305,6 +306,7 @@ namespace libgp4 {
 
             extra_files = new string[][] { new string[] { OriginalPath, TargetPath } };
         }
+*/
         #endregion
 
 
@@ -315,31 +317,50 @@ namespace libgp4 {
         /// Then Saves All File/Subdirectory Paths In The Gamedata Folder
         /// </summary>
         /// 
-        /// <param name="GP4OutputPath"> Folder In Which To Place The Newly Build .gp4 Project File. </param>
         /// <param name="VerifyIntegrity"> Set Whether Or Not To Abort The Creation Process If An Error Is Found That Would Cause .pkg Creation To Fail, Or Simply Log It To The Standard Console Output And/Or LogOutput(string) Action. </param>
         /// 
         /// <returns> The Absolute Path to the Created .gp4 Project File. </returns>
-        public string CreateGP4(string GP4OutputPath, bool VerifyIntegrity) {
+        public string CreateGP4(bool VerifyIntegrity) {
 #if Log
             WLog($"Starting .gp4 Creation. PKG Passcode: {Passcode}\n", false);
-            WLog($".gp4 Destination Path: {GP4OutputPath}\nSource .pkg Path: {BasePackagePath ?? "Not Applicable"}", true);
+            WLog($".gp4 Destination Path: {OutputDirectory}\nSource .pkg Path: {BasePackagePath ?? "Not Applicable"}", true);
 #endif
 
+
+            //#
+            //## Set And Verify Default/Provided Options
+            //#
+            # region [set/verify options]
+
             // Ensure A GamedataFolder's Been Provided
-            if(GamedataFolder == null || PlaygoData == null || SfoParams == null) {
+            if (GamedataFolder == null) {
                 WLog("No Valid Project Folder Was Assigned. Please Provide A Valid Project Folder On Class Ini Or Through Manual Assignment To GamedataFolder Param", false);
                 return null;
             }
 
+            // 
+            if (!Directory.Exists(OutputDirectory))
+            {
+                if (OutputDirectory == string.Empty)
+                {
+                    OutputDirectory = UseAbsoluteFilePaths ? GamedataFolder : GamedataFolder.Remove(GamedataFolder.LastIndexOf('\\'));
+                }
+                else
+                {
+                    WLog($"Error; Invalid .gp4 Output Directory Provided (Directory \"{OutputDirectory}\" Does not Exist).\n\n", false);
+                    return null;
+                }
+            }
+            // Add File Name to Output Directory
+            else OutputDirectory += $"\\{SfoParams.title_id}-{((SfoParams.category == "gd") ? "app" : "patch")}.gp4";
 
+            #endregion [set/verify options]
+            
+            
             // Timestamp For GP4, Same Format Sony Used Though Sony's Technically Only Tracks The Date,
             // With The Time Left As 00:00, But Imma Just Add The Time. It Doesn't Break Anything).
             var gp4_timestamp = DateTime.Now.GetDateTimeFormats()[78];
 
-
-            if(Directory.Exists(GP4OutputPath)) {
-                GP4OutputPath += $"\\{SfoParams.title_id}-{((SfoParams.category == "gd") ? "app" : "patch")}.gp4";
-            }
 
 
             // Check The Parsed Data For Any Potential Errors Before Building The .gp4 With It
@@ -371,12 +392,12 @@ namespace libgp4 {
 
 
             // Write The .go4 File To The Provided Folder / As The Provided Filename
-            gp4.Save(GP4OutputPath);
+            gp4.Save(OutputDirectory);
 
 #if Log
-            WLog($"GP4 Creation Successful, File Saved As {GP4OutputPath}", false);
+            WLog($"GP4 Creation Successful, File Saved As {OutputDirectory}", false);
 #endif
-            return GP4OutputPath;
+            return OutputDirectory;
         }
         #endregion
         ///============================\\\

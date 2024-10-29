@@ -38,11 +38,12 @@ namespace GP4GUI {
         public static Button[] DropdownMenu = new Button[2];
 
 
-        private void TestBtn_Click(object sender, EventArgs e) {
+        private void TestBtn_Click(object sender, EventArgs e)
+        {
             #if DEBUG
-
             gp4.VerboseOutput = true;
-            var newgp4path = gp4.CreateGP4(@"C:\Users\msblob\gp4", true);
+            gp4.OutputDirectory = @"C:\Users\msblob\gp4";
+            var newgp4path = gp4.CreateGP4(true);
             if (newgp4path == null) {
                 WLog("Error: CreateGP4() Returned Null, Aborting.");
                 return;
@@ -121,7 +122,7 @@ namespace GP4GUI {
             
             #endif
         }
-        
+
 
         //##########################################\\
         //--      Designer Managed Functions      --\\
@@ -402,7 +403,7 @@ namespace GP4GUI {
         private void ClearLogBtn_Click(object _, EventArgs __) => OutputWindow.Clear();
 
 
-        // Toggle The OptionsPage Window for .gp4 Option Editing
+        // Toggle The OptionsPage Window for .gp4 Option Editing, and Move to New Location
         private void ToggleOptionsWindowVisibility(object _, EventArgs __)
         {
             Azem.Visible = OptionsPageIsOpen ^= true;
@@ -508,38 +509,12 @@ namespace GP4GUI {
         }
 
 
-
-        // Create the .gp4 Project File.
+        //#
+        //## Create the .gp4 Project File.
+        //#
         private void SetupAndCreateProjectFile(object sender, EventArgs e)
         {
-            // Check for Unassigned Gamedata Path Before Proceeding
-            if (GamedataFolderPathBox.IsDefault) {
-                WLog("Please Assign A Valid Gamedata Folder Before Building.");
-                return;
-            }
-            // Verify Provided Gamedata Folder Path (After Stripping Quotes)
-            else if (!Directory.Exists(GamedataFolder = GamedataFolderPathBox.Text.Replace("\"", string.Empty)))
-            {
-                WLog($"The Provided Gamedata Folder Path Was Not Valid ({(File.Exists(GamedataFolder) ? $"Path: {GamedataFolder} Leads To A File, Not A Folder" : $"Directory \"{GamedataFolder}\" Does Not Exist")}).");
-                return;
-            }
 
-
-
-            //#
-            //## Apply Current Options to GP4Creator Instance, and Apply Defaults to Any Left Unassigned.
-            //#
-            #region [.gp4 Options]
-            if (OptionsPageIsOpen) Azem.SaveOptions();
-
-            gp4.GamedataFolder       = GamedataFolder;
-            gp4.UseAbsoluteFilePaths = UseAbsoluteFilePaths;
-            gp4.IgnoreKeystone       = IgnoreKeystone;
-            gp4.VerboseOutput       = VerboseOutput;
-            gp4.BasePackagePath      = BasePackagePath;
-            gp4.Passcode             = Passcode;
-            #endregion
-            //#^
 
 
             //# Print GP4Creator Options
@@ -556,6 +531,23 @@ namespace GP4GUI {
             //#
             # region [Assign Defaults/Verify Options]
 
+            // Apply Current Options to GP4Creator Instance, and Apply Defaults to Any Left Unassigned.
+            if (OptionsPageIsOpen) Azem.SaveOptions();
+
+
+
+            // Check for Unassigned Gamedata Path Before Proceeding
+            if (GamedataFolderPathBox.IsDefault) {
+                WLog("Please Assign A Valid Gamedata Folder Before Building.");
+                return;
+            }
+            // Verify Provided Gamedata Folder Path (After Stripping Quotes)
+            else if (!Directory.Exists(gp4.GamedataFolder = GamedataFolderPathBox.Text.Replace("\"", string.Empty)))
+            {
+                WLog($"The Provided Gamedata Folder Path Was Not Valid ({(File.Exists(gp4.GamedataFolder) ? $"Path: {gp4.GamedataFolder} Leads To A File, Not A Folder" : $"Directory \"{gp4.GamedataFolder}\" Does Not Exist")}).");
+                return;
+            }
+
             // Ensure a Base Game Package Was Specified if a Patch Package is Being Created.
             if (gp4.SfoParams.category == "gp" && gp4.BasePackagePath.Contains(@"\") && !File.Exists(gp4.BasePackagePath))
             {
@@ -564,22 +556,22 @@ namespace GP4GUI {
 
 
             // Assign Default .gp4 Output Directory if Unset
-            if (GP4OutputDirectory == null)
+            if (gp4.OutputDirectory == null)
             {
-                GP4OutputDirectory = gp4.UseAbsoluteFilePaths ?  gp4.GamedataFolder : gp4.GamedataFolder.Remove(gp4.GamedataFolder.LastIndexOf('\\'));
+                gp4.OutputDirectory = gp4.UseAbsoluteFilePaths ?  gp4.GamedataFolder : gp4.GamedataFolder.Remove(gp4.GamedataFolder.LastIndexOf('\\'));
 
-                WLog($"Assigned \"{GP4OutputDirectory}\" as .gp4 Project Output Directory.\n\n");
+                WLog($"Assigned \"{gp4.OutputDirectory}\" as .gp4 Project Output Directory.\n\n");
             }
             // Verify Provided GP4OutputDirectory Path
-            else if (!Directory.Exists(GP4OutputDirectory))
+            else if (!Directory.Exists(gp4.OutputDirectory))
             {
-                WLog($"Error; Invalid .gp4 Output Directory Provided (Directory \"{GP4OutputDirectory}\" Does not Exist).\n\n");
+                WLog($"Error; Invalid .gp4 Output Directory Provided (Directory \"{gp4.OutputDirectory}\" Does not Exist).\n\n");
                 return;
             }
 
 
             // Ensure Keystone is Present if Applicable
-            if (!gp4.IgnoreKeystone && !File.Exists($@"{GamedataFolder}\sce_sys\keystone"))
+            if (!gp4.IgnoreKeystone && !File.Exists($@"{gp4.GamedataFolder}\sce_sys\keystone"))
             {
                 WLog($"Error; No keystone File Found In Project Folder.\n\n");
                 return;
@@ -597,15 +589,13 @@ namespace GP4GUI {
             //#^
 
 
-
-
             //#
             //## Begin .gp4 Creation if all's well
             //#
             #if DEBUG
             if (!NoRunBtn.Text.Contains("Yes")) // Conditional Debug Exit
             #endif
-            gp4.CreateGP4(GP4OutputDirectory, true);
+            gp4.CreateGP4(true);
         }
         #endregion
         //===============================================\\

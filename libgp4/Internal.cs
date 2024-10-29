@@ -1064,11 +1064,14 @@ namespace libgp4 {
                     Parent.WLog($"Parsing param.sfo File\nPath: {gamedataFolder}\\sce_sys\\param.sfo", true);
 #endif
 
-                    var buffer = new byte[12];
+                    byte[] buffer;
+                    object[] SfoParams;
+                    string[] SfoParamLabels;
                     int[] ParamOffsets, DataTypes, ParamLengths;
 
+
                     // Check PSF File Magic, + 4 Bytes To Skip Label Base Ptr
-                    sfo.Read(buffer, 0, 12);
+                    sfo.Read(buffer = new byte[12], 0, 12);
                     if(BitConverter.ToInt64(buffer, 0) != 1104986460160)
                         throw new InvalidDataException($"File Magic For .sfo Wasn't Valid ([Expected: 00-50-53-46-01-01-00-00] != [Read: {BitConverter.ToString(buffer)}])");
 
@@ -1087,11 +1090,11 @@ namespace libgp4 {
 
 
                     // Initialize Arrays
-                    var SfoParams = new object[ParameterCount];
-                    var SfoParamLabels = new string[ParameterCount];
-                    DataTypes = new int[ParameterCount];
-                    ParamLengths = new int[ParameterCount];
-                    ParamOffsets = new int[ParameterCount];
+                    SfoParams      = new object[ParameterCount];
+                    SfoParamLabels = new string[ParameterCount];
+                    DataTypes      = new int[ParameterCount];
+                    ParamLengths   = new int[ParameterCount];
+                    ParamOffsets   = new int[ParameterCount];
 
                     // Load Related Data For Each Parameter
                     for(int i = 0; i < ParameterCount; ++i) {

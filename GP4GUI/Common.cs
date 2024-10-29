@@ -65,28 +65,7 @@ namespace GP4GUI {
         public static readonly Font DefaultTextFont = new Font("Segoe UI Semibold", 9f, FontStyle.Italic); // Gadugi, 8.25pt, style=Bold, Italic
         #endregion
         
-        
-        //#
-        //## libgp4 Options
-        //#
-#region [libgp4 Options]
-        public static bool
-            IgnoreKeystone,
-            VerboseOutput,
-            UseAbsoluteFilePaths
-        ;
-        public static string
-            GP4OutputDirectory,
-            BasePackagePath,
-            GamedataFolder,
-            FileBlacklist,
-            Passcode
-        ;
-        //#^
-#endregion [libgp4 Options]
-
-
-        #endregion Variable Declarations
+                #endregion Variable Declarations
         //===================================\\
 
 
