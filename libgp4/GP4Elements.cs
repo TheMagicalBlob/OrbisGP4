@@ -1,13 +1,18 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Xml;
-#pragma warning disable CS1587
-
+﻿
 //##############################################\\
 // Contents:                                    \\
 //--> Functions to Create Various .gp4 Elements \\
 //##############################################\\
+
+#pragma warning disable CS1587
+#define GUIExtras
+#define Log
+
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Xml;
+
 
 namespace libgp4 {
     public partial class GP4Creator {

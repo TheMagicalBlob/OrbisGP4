@@ -3,6 +3,7 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
 namespace GP4GUI {
 
@@ -23,7 +24,7 @@ namespace GP4GUI {
         //#
         #region [Form Functionality Variables]
 
-        // Label These
+        //TODO: Label These
         public static bool
             LegacyFolderSelectionDialogue = true, // 
             OptionsPageIsOpen = false,            //
@@ -54,7 +55,6 @@ namespace GP4GUI {
         //#
         //## Look/Feel-Related Variables
         //#
-        # region [Look/Feel-Related Variables]
         public static Color AppColour = Color.FromArgb(125, 183, 245);
         public static Color AppColourLight = Color.FromArgb(210, 240, 250);
 
@@ -63,9 +63,8 @@ namespace GP4GUI {
         public static readonly Font MainFont        = new Font("Gadugi", 8.25f, FontStyle.Bold); // Gadugi, 8.25pt, style=Bold, Italic
         public static readonly Font TextFont        = new Font("Segoe UI Semibold", 9f); // Segoe UI Semibold, 9pt, style=Bold
         public static readonly Font DefaultTextFont = new Font("Segoe UI Semibold", 9f, FontStyle.Italic); // Gadugi, 8.25pt, style=Bold, Italic
-        #endregion
         
-                #endregion Variable Declarations
+        #endregion Variable Declarations
         //===================================\\
 
 
@@ -116,27 +115,17 @@ namespace GP4GUI {
         //#
         //## Logging Bullshit
         //#
-        #region [Logging Bullshit]
-
-#if DEBUG
-        /// Output Misc. Messages to the Main Output Window (the big-ass richtext box).
+        
+        /// <summary> Output Misc. Messages to the Main Output Window (the big-ass richtext box). </summary>
         public static void WLog(object str = null) {
             _OutputWindow.AppendLine(str.ToString());
-            DLog(str);
-        }
-#else
-        public static void WLog(object str = null) => _OutputWindow.AppendLine(str.ToString());
-#endif
-        /// Basic Debug Output Function
-        public static void DLog(object str = null) {
 #if DEBUG
+            // Debug Output
             try { Debug.WriteLine($"#libgp4: {str}");
             }   
             catch (Exception){}
 #endif
         }
-        #endregion [Logging Bullshit]
-
 
         #endregion Function Declarations
         //===================================\\

@@ -1,17 +1,19 @@
-﻿using System;
+﻿//###############################\\
+// Contents:                     \\
+//--> Main Library Functionality \\
+//###############################\\
+
+#pragma warning disable CS1587
+#define GUIExtras
+#define Log
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml;
-#pragma warning disable CS1587
-
-//###############################\\
-/// Contents:                     \\\
-//--> Main Library Functionality \\\
-//###############################\\
-
 
 // A Small Library For Building .gp4 Files For Use In PS4 .pkg Creation, And Grabbing Data From Existing Ones
 namespace libgp4 {

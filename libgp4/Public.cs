@@ -1,14 +1,17 @@
-﻿using System;
-using System.IO;
-using System.Xml;
-using System.Collections.Generic;
-#pragma warning disable CS1587
-
+﻿
 //################################\\
 /// Contents:                      \\\
 //--> Publicly Accessible Members \\\
 //################################\\
 
+#pragma warning disable CS1587
+#define GUIExtras
+#define Log
+
+using System;
+using System.IO;
+using System.Xml;
+using System.Collections.Generic;
 
 namespace libgp4 {
 
