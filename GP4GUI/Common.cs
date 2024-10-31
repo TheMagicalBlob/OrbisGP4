@@ -2,6 +2,9 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+#if DEBUG
+using System.Diagnostics;
+#endif
 
 namespace GP4GUI {
 
