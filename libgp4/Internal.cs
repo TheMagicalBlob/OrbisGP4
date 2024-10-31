@@ -1487,7 +1487,13 @@ namespace libgp4 {
         {
             // TODO: Expand This.
 
-            if (SkipIntegrityCheck) return;
+            // Ensure A GamedataFolder's Been Provided No Matter What
+            if (GamedataFolder == null) {
+                WLog("No Valid Project Folder Was Assigned. Please Provide A Valid Project Folder On Class Ini Or Through Manual Assignment To GamedataFolder Param", false);
+                return;
+            }
+
+            else if (SkipIntegrityCheck) return;
 
             var Errors = string.Empty;
             int ErrorCount;
@@ -1549,6 +1555,24 @@ namespace libgp4 {
         /// <summary> Assign Default Values to Unassigned Options. </summary>
         private void ApplyDefaultsWhereApplicable(SfoParser sfo_data)
         {
+
+            //#
+            //## Set And Verify Default/Provided Options
+            //#
+
+            // Create Output Directory if it's Not Already Present
+            if (OutputDirectory == string.Empty)
+            {
+                OutputDirectory = UseAbsoluteFilePaths ? GamedataFolder : GamedataFolder.Remove(GamedataFolder.LastIndexOf('\\'));
+            }
+            else if (!Directory.Exists(OutputDirectory) && !Directory.CreateDirectory(OutputDirectory).Exists)
+            {
+                WLog($"Error; Invalid Output Directory Provided for .gp4 Project. [{(File.Exists(OutputDirectory) ? $"Path \"{OutputDirectory}\" Leads to a File, Not a Folder." : $"Directory \"{OutputDirectory}\" Does Not Exist.")}]", false);
+                return;
+            }
+            // Set Output Path
+            else OutputPath = $"{OutputDirectory}\\{SfoParams.title_id}-{((SfoParams.category == "gd") ? "app" : "patch")}.gp4";
+
 
             // Path or Name of Base Game Package to Marry Patch Packages to on .gp4 Usage.
             if (BasePackagePath == string.Empty && sfo_data.category == "gp")

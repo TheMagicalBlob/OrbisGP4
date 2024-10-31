@@ -39,7 +39,7 @@ namespace libgp4 {
             get => _SfoParams;
             private set {
                 _SfoParams = value;
-                DLog($"SfoParams => [{string.Join(", ", _SfoParams)}]");
+                DLog($"SfoParams => [{string.Join("\nSfoParams => ", _SfoParams)}]\n");
             }
         }
         private SfoParser _SfoParams;
@@ -51,7 +51,7 @@ namespace libgp4 {
             get => _PlaygoData;
             private set {
                 _PlaygoData = value;
-                DLog($"PlaygoData => [{string.Join("\n#> ", _PlaygoData)}]");
+                DLog($"[{string.Join("\nPlaygoData => ", _PlaygoData)}]\n");
             }
         }
         private PlaygoParameters _PlaygoData;
@@ -86,8 +86,15 @@ namespace libgp4 {
         }
         private string _OutputDirectory = string.Empty;
 
-        private string OutputPath;
 
+        /// <summary> Full File Path That Will be Used for the .gp4 Project File. </summary>
+        private string OutputPath {
+            get => OutputPath ?? string.Empty;
+            set {
+                OutputPath = value ?? string.Empty;
+                DLog($"OutputDirectory => [{OutputPath}]");
+            }
+        }
 
         /// <summary>
         /// Include The Keystone File Used For Savedata Creation/Usage In The .gp4's File Listing.
@@ -95,13 +102,13 @@ namespace libgp4 {
         /// <br/><br/> (True By Default)
         /// </summary>
         public bool IgnoreKeystone {
-            get => _Keystone;
+            get => _IgnoreKeystone;
             set {
-                _Keystone = value;
-                DLog($"Keystone => [{_Keystone}]");
+                _IgnoreKeystone = value;
+                DLog($"IgnoreKeystone => [{_IgnoreKeystone}]");
             }
         }
-        private bool _Keystone;
+        private bool _IgnoreKeystone;
 
 
         /// <summary>
@@ -335,38 +342,7 @@ namespace libgp4 {
             WLog($"Starting .gp4 Creation. PKG Passcode: {Passcode}\n", false);
             WLog($".gp4 Destination Path: {OutputDirectory}\nSource .pkg Path: {BasePackagePath ?? "Not Applicable"}", true);
 #endif
-
-
-            //#
-            //## Set And Verify Default/Provided Options
-            //#
-            # region [set/verify options]
-
-            // Ensure A GamedataFolder's Been Provided
-            if (GamedataFolder == null) {
-                WLog("No Valid Project Folder Was Assigned. Please Provide A Valid Project Folder On Class Ini Or Through Manual Assignment To GamedataFolder Param", false);
-                return null;
-            }
-
-            // Create Output Directory if it's Not Already Present
-            if (!Directory.Exists(OutputDirectory) && !Directory.CreateDirectory(OutputDirectory).Exists)
-            {
-                if (OutputDirectory == string.Empty)
-                {
-                    OutputDirectory = UseAbsoluteFilePaths ? GamedataFolder : GamedataFolder.Remove(GamedataFolder.LastIndexOf('\\'));
-                }
-                else
-                {
-                    WLog($"Error; Invalid Output Directory Provided for .gp4 Project. [{(File.Exists(OutputDirectory) ? $"Path \"{OutputDirectory}\" Leads to a File, Not a Folder." : $"Directory \"{OutputDirectory}\" Does Not Exist.")}]", false);
-                    return null;
-                }
-            }
-            // Set Output Path
-            else OutputPath = $"{OutputDirectory}\\{SfoParams.title_id}-{((SfoParams.category == "gd") ? "app" : "patch")}.gp4";
-
-            #endregion [set/verify options]
-            
-            
+                       
             // Timestamp For GP4, Same Format Sony Used Though Sony's Technically Only Tracks The Date,
             // With The Time Left As 00:00, But Imma Just Add The Time. It Doesn't Break Anything).
             var gp4_timestamp = DateTime.Now.GetDateTimeFormats()[78];

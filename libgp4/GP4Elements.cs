@@ -8,7 +8,6 @@
 #define GUIExtras
 #define Log
 
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
@@ -80,20 +79,10 @@ namespace libgp4 {
         /// Create "files" Element Containing File Destination And Source Paths, Along With Whether To Enable PFS Compression.
         /// </summary>
         private XmlNode CreateFilesElement(int chunk_count, string[][] extra_files, string gamedata_folder, XmlDocument gp4) {
-            
-            // Get The Paths Of All Project Files & Subdirectories In The Given Project Folder. 
-            var file_info = new DirectoryInfo(GamedataFolder).GetFiles(".", SearchOption.AllDirectories); // The Period Is Needed To Search Every Single File/Folder Recursively, I Don't Even Know Why It Works That Way.
-            // Array Of All Files In The Project Folder (Excluding Blacklisted Files/Directories)
-            var file_paths = new List<string>();
-
-            for(var index = 0; index < file_info.Length; ++index) {
-            }
-            
-
             var files = gp4.CreateElement("files");
-            //foreach (var file in new DirectoryInfo(GamedataFolder).GetFiles(".", SearchOption.AllDirectories))
             foreach (var file_path in Directory.GetFiles(GamedataFolder, ".", SearchOption.AllDirectories))
             {
+                // Skip Blacklisted Items
                 if(FileShouldBeExcluded(file_path))
                     continue;
 
@@ -103,7 +92,7 @@ namespace libgp4 {
                     "orig_path",
                     UseAbsoluteFilePaths ?
                     file_path :
-                    file_path.Remove(0, gamedata_folder.Length + 1) // Strip
+                    file_path.Remove(0, gamedata_folder.Length + 1) // Strip Gamedata Folder Path From Filepath
                 );
 
                 if(!SkipPfsCompressionForFile(file_path))
@@ -114,12 +103,13 @@ namespace libgp4 {
 
                 files.AppendChild(file);
             }
-            
-
-
-
+  
+/*
             // Add Any Extra Files From The User (Test This)
-            if(extra_files != null)
+            if (extra_files != null)
+            {
+                WLog($"Loading Extra Files ({extra_files.Length} files)", true);
+
                 for(var index = 0; index < extra_files.Length; index++) {
                     if(FileShouldBeExcluded(extra_files[index][1]))
                         continue;
@@ -136,6 +126,8 @@ namespace libgp4 {
 
                     files.AppendChild(file);
                 }
+            }
+*/
 
             return files;
         }
@@ -168,6 +160,7 @@ namespace libgp4 {
 
             return rootdir;
         }
+
 
         /// <summary> Create "chunks" Element
         /// </summary>
@@ -269,48 +262,44 @@ namespace libgp4 {
 #endif
                 return true;
             }
+
             return false;
         }
 
 
         /// <summary>
-        /// Check Whether Or Not The File At filepath Should Have Pfs Compression Enabled.<br/>
-        /// This Is Almost Certainly Incomplete. Need More Brain Juice.
+        /// Check Whether Or Not The File At filepath Should Have Pfs Compression Enabled.
+        /// <br/><br/> [TODO: Flesh This List Out/Do it Properly. This Is Almost Certainly Incomplete. Need More Brain Juice.]
         /// </summary>
+        /// 
         /// <returns> True If Pfs Compression Should Be Enabled. </returns>
         private bool SkipPfsCompressionForFile(string filepath) {
-            // TOTO: Figure Out How To Dynamically
-            foreach(var file in new string[] {
+            return new string[] {
                 "sce_sys",
                 "sce_module",
+                ".fself",
+                ".self",
                 ".elf",
                 ".bin",
                 ".prx",
                 ".dll"
-            })
-            if(filepath.Contains(file))
-                return true;
-
-            return false;
+            }.Any(filepath.Contains);
         }
 
 
         /// <summary>
-        /// Check Whether Or Not The File At filepath Should Have The "chunks" Attribute.<br/>
-        /// [This Is Almost Certainly Incomplete. Need More Brain Juice.]
+        /// Check Whether Or Not The File At filepath Should Have The "chunks" Attribute.
+        /// <br/><br/> [TODO: Flesh This List Out/Do it Properly. This Is Almost Certainly Incomplete. Need More Brain Juice.]
         /// </summary>
+        /// 
         /// <returns> True If The Chunk Attribute Should Be Skipped. </returns>
         private bool SkipChunkAttributeForFile(string filepath) {
-            foreach(var filter in new string[] {
+            return new string[] {
                 "keystone",
                 "sce_sys",
                 "sce_module",
                 ".bin"
-            })
-            if(filepath.Contains(filter))
-                return true;
-
-            return false;
+            }.Any(filepath.Contains);
         }
 
         #endregion
