@@ -22,6 +22,17 @@ namespace libgp4 {
         //########################\\
         #region User Options
 
+        /// <summary> Skip Checking the Project Data for Possible Errors Before Beginning the Creation Process. </summary>
+        public bool SkipIntegrityCheck {
+            get => _SkipIntegrityCheck;
+            set {
+                _SkipIntegrityCheck= value;
+                DLog($"VerifyIntegrity => [{_SkipIntegrityCheck}]");
+            }
+        }
+        private bool _SkipIntegrityCheck;
+
+
         /// <summary> An Array Of Parameters Parsed From The param.sfo File In The Application/Patch's System Folder (sce_sys\param.sfo)
         ///</summary>
         public SfoParser SfoParams {
@@ -318,10 +329,8 @@ namespace libgp4 {
         /// Then Saves All File/Subdirectory Paths In The Gamedata Folder
         /// </summary>
         /// 
-        /// <param name="VerifyIntegrity"> Set Whether Or Not To Abort The Creation Process If An Error Is Found That Would Cause .pkg Creation To Fail, Or Simply Log It To The Standard Console Output And/Or LogOutput(string) Action. </param>
-        /// 
         /// <returns> The Absolute Path to the Created .gp4 Project File. </returns>
-        public string CreateGP4(bool VerifyIntegrity = true) {
+        public string CreateGP4() {
 #if Log
             WLog($"Starting .gp4 Creation. PKG Passcode: {Passcode}\n", false);
             WLog($".gp4 Destination Path: {OutputDirectory}\nSource .pkg Path: {BasePackagePath ?? "Not Applicable"}", true);
@@ -363,13 +372,15 @@ namespace libgp4 {
             var gp4_timestamp = DateTime.Now.GetDateTimeFormats()[78];
 
 
-
             // Check The Parsed Data For Any Potential Errors Before Building The .gp4 With It
-            if(VerifyIntegrity) VerifyProjectData(GamedataFolder, PlaygoData.playgo_content_id, SfoParams);
+            VerifyProjectData(GamedataFolder, PlaygoData.playgo_content_id, SfoParams);
+            ApplyDefaultsWhereApplicable(SfoParams);
 
+
+            // Initialize new Document Instance for the .gp4 Project.
+            var gp4 = new XmlDocument();
 
             // Create Base .gp4 Elements (Up To Chunk/Scenario Data)
-            var gp4 = new XmlDocument();
             var basic_elements = CreateBaseElements
             (
                 SfoParams,
@@ -394,7 +405,6 @@ namespace libgp4 {
 
             // Write The .go4 File To The Provided Folder / As The Provided Filename
             gp4.Save(OutputPath);
-
 #if Log
             WLog($"GP4 Creation Successful, File Saved As {OutputPath}", false);
 #endif

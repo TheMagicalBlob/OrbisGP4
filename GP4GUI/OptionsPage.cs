@@ -261,7 +261,8 @@ namespace GP4GUI
         }
 
         /// <summary>
-        /// Create And Subscriibe to Various Event Handlers for Basic Form Functionality.
+        /// Create And Subscriibe
+        /// to Various Event Handlers for Basic Form Functionality.
         /// </summary>
         public void PostInitFormLogic()
         {
@@ -327,8 +328,6 @@ namespace GP4GUI
             if (!BasePackagePathTextBox.IsDefault)    gp4.BasePackagePath = BasePackagePathTextBox.Text;
             // File Filter
             if (!FileBlacklistTextBox.IsDefault)      gp4.FileBlacklist   = FileBlacklistTextBox.Text.Replace("\"", string.Empty).Split(';', '|', ',');
-            // Base .pkg Path
-            if (!BasePackagePathTextBox.IsDefault)    gp4.BasePackagePath = BasePackagePathTextBox.Text;
             // Package Passcode
             if (!PasscodeTextBox.IsDefault)           gp4.Passcode        = PasscodeTextBox.Text;
                 

@@ -59,10 +59,9 @@ namespace libgp4 {
             package.SetAttribute("app_type", "full");
 
 
-            if(sfo_data.category == "gp")
-                package.SetAttribute("app_path", base_package ?? $"{sfo_data.content_id}-A{sfo_data.app_ver.Replace(".", "")}-V{sfo_data.version.Replace(".", "")}.pkg");
+            package.SetAttribute("app_path", base_package);
 #if Log
-            else if(sfo_data.category == "gd" && base_package != null) {
+            if(sfo_data.category == "gd" && base_package != string.Empty) {
                 var str = $"WARNING: A Base Game Package Path Was Given, But The Package Category Was Set To Full Game.\n(Base Package: {base_package})";
                 DLog(str);
                 WLog(str, true);

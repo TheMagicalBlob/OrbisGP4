@@ -24,7 +24,7 @@ namespace GP4GUI {
                 },
             };
             
-
+            // Set Form Refferences
             Venat = this;
             Azem = new OptionsPage();
 
@@ -39,7 +39,7 @@ namespace GP4GUI {
             #if DEBUG
             gp4.VerboseOutput = true;
             gp4.OutputDirectory = @"C:\Users\msblob\gp4";
-            var newgp4path = gp4.CreateGP4(true);
+            var newgp4path = gp4.CreateGP4();
             if (newgp4path == null) {
                 WLog("Error: CreateGP4() Returned Null, Aborting.");
                 return;
@@ -152,7 +152,7 @@ namespace GP4GUI {
             this.CreateProjectFileBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.CreateProjectFileBtn.Font = new System.Drawing.Font("Gadugi", 8.25F, System.Drawing.FontStyle.Bold);
             this.CreateProjectFileBtn.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.CreateProjectFileBtn.Location = new System.Drawing.Point(373, 62);
+            this.CreateProjectFileBtn.Location = new System.Drawing.Point(457, 61);
             this.CreateProjectFileBtn.Name = "CreateProjectFileBtn";
             this.CreateProjectFileBtn.Size = new System.Drawing.Size(75, 24);
             this.CreateProjectFileBtn.TabIndex = 3;
@@ -178,7 +178,7 @@ namespace GP4GUI {
             this.MinimizeBtn.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold);
             this.MinimizeBtn.ForeColor = System.Drawing.SystemColors.WindowText;
             this.MinimizeBtn.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.MinimizeBtn.Location = new System.Drawing.Point(406, 2);
+            this.MinimizeBtn.Location = new System.Drawing.Point(495, 2);
             this.MinimizeBtn.Name = "MinimizeBtn";
             this.MinimizeBtn.Size = new System.Drawing.Size(22, 22);
             this.MinimizeBtn.TabIndex = 4;
@@ -192,7 +192,7 @@ namespace GP4GUI {
             this.ExitBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.ExitBtn.Font = new System.Drawing.Font("Gadugi", 8.25F, System.Drawing.FontStyle.Bold);
             this.ExitBtn.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.ExitBtn.Location = new System.Drawing.Point(428, 2);
+            this.ExitBtn.Location = new System.Drawing.Point(517, 2);
             this.ExitBtn.Name = "ExitBtn";
             this.ExitBtn.Size = new System.Drawing.Size(22, 22);
             this.ExitBtn.TabIndex = 5;
@@ -205,9 +205,9 @@ namespace GP4GUI {
             this.BrowseBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.BrowseBtn.Font = new System.Drawing.Font("Gadugi", 8.25F, System.Drawing.FontStyle.Bold);
             this.BrowseBtn.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.BrowseBtn.Location = new System.Drawing.Point(283, 62);
+            this.BrowseBtn.Location = new System.Drawing.Point(458, 34);
             this.BrowseBtn.Name = "BrowseBtn";
-            this.BrowseBtn.Size = new System.Drawing.Size(78, 24);
+            this.BrowseBtn.Size = new System.Drawing.Size(65, 24);
             this.BrowseBtn.TabIndex = 7;
             this.BrowseBtn.Text = "Browse...";
             this.BrowseBtn.UseVisualStyleBackColor = false;
@@ -260,9 +260,9 @@ namespace GP4GUI {
             this.SwapBrowseModeBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.SwapBrowseModeBtn.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold);
             this.SwapBrowseModeBtn.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.SwapBrowseModeBtn.Location = new System.Drawing.Point(360, 62);
+            this.SwapBrowseModeBtn.Location = new System.Drawing.Point(524, 34);
             this.SwapBrowseModeBtn.Name = "SwapBrowseModeBtn";
-            this.SwapBrowseModeBtn.Size = new System.Drawing.Size(12, 24);
+            this.SwapBrowseModeBtn.Size = new System.Drawing.Size(14, 24);
             this.SwapBrowseModeBtn.TabIndex = 16;
             this.SwapBrowseModeBtn.UseVisualStyleBackColor = false;
             this.SwapBrowseModeBtn.Click += new System.EventHandler(this.SwapBrowseModeBtn_Click);
@@ -276,7 +276,7 @@ namespace GP4GUI {
             this.OutputWindow.MaxLength = 21474836;
             this.OutputWindow.Name = "OutputWindow";
             this.OutputWindow.ReadOnly = true;
-            this.OutputWindow.Size = new System.Drawing.Size(444, 263);
+            this.OutputWindow.Size = new System.Drawing.Size(532, 263);
             this.OutputWindow.TabIndex = 6;
             this.OutputWindow.Text = "";
             // 
@@ -287,7 +287,7 @@ namespace GP4GUI {
             this.GamedataFolderPathBox.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Italic);
             this.GamedataFolderPathBox.Location = new System.Drawing.Point(5, 34);
             this.GamedataFolderPathBox.Name = "GamedataFolderPathBox";
-            this.GamedataFolderPathBox.Size = new System.Drawing.Size(442, 24);
+            this.GamedataFolderPathBox.Size = new System.Drawing.Size(452, 24);
             this.GamedataFolderPathBox.TabIndex = 2;
             this.GamedataFolderPathBox.Text = "Paste The Gamedata Folder Path Here, Or Use The Browse Button...";
             // 
@@ -296,7 +296,7 @@ namespace GP4GUI {
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
-            this.ClientSize = new System.Drawing.Size(452, 371);
+            this.ClientSize = new System.Drawing.Size(541, 377);
             this.Controls.Add(this.SwapBrowseModeBtn);
             this.Controls.Add(this.dummy);
             this.Controls.Add(this.ClearLogBtn);
@@ -342,6 +342,7 @@ namespace GP4GUI {
             // Set Event Handlers for Form Dragging
             MouseDown += new MouseEventHandler((sender, e) => {
                 MouseDif = new Point(MousePosition.X - Location.X, MousePosition.Y - Location.Y);
+
                 MouseIsDown = true;
                 DropdownMenu[1].Visible = DropdownMenu[0].Visible = false;
             });
@@ -349,7 +350,6 @@ namespace GP4GUI {
             MouseMove += new MouseEventHandler((sender, e) => DragForm());
 
             
-            // Grab Buffer Values For OptionsPage Positioning
             foreach(Control Item in Controls)
             {
                 Item.MouseDown += new MouseEventHandler((sender, e) => {
@@ -513,7 +513,7 @@ namespace GP4GUI {
 
             // Apply Current Options to GP4Creator Instance, and Apply Defaults to Any Left Unassigned.
             if (OptionsPageIsOpen) Azem.SaveOptions();
-
+            gp4.GamedataFolder = GamedataFolderPathBox.Text.Replace("\"", string.Empty);
 
 
             // Check for Unassigned Gamedata Path Before Proceeding
@@ -522,7 +522,7 @@ namespace GP4GUI {
                 return;
             }
             // Verify Provided Gamedata Folder Path (After Stripping Quotes)
-            else if (!Directory.Exists(gp4.GamedataFolder = GamedataFolderPathBox.Text.Replace("\"", string.Empty)))
+            else if (!Directory.Exists(gp4.GamedataFolder))
             {
                 WLog($"The Provided Gamedata Folder Path Was Not Valid ({(File.Exists(gp4.GamedataFolder) ? $"Path: {gp4.GamedataFolder} Leads To A File, Not A Folder" : $"Directory \"{gp4.GamedataFolder}\" Does Not Exist")}).");
                 return;
@@ -532,15 +532,6 @@ namespace GP4GUI {
             if (gp4.SfoParams.category == "gp" && gp4.BasePackagePath.Contains(@"\") && !File.Exists(gp4.BasePackagePath))
             {
                 WLog($"Warning; Provided Base Package Path isn't Valid (Remedy)");
-            }
-
-
-            // Assign Default .gp4 Output Directory if Unset
-            if (gp4.OutputDirectory == string.Empty)
-            {
-                gp4.OutputDirectory = gp4.UseAbsoluteFilePaths ? gp4.GamedataFolder : gp4.GamedataFolder.Remove(gp4.GamedataFolder.LastIndexOf('\\'));
-
-                WLog($"Assigned \"{gp4.OutputDirectory}\" as .gp4 Project Output Directory.\n\n");
             }
 
 
@@ -566,7 +557,7 @@ namespace GP4GUI {
             //#
             //## Begin .gp4 Creation if all's well
             //#
-            gp4.CreateGP4(true);
+            gp4.CreateGP4();
         }
         #endregion
         //===============================================\\

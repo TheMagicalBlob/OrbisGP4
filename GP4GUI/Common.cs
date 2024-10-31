@@ -162,20 +162,11 @@ namespace GP4GUI {
         public TextBox()
         {
             IsDefault = true;
-            TextChanged += Set;
-                        
-            GotFocus += (bite, me) => {
-                if(IsDefault) {
-                    Font = Common.TextFont;
-                    Clear();
-                }
-            };
-            Click += (bite, me) => { // Both Events, Just-In-Case.
-                if(IsDefault) {
-                    Font = Common.TextFont;
-                    Clear();
-                }
-            };
+
+            Click += (bite, me) => ClearControl();
+            GotFocus += (bite, me) => ClearControl(); // Both Events, Just-In-Case.
+            TextChanged += SetDefaultText;
+
             // Reset control if nothing different was entered
             LostFocus += (bite, me) => {
                 if(Text.Trim().Length == 0 || DefaultText.Contains(Text)) {
@@ -185,10 +176,20 @@ namespace GP4GUI {
                 }
             };
         }
+
+        private void ClearControl()
+        {
+            if(IsDefault) {
+                IsDefault = false;
+                Font = Common.TextFont;
+                Clear();
+            }
+        }
+
         /// <summary> Yoink Default Text From First Text Assignment (Ideally right after being created). </summary>
-        private void Set(object _, EventArgs __) {
+        private void SetDefaultText(object _, EventArgs __) {
             DefaultText = Text;
-            TextChanged -= Set;
+            TextChanged -= SetDefaultText;
             TextChanged += (sender, e) => Text = Text.Replace("\"", string.Empty);
         }
 

@@ -239,18 +239,18 @@ namespace libgp4 {
         private static string[] GetAttributes(string GP4Path, string NodeName, string AttributeName) {
             if((GP4Path = CheckGP4Path(GP4Path)) != string.Empty)
                 using(StreamReader GP4File = new StreamReader(GP4Path)) {
-                    var Out = new List<string>();
-                    string tmp;
+                    var attributes = new List<string>();
+                    string attribute;
 
                     GP4File.ReadLine(); // Skip Version Confilct
 
                     using(var gp4 = XmlReader.Create(GP4File))
                         while(gp4.Read())
-                            if(gp4.LocalName == NodeName && (tmp = gp4.GetAttribute(AttributeName)) != null)
-                                Out.Add(tmp);
+                            if(gp4.LocalName == NodeName && (attribute = gp4.GetAttribute(AttributeName)) != null)
+                                attributes.Add(attribute);
 
-                    if(Out.Count > 0)
-                        return Out.ToArray();
+                    if(attributes.Count > 0)
+                        return attributes.ToArray();
                 }
 
             DLog($"Attribute \"{AttributeName}\" Not Found");
@@ -1482,11 +1482,13 @@ namespace libgp4 {
         }
 
 
-        /// <summary>
-        /// Check Various Parts Of The Parsed .gp4 Parameters To Try And Find Any Possible Errors In The Project Files/Structure.
-        ///</summary>
+        /// <summary> Check Various Parts Of The Parsed .gp4 Parameters To Try And Find Any Possible Errors In The Project Files/Structure. </summary>
         private void VerifyProjectData(string gamedata_folder, string playgo_content_id, SfoParser sfo)
-        {// TODO: Expand This.
+        {
+            // TODO: Expand This.
+
+            if (SkipIntegrityCheck) return;
+
             var Errors = string.Empty;
             int ErrorCount;
 
@@ -1515,7 +1517,7 @@ namespace libgp4 {
 
             // Make Sure A Folder Path Wasn't Provided In Place of the Base Game Package (In case they thought the tool would detect the right one? idk.)
             if (sfo.category == "gp") {
-                if (BasePackagePath == null) 
+                if (BasePackagePath == string.Empty) 
                     Errors += $"Gamedata Is For A Title Update, But No Path Was Provided For The Required Base Game Package.\n\n";
 
                 else if(!File.Exists(BasePackagePath))
@@ -1537,11 +1539,28 @@ namespace libgp4 {
 
 #if Log
                 WLog(Errors, true);
-#elif DEBUG
-                DLog(Errors);
 #endif
 
                 throw new InvalidDataException(Errors);
+            }
+        }
+
+
+        /// <summary> Assign Default Values to Unassigned Options. </summary>
+        private void ApplyDefaultsWhereApplicable(SfoParser sfo_data)
+        {
+
+            // Path or Name of Base Game Package to Marry Patch Packages to on .gp4 Usage.
+            if (BasePackagePath == string.Empty)
+            {
+                BasePackagePath = $"{sfo_data.content_id}-A{sfo_data.app_ver.Replace(".", "")}-V{sfo_data.version.Replace(".", "")}.pkg";
+            }
+            
+            // Output Directory for .gp4 Project File
+            if (OutputDirectory == string.Empty)
+            {
+                OutputDirectory = UseAbsoluteFilePaths ? GamedataFolder : GamedataFolder.Remove(GamedataFolder.LastIndexOf('\\'));
+                WLog($"Assigned \"{OutputDirectory}\" as .gp4 Project Output Directory.\n\n", true);
             }
         }
         #endregion
