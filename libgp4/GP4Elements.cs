@@ -140,6 +140,7 @@ namespace libgp4 {
             return files;
         }
 
+
         /// <summary> Create "rootdir" Element Containing The Game's File Structure through A Listing Of Each Directory And Subdirectory
         /// </summary>
         private XmlNode CreateRootDirectoryElement(string gamedata_folder, XmlDocument gp4) {
@@ -186,6 +187,7 @@ namespace libgp4 {
             return chunks;
         }
 
+
         /// <summary> Create "scenarios" Element
         /// </summary>
         private XmlNode CreateScenariosElement(PlaygoParameters data, XmlDocument gp4) {
@@ -210,6 +212,7 @@ namespace libgp4 {
 
             return scenarios;
         }
+
 
         /// <summary> Build .gp4 Structure And Save To File
         ///</summary>
@@ -309,6 +312,7 @@ namespace libgp4 {
 
             return false;
         }
+
         #endregion
         ///==================================\\\
     }

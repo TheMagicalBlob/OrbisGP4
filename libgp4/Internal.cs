@@ -1551,10 +1551,8 @@ namespace libgp4 {
         {
 
             // Path or Name of Base Game Package to Marry Patch Packages to on .gp4 Usage.
-            if (BasePackagePath == string.Empty)
-            {
+            if (BasePackagePath == string.Empty && sfo_data.category == "gp")
                 BasePackagePath = $"{sfo_data.content_id}-A{sfo_data.app_ver.Replace(".", "")}-V{sfo_data.version.Replace(".", "")}.pkg";
-            }
             
             // Output Directory for .gp4 Project File
             if (OutputDirectory == string.Empty)
