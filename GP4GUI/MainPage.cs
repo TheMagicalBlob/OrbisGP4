@@ -527,15 +527,6 @@ namespace GP4GUI {
                 WLog($"Error; No keystone File Found In Project Folder.\n\n");
                 return;
             }
-
-
-            // Verify Passcode Length
-            if (gp4.Passcode.Length != 32)
-            {
-                WLog($"Error; Invalid Passcode Length (Should Be 32, Currently {gp4.Passcode.Length})\n\n");
-                return;
-            }
-
             #endregion [Assign Defaults/Verify Options]
             //#^
 

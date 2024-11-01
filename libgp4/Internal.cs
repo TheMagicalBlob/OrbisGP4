@@ -1464,22 +1464,18 @@ namespace libgp4 {
         private void VerifyProjectData(string gamedata_folder, string playgo_content_id, SfoParser sfo)
         {
             // TODO: Expand This.
+            
+            var Errors = string.Empty;
+            int ErrorCount;
 
-            // Ensure A GamedataFolder's Been Provided No Matter What
-            if (GamedataFolder == null) {
-                WLog("No Valid Project Folder Was Assigned. Please Provide A Valid Project Folder On Class Ini Or Through Manual Assignment To GamedataFolder Param", false);
+            // Ensure A Gamedata Folder's Been Provided No Matter What
+            if (gamedata_folder == null || !Directory.Exists(gamedata_folder)) {
+                WLog($"Could Not Find The Provided Gamedata Folder.\n \nPath Provided: \"{gamedata_folder}\"\n\n", false); // Spaced Out The First Double-line-break To Avoid Counting This Error As Two (update: fucking what???)
                 return;
             }
 
             else if (SkipIntegrityCheck) return;
 
-            var Errors = string.Empty;
-            int ErrorCount;
-
-
-            // Verify Path to Gamedata Folder
-            if(!Directory.Exists(gamedata_folder))
-                Errors += $"Could Not Find The Provided Game Data Directory.\n \nPath Provided: \"{gamedata_folder}\"\n\n"; // Spaced Out The First Double-line-break To Avoid Counting This Error As Two
 
             
             // Check for Mismatched Content ID's

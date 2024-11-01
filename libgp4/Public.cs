@@ -362,8 +362,8 @@ namespace libgp4 {
 
 
             // Check The Parsed Data For Any Potential Errors Before Building The .gp4 With It
-            VerifyProjectData(GamedataFolder, PlaygoData.playgo_content_id, SfoParams);
             ApplyDefaultsWhereApplicable(SfoParams);
+            VerifyProjectData(GamedataFolder, PlaygoData.playgo_content_id, SfoParams);
 
 
             // Initialize new Document Instance for the .gp4 Project.

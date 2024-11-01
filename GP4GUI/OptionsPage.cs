@@ -267,7 +267,7 @@ namespace GP4GUI
         public void PostInitFormLogic()
         {
             // Stop OptionsPage Form From Being Hidden Whenever the Parent Is Clicked
-            this.TopMost = true;
+            //this.TopMost = true; // this is far more annoying than an occasional single flicker from a form
 
             // Anonomously Create and Set CloseBtn Event Handler
             CloseBtn.Click += new EventHandler((sender, e) =>
@@ -324,7 +324,7 @@ namespace GP4GUI
         {
             // .gp4 Project Output Directory
             if (!GP4OutputDirectoryTextBox.IsDefault) gp4.OutputDirectory = GP4OutputDirectoryTextBox.Text;
-            else                                      gp4.OutputDirectory = null;
+            else gp4.OutputDirectory = null;
 
             // Base .pkg Path
             if (!BasePackagePathTextBox.IsDefault)    gp4.BasePackagePath = BasePackagePathTextBox.Text;
@@ -336,7 +336,8 @@ namespace GP4GUI
 
             // Package Passcode
             if (!PasscodeTextBox.IsDefault)           gp4.Passcode        = PasscodeTextBox.Text;
-            else                                      gp4.Passcode        = "00000000000000000000";
+            else if (gp4.Passcode != "00000000000000000000000000000000")
+                                                      gp4.Passcode        = null;
                 
 
             // File Path Mode
