@@ -1,9 +1,9 @@
 ﻿using System;
+using System.Linq;
 using System.Drawing;
 using System.Windows.Forms;
 using System.ComponentModel;
 using static GP4GUI.Common;
-using System.Linq;
 
 
 namespace GP4GUI
@@ -319,18 +319,26 @@ namespace GP4GUI
         //#######################################\\
         #region Options Related Functions
         
-        // Save Options Page Control States to Options
+        // Save and/or Reset Applicable .gp4 Project Options
         public void SaveOptions()
         {
             // .gp4 Project Output Directory
             if (!GP4OutputDirectoryTextBox.IsDefault) gp4.OutputDirectory = GP4OutputDirectoryTextBox.Text;
+            if (!GP4OutputDirectoryTextBox.IsDefault) gp4.OutputDirectory = null;
+
             // Base .pkg Path
             if (!BasePackagePathTextBox.IsDefault)    gp4.BasePackagePath = BasePackagePathTextBox.Text;
+            if (!BasePackagePathTextBox.IsDefault)    gp4.BasePackagePath = null;
+
             // File Filter
             if (!FileBlacklistTextBox.IsDefault)      gp4.FileBlacklist   = FileBlacklistTextBox.Text.Replace("\"", string.Empty).Split(';', '|', ',');
+            else                                      gp4.FileBlacklist   = null;
+
             // Package Passcode
             if (!PasscodeTextBox.IsDefault)           gp4.Passcode        = PasscodeTextBox.Text;
+            if (!PasscodeTextBox.IsDefault)           gp4.Passcode        = null;
                 
+
             // File Path Mode
             gp4.UseAbsoluteFilePaths = UseAbsolutePathsCheckBox.Checked;
             // Keystone Setting

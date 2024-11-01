@@ -1,10 +1,10 @@
 ﻿using System;
-using System.ComponentModel;
-using System.Drawing;
+using libgp4;
 using System.IO;
+using System.Drawing;
 using System.Windows.Forms;
 using static GP4GUI.Common;
-using libgp4;
+using System.ComponentModel;
 
 namespace GP4GUI {
     public partial class MainForm : Form {
