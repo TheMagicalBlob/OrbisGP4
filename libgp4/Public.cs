@@ -351,11 +351,6 @@ namespace libgp4 {
         /// 
         /// <returns> The Absolute Path to the Created .gp4 Project File. </returns>
         public string CreateGP4() {
-#if Log
-            WLog($"Starting .gp4 Creation. PKG Passcode: {Passcode}\n", false);
-            WLog($".gp4 Destination Path: {OutputDirectory}\nSource .pkg Path: {BasePackagePath ?? "Not Applicable"}", true);
-#endif
-                       
             // Timestamp For GP4, Same Format Sony Used Though Sony's Technically Only Tracks The Date,
             // With The Time Left As 00:00, But Imma Just Add The Time. It Doesn't Break Anything).
             var gp4_timestamp = DateTime.Now.GetDateTimeFormats()[78];
@@ -365,6 +360,11 @@ namespace libgp4 {
             ApplyDefaultsWhereApplicable(SfoParams);
             VerifyProjectData(GamedataFolder, PlaygoData.playgo_content_id, SfoParams);
 
+
+#if Log
+            WLog($"Starting .gp4 Creation. PKG Passcode: {Passcode}\n", false);
+            WLog($".gp4 Project File Destination: {OutputPath}", true);
+#endif
 
             // Initialize new Document Instance for the .gp4 Project.
             var gp4 = new XmlDocument();
