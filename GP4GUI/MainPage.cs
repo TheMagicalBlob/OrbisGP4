@@ -19,7 +19,7 @@ namespace GP4GUI {
             // Initialize .gp4 Creator Instance, and Set Logging Method to OutputWindow
             gp4 = new GP4Creator {
                 LoggingMethod = (object str) => {
-                    OutputWindow.AppendLine($"#libgp4: {str}");
+                    OutputWindow.AppendLine(str.ToString());
                     OutputWindow.Update();
                 },
             };

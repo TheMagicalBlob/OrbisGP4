@@ -1569,6 +1569,7 @@ namespace libgp4 {
                 WLog($"Error; Invalid Output Directory Provided for .gp4 Project. [{(File.Exists(OutputDirectory) ? $"Path \"{OutputDirectory}\" Leads to a File, Not a Folder." : $"Directory \"{OutputDirectory}\" Does Not Exist.")}]", false);
                 return;
             }
+
             
             // Set Full Output Path for .gp4 Project, With the gengp4 Naming Scheme.
             OutputPath = $"{OutputDirectory}\\{SfoParams.title_id}-{((SfoParams.category == "gd") ? "app" : "patch")}.gp4";
