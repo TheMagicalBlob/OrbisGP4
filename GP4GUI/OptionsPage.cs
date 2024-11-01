@@ -324,11 +324,11 @@ namespace GP4GUI
         {
             // .gp4 Project Output Directory
             if (!GP4OutputDirectoryTextBox.IsDefault) gp4.OutputDirectory = GP4OutputDirectoryTextBox.Text;
-            if (!GP4OutputDirectoryTextBox.IsDefault) gp4.OutputDirectory = null;
+            else                                      gp4.OutputDirectory = null;
 
             // Base .pkg Path
             if (!BasePackagePathTextBox.IsDefault)    gp4.BasePackagePath = BasePackagePathTextBox.Text;
-            if (!BasePackagePathTextBox.IsDefault)    gp4.BasePackagePath = null;
+            else                                      gp4.BasePackagePath = null;
 
             // File Filter
             if (!FileBlacklistTextBox.IsDefault)      gp4.FileBlacklist   = FileBlacklistTextBox.Text.Replace("\"", string.Empty).Split(';', '|', ',');
@@ -336,7 +336,7 @@ namespace GP4GUI
 
             // Package Passcode
             if (!PasscodeTextBox.IsDefault)           gp4.Passcode        = PasscodeTextBox.Text;
-            if (!PasscodeTextBox.IsDefault)           gp4.Passcode        = null;
+            else                                      gp4.Passcode        = null;
                 
 
             // File Path Mode
