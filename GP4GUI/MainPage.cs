@@ -233,7 +233,7 @@ namespace GP4GUI {
             this.ClearLogBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.ClearLogBtn.Font = new System.Drawing.Font("Segoe UI Semibold", 7F, System.Drawing.FontStyle.Bold);
             this.ClearLogBtn.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(240)))), ((int)(((byte)(250)))));
-            this.ClearLogBtn.Location = new System.Drawing.Point(447, 81);
+            this.ClearLogBtn.Location = new System.Drawing.Point(5, 82);
             this.ClearLogBtn.Name = "ClearLogBtn";
             this.ClearLogBtn.Size = new System.Drawing.Size(38, 22);
             this.ClearLogBtn.TabIndex = 15;
