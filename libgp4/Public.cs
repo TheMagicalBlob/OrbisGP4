@@ -16,6 +16,17 @@ namespace libgp4 {
 
     public partial class GP4Creator {
 
+        /// <summary>
+        /// Initialize A New Instance Of The GP4Creator Class With Which To Build A New .gp4 Project With Various Settings.<br/>
+        /// Allows For The Editing Of Various Options Before .gp4 Creation.
+        /// <br/><br/> (A Valid GamedataFolder Must Be Set Prior To Creating The .gp4 Project File)
+        /// </summary>
+        public GP4Creator() {
+            // No idea what I want to do here
+        }
+
+
+
         //########################\\
         //--    User Options    --\\
         //########################\\

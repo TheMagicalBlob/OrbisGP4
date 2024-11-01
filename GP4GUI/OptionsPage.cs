@@ -336,7 +336,7 @@ namespace GP4GUI
 
             // Package Passcode
             if (!PasscodeTextBox.IsDefault)           gp4.Passcode        = PasscodeTextBox.Text;
-            else                                      gp4.Passcode        = null;
+            else                                      gp4.Passcode        = "00000000000000000000";
                 
 
             // File Path Mode

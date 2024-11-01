@@ -996,27 +996,6 @@ namespace libgp4 {
     ///</summary>
     public partial class GP4Creator {
 
-        /// <summary>
-        /// Initialize A New Instance Of The GP4Creator Class With Which To Build A New .gp4 Project With Various Settings.<br/>
-        /// Allows For The Editing Of Various Options Before .gp4 Creation.
-        /// </summary>
-        /// 
-        /// <param name="gamedataFolder"> The Folder Containing The Gamedata To Create A .gp4 Project File For. </param>
-        public GP4Creator(string gamedataFolder) {
-            Passcode = "00000000000000000000000000000000";
-            GamedataFolder = gamedataFolder;
-        }
-
-        /// <summary>
-        /// Initialize A New Instance Of The GP4Creator Class With Which To Build A New .gp4 Project With Various Settings.<br/>
-        /// Allows For The Editing Of Various Options Before .gp4 Creation.
-        /// <br/><br/> (A Valid GamedataFolder Must Be Set Prior To Creating The .gp4 Project File)
-        /// </summary>
-        public GP4Creator() {
-            Passcode = "00000000000000000000000000000000";
-        }
-
-
         /// <summary> Class For Reading Parameters Reqired For .gp4 Creation From The param.sfo File (CUSA1234-example\sce_sys\param.sfo)
         ///</summary>
         public class SfoParser {
@@ -1584,6 +1563,32 @@ namespace libgp4 {
             {
                 OutputDirectory = UseAbsoluteFilePaths ? GamedataFolder : GamedataFolder.Remove(GamedataFolder.LastIndexOf('\\'));
                 WLog($"Assigned \"{OutputDirectory}\" as .gp4 Project Output Directory.\n\n", true);
+            }
+
+
+            // Verify Passcode
+            if (Passcode.Length != 32)
+            {
+                // Assign Unassigned Passcode
+                if (Passcode == string.Empty) {
+                    Passcode = "00000000000000000000000000000000";
+                    return;
+                }
+
+
+                // Fix Improperly Formatted Passcode
+                else if (Passcode.Length > 32)
+                {
+                    WLog($"Incorrect Passcode Length Detected (> 32), Trimming...", false);
+                    Passcode.Remove(32);
+                }
+                else
+                {
+                    WLog("Incorrect Passcode Format Detected (< 32), Appending Zeros to Fill Remaining Length.", false);
+                    for (;Passcode.Length != 32; Passcode.Append('0'));
+                }
+
+                WLog($"New Passcode: [{Passcode}]\n", false);
             }
         }
         #endregion
