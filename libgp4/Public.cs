@@ -355,15 +355,17 @@ namespace libgp4 {
             // With The Time Left As 00:00, But Imma Just Add The Time. It Doesn't Break Anything).
             var gp4_timestamp = DateTime.Now.GetDateTimeFormats()[78];
 
+            
+#if Log
+            WLog($"Starting .gp4 Creation.\n", false);
+#endif
 
             // Check The Parsed Data For Any Potential Errors Before Building The .gp4 With It
             ApplyDefaultsWhereApplicable(SfoParams);
             VerifyProjectData(GamedataFolder, PlaygoData.playgo_content_id, SfoParams);
 
-
 #if Log
-            WLog($"Starting .gp4 Creation. PKG Passcode: {Passcode}\n", false);
-            WLog($".gp4 Project File Destination: {OutputPath}", true);
+            WLog($".gp4 Project File Destination: {OutputPath}\nPKG Passcode: {Passcode}\n", true);
 #endif
 
             // Initialize new Document Instance for the .gp4 Project.

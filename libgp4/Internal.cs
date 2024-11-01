@@ -1575,13 +1575,13 @@ namespace libgp4 {
                 // Fix Improperly Formatted Passcode
                 else if (Passcode.Length > 32)
                 {
-                    WLog($"Incorrect Passcode Length Detected (> 32), Trimming...", false);
+                    WLog($"Incorrect Passcode Length Detected ({Passcode.Length} > 32), Trimming...", false);
                     Passcode.Remove(32);
                 }
                 else
                 {
-                    WLog("Incorrect Passcode Format Detected (< 32), Appending Zeros to Fill Remaining Length.", false);
-                    for (;Passcode.Length != 32; Passcode.Append('0'));
+                    WLog($"Incorrect Passcode Format Detected ({Passcode.Length} < 32), Appending Zeros to Fill Remaining Length.", false);
+                    for (;Passcode.Length != 32; Passcode += "0");
                 }
 
                 WLog($"New Passcode: [{Passcode}]\n", false);
