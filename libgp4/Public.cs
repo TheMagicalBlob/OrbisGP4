@@ -1,10 +1,9 @@
 ﻿
 //################################\\
-/// Contents:                      \\\
-//--> Publicly Accessible Members \\\
+// Contents:                      \\
+//--> Publicly Accessible Members \\
 //################################\\
 
-#pragma warning disable CS1587
 #define GUIExtras
 #define Log
 
@@ -21,6 +20,8 @@ namespace libgp4 {
         //--    User Options    --\\
         //########################\\
         #region User Options
+        // TODO: sort these options, I can never remember what's where ffs
+
 
         /// <summary> Skip Checking the Project Data for Possible Errors Before Beginning the Creation Process. </summary>
         public bool SkipIntegrityCheck {
@@ -84,17 +85,18 @@ namespace libgp4 {
                 DLog($"OutputDirectory => [{_OutputDirectory}]");
             }
         }
-        private string _OutputDirectory = string.Empty;
+        private string _OutputDirectory;
 
 
         /// <summary> Full File Path That Will be Used for the .gp4 Project File. </summary>
         private string OutputPath {
-            get => OutputPath ?? string.Empty;
+            get => _OutputPath ?? string.Empty;
             set {
-                OutputPath = value ?? string.Empty;
-                DLog($"OutputDirectory => [{OutputPath}]");
+                _OutputPath = value ?? string.Empty;
+                DLog($"OutputDirectory => [{_OutputPath}]");
             }
         }
+        private string _OutputPath;
 
         /// <summary>
         /// Include The Keystone File Used For Savedata Creation/Usage In The .gp4's File Listing.
@@ -122,7 +124,7 @@ namespace libgp4 {
                 DLog($"Passcode => [{_Passcode}]");
             }
         }
-        private string _Passcode = string.Empty;
+        private string _Passcode;
 
 
         /// <summary>
@@ -148,7 +150,7 @@ namespace libgp4 {
                 DLog($"BasePackagePath => [{_BasePackagePath}]");
             }
         }
-        private string _BasePackagePath = string.Empty;
+        private string _BasePackagePath;
 
 
         /// <summary>
@@ -176,7 +178,7 @@ namespace libgp4 {
                 DLog($"AppTitle => [{_AppTitle}]");
             }
         }
-        private string _AppTitle = string.Empty;
+        private string _AppTitle;
 
 
         /// <summary>
@@ -215,7 +217,7 @@ namespace libgp4 {
                 DLog($"TargetAppVer => [{_TargetAppVer}]");
             }
         }
-        private string _TargetAppVer = string.Empty;
+        private string _TargetAppVer;
 
 
         /// <summary>
@@ -228,7 +230,7 @@ namespace libgp4 {
                 DLog($"SfoCreationDate => [{_SfoCreationDate}]");
             }
         }
-        private string _SfoCreationDate = string.Empty;
+        private string _SfoCreationDate;
 
 
         /// <summary>
@@ -241,7 +243,7 @@ namespace libgp4 {
                 DLog($"SdkVersion => [{_SdkVersion}]");
             }
         }
-        private string _SdkVersion = string.Empty;
+        private string _SdkVersion;
 
 #endif
 #if Log

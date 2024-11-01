@@ -4,7 +4,6 @@
 //--> Functions to Create Various .gp4 Elements \\
 //##############################################\\
 
-#pragma warning disable CS1587
 #define GUIExtras
 #define Log
 
@@ -60,11 +59,8 @@ namespace libgp4 {
 
             package.SetAttribute("app_path", base_package);
 #if Log
-            if(sfo_data.category == "gd" && base_package != string.Empty) {
-                var str = $"WARNING: A Base Game Package Path Was Given, But The Package Category Was Set To Full Game.\n(Base Package: {base_package})";
-                DLog(str);
-                WLog(str, true);
-            }
+            if(sfo_data.category == "gd" && base_package != string.Empty)
+                WLog($"WARNING: A Base Game Package Path Was Given, But The Package Category Was Set To Full Game.\n(Base Package: {base_package})", true);
 #endif
 
             var chunk_info = gp4.CreateElement("chunk_info");

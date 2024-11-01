@@ -3,7 +3,6 @@
 //--> Main Library Functionality \\
 //###############################\\
 
-#pragma warning disable CS1587
 #define GUIExtras
 #define Log
 
@@ -1570,8 +1569,9 @@ namespace libgp4 {
                 WLog($"Error; Invalid Output Directory Provided for .gp4 Project. [{(File.Exists(OutputDirectory) ? $"Path \"{OutputDirectory}\" Leads to a File, Not a Folder." : $"Directory \"{OutputDirectory}\" Does Not Exist.")}]", false);
                 return;
             }
-            // Set Output Path
-            else OutputPath = $"{OutputDirectory}\\{SfoParams.title_id}-{((SfoParams.category == "gd") ? "app" : "patch")}.gp4";
+            
+            // Set Full Output Path for .gp4 Project, With the gengp4 Naming Scheme.
+            OutputPath = $"{OutputDirectory}\\{SfoParams.title_id}-{((SfoParams.category == "gd") ? "app" : "patch")}.gp4";
 
 
             // Path or Name of Base Game Package to Marry Patch Packages to on .gp4 Usage.
