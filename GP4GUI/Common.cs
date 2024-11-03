@@ -90,6 +90,7 @@ namespace GP4GUI {
                     Azem.Location = new Point(Form.MousePosition.X - MouseDif.X + (Venat.Size.Width - Azem.Size.Width)/2, Venat.Location.Y + 130);
 
                 
+                
                 Venat.Update();
             }
         }

@@ -345,7 +345,7 @@ namespace GP4GUI {
                 MouseIsDown = true;
                 DropdownMenu[1].Visible = DropdownMenu[0].Visible = false;
             });
-            MouseUp   += new MouseEventHandler((sender, e) => MouseIsDown = false);
+            MouseUp   += new MouseEventHandler((sender, e) => { MouseIsDown = false; Azem?.BringToFront(); });
             MouseMove += new MouseEventHandler((sender, e) => DragForm());
 
             
@@ -356,7 +356,7 @@ namespace GP4GUI {
                     MouseIsDown = true;
                     DropdownMenu[1].Visible = DropdownMenu[0].Visible = false;
                 });
-                Item.MouseUp   += new MouseEventHandler((sender, e) => MouseIsDown = false);
+                Item.MouseUp   += new MouseEventHandler((sender, e) => { MouseIsDown = false; Azem?.BringToFront(); });
                 
                 // Avoid Applying MoveForm EventHandler to Text Containters (to retain the ability to drag-select text)
                 if (Item.GetType() != typeof(TextBox) && Item.GetType() != typeof(RichTextBox))
