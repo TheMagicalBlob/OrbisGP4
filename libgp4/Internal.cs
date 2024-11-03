@@ -1537,7 +1537,7 @@ namespace libgp4 {
             // Create Output Directory if it's Not Already Present
             if (OutputDirectory == string.Empty)
             {
-                OutputDirectory = UseAbsoluteFilePaths ? GamedataFolder : GamedataFolder.Remove(GamedataFolder.LastIndexOf('\\'));
+                OutputDirectory = UseAbsoluteFilePaths ? GamedataFolder.Remove(GamedataFolder.LastIndexOf('\\')) : GamedataFolder;
             }
             else if (!Directory.Exists(OutputDirectory) && !Directory.CreateDirectory(OutputDirectory).Exists)
             {
