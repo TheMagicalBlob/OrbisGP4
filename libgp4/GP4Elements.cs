@@ -223,7 +223,8 @@ namespace libgp4 {
             base_elements[0].AppendChild(files);
             base_elements[0].AppendChild(rootdir);
 
-            gp4_project.AppendChild(gp4_project.CreateComment("gengp4.exe Alternative. {//! add a link to the library repository once you change it to public!!!}")); //!
+            if (SkipEndComment)
+            gp4_project.AppendChild(gp4_project.CreateComment("OrbisGP4 - gengp4.exe Alternative. GUI & Library Source: [https://github.com/TheMagicalBlob/OrbisGP4/]"));
         }
 
 

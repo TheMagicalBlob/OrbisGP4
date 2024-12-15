@@ -46,6 +46,20 @@ namespace libgp4 {
         private bool _SkipIntegrityCheck;
 
 
+        /// <summary> Skip End-of-GP4 Comment W/ the Github Repo Link. </summary>
+        public bool SkipEndComment
+        {
+            get => _SkipEndComment;
+
+            set
+            {
+                _SkipEndComment = value;
+                DLog($"VerifyIntegrity => [{_SkipEndComment}]");
+            }
+        }
+        private bool _SkipEndComment;
+
+
         /// <summary> An Array Of Parameters Parsed From The param.sfo File In The Application/Patch's System Folder (sce_sys\param.sfo)
         ///</summary>
         public SfoParser SfoParams {
