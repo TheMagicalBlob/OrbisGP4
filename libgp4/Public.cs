@@ -37,6 +37,7 @@ namespace libgp4 {
         /// <summary> Skip Checking the Project Data for Possible Errors Before Beginning the Creation Process. </summary>
         public bool SkipIntegrityCheck {
             get => _SkipIntegrityCheck;
+
             set {
                 _SkipIntegrityCheck= value;
                 DLog($"VerifyIntegrity => [{_SkipIntegrityCheck}]");
@@ -49,6 +50,7 @@ namespace libgp4 {
         ///</summary>
         public SfoParser SfoParams {
             get => _SfoParams;
+
             private set {
                 _SfoParams = value;
                 DLog($"SfoParams => [{string.Join("\nSfoParams => ", _SfoParams)}]\n");
@@ -61,6 +63,7 @@ namespace libgp4 {
         ///</summary>
         public PlaygoParameters PlaygoData {
             get => _PlaygoData;
+
             private set {
                 _PlaygoData = value;
                 DLog($"[{string.Join("\nPlaygoData => ", _PlaygoData)}]\n");
@@ -73,6 +76,7 @@ namespace libgp4 {
         ///</summary>
         public string GamedataFolder {
             get => _GamedataFolder ?? string.Empty;
+
             set {
                 _GamedataFolder = value ?? string.Empty;
                 DLog($"GamedataFolder => [{_GamedataFolder}]");
@@ -91,6 +95,7 @@ namespace libgp4 {
         ///</summary>
         public string OutputDirectory {
             get => _OutputDirectory ?? string.Empty;
+
             set {
                 _OutputDirectory = value ?? string.Empty;
                 DLog($"OutputDirectory => [{_OutputDirectory}]");
@@ -102,6 +107,7 @@ namespace libgp4 {
         /// <summary> Full File Path That Will be Used for the .gp4 Project File. </summary>
         private string OutputPath {
             get => _OutputPath ?? string.Empty;
+
             set {
                 _OutputPath = value ?? string.Empty;
                 DLog($"OutputDirectory => [{_OutputPath}]");
@@ -116,6 +122,7 @@ namespace libgp4 {
         /// </summary>
         public bool IgnoreKeystone {
             get => _IgnoreKeystone;
+
             set {
                 _IgnoreKeystone = value;
                 DLog($"IgnoreKeystone => [{_IgnoreKeystone}]");
@@ -130,6 +137,7 @@ namespace libgp4 {
         /// </summary>
         public string Passcode {
             get => _Passcode ?? string.Empty;
+
             set {                     
                 _Passcode = value ?? string.Empty;
                 DLog($"Passcode => [{_Passcode}]");
@@ -143,6 +151,7 @@ namespace libgp4 {
         /// </summary>
         public string[] FileBlacklist {
             get => _BlacklistedFilesOrFolders ?? Array.Empty<string>();
+
             set {
                 _BlacklistedFilesOrFolders = value ?? Array.Empty<string>();
                 DLog($"BlacklistedFilesOrFolders => [{string.Join(", ", _BlacklistedFilesOrFolders ?? Array.Empty<string>())}]");
@@ -156,6 +165,7 @@ namespace libgp4 {
         /// </summary>
         public string BasePackagePath {
             get => _BasePackagePath ?? string.Empty;
+
             set {
                 _BasePackagePath = value?.Replace("\"", string.Empty);
                 DLog($"BasePackagePath => [{_BasePackagePath}]");
@@ -170,6 +180,7 @@ namespace libgp4 {
         /// </summary>
         public bool UseAbsoluteFilePaths {
             get => _AbsoluteFilePaths;
+
             set {
                 _AbsoluteFilePaths = value;
                 DLog($"AbsoluteFilePaths => [{_AbsoluteFilePaths}]");
@@ -184,6 +195,7 @@ namespace libgp4 {
         /// </summary>
         public string AppTitle {
             get => _AppTitle ?? string.Empty;
+
             private set {
                 _AppTitle = value ?? string.Empty;
                 DLog($"AppTitle => [{_AppTitle}]");
@@ -197,6 +209,7 @@ namespace libgp4 {
         /// </summary>
         public List<string> AppTitles {
             get => _AppTitles;
+
             private set {
                 _AppTitles = value;
                 DLog($"AppTitles => [{string.Join(", ", _AppTitles)}]");
@@ -210,6 +223,7 @@ namespace libgp4 {
         /// </summary>
         public int AppType {
             get => _AppType;
+
             private set {
                 _AppType = value;
                 DLog($"AppType => [{_AppType}]");
@@ -223,6 +237,7 @@ namespace libgp4 {
         /// </summary>
         public string TargetAppVer {
             get => _TargetAppVer ?? string.Empty;
+
             private set {
                 _TargetAppVer = value ?? string.Empty;
                 DLog($"TargetAppVer => [{_TargetAppVer}]");
@@ -236,6 +251,7 @@ namespace libgp4 {
         /// </summary>
         public string SfoCreationDate {
             get => _SfoCreationDate ?? string.Empty;
+
             private set {
                 _SfoCreationDate = value ?? string.Empty;
                 DLog($"SfoCreationDate => [{_SfoCreationDate}]");
@@ -249,6 +265,7 @@ namespace libgp4 {
         /// </summary>
         public string SdkVersion {
             get => _SdkVersion ?? string.Empty;
+
             private set {
                 _SdkVersion = value ?? string.Empty;
                 DLog($"SdkVersion => [{_SdkVersion}]");
@@ -263,6 +280,7 @@ namespace libgp4 {
         /// </summary>
         public bool VerboseOutput {
             get => _VerboseOutput;
+
             set {
                 _VerboseOutput = value;
                 DLog($"VerboseLogging => [{_VerboseOutput}]");
@@ -275,6 +293,7 @@ namespace libgp4 {
         /// </summary>
         public Action<object> LoggingMethod {
             get => _LoggingMethod;
+
             set {
                 _LoggingMethod = value;
                 DLog($"LoggingMethod => [Method: ({_LoggingMethod.Method}) | Target: ({_LoggingMethod.Target})]");
@@ -361,7 +380,7 @@ namespace libgp4 {
 #endif
 
             // Check The Parsed Data For Any Potential Errors Before Building The .gp4 With It
-            ApplyDefaultsWhereApplicable(SfoParams);
+            ApplyDefaultsToUnsetMembers(SfoParams);
             VerifyProjectData(GamedataFolder, PlaygoData.playgo_content_id, SfoParams);
 
 #if Log
@@ -396,6 +415,7 @@ namespace libgp4 {
 
             // Write The .go4 File To The Provided Folder / As The Provided Filename
             gp4.Save(OutputPath);
+
 #if Log
             WLog($"GP4 Creation Successful, File Saved As {OutputPath}\n", false);
 #endif

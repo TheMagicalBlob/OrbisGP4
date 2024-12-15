@@ -1485,10 +1485,10 @@ namespace libgp4 {
             
             // Catch Conflicting Project Type Information
             if (sfo.category == "gp" && sfo.app_ver == "01.00") {
-                Errors += $"Invalid App Version For Patch Package. App Version Must Be Passed 1.00.\n\n";
+                Errors += $"Invalid App Version for Patch Package. App Version Must Be Passed 1.00.\n\n";
             }
             else if(sfo.category == "gd" && sfo.app_ver != "01.00") {
-                Errors += $"Invalid App Version For Application Package. App Version Was {sfo.app_ver}, Must Be 1.00.\n\n";
+                Errors += $"Invalid App Version for Application Package. App Version Was {sfo.app_ver}, Must Be 1.00.\n\n";
             }
 
             // Verify Passcode Length
@@ -1498,10 +1498,8 @@ namespace libgp4 {
             // Make Sure A Folder Path Wasn't Provided In Place of the Base Game Package (In case they thought the tool would detect the right one? idk.)
             if (sfo.category == "gp") {
                 if (BasePackagePath == string.Empty) 
-                    Errors += $"Gamedata Is For A Title Update, But No Path Was Provided For The Required Base Game Package.\n\n";
+                    Errors += $"Gamedata is for a Title Update, But an Empty Path Was Provided for the Required Base Game Package.\n\n";
 
-                else if(!File.Exists(BasePackagePath))
-                    Errors += $"Invalid Base Game Package Path Provided. (File \"{BasePackagePath}\" Does Not Exist)\n\n";
                 else if (Directory.Exists(BasePackagePath))
                     Errors += $"Invalid Base Game Package Path Provided. (Directory \"{BasePackagePath}\" Was Provided Instead)\n\n";
             }
@@ -1527,7 +1525,7 @@ namespace libgp4 {
 
 
         /// <summary> Assign Default Values to Unassigned Options. </summary>
-        private void ApplyDefaultsWhereApplicable(SfoParser sfo_data)
+        private void ApplyDefaultsToUnsetMembers(SfoParser sfo_data)
         {
 
             //#

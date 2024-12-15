@@ -22,6 +22,9 @@ namespace GP4GUI {
                     OutputWindow.AppendLine(str.ToString());
                     OutputWindow.Update();
                 },
+#if DEBUG
+                VerboseOutput = true
+#endif
             };
             
             // Set Form Refferences
@@ -119,6 +122,7 @@ namespace GP4GUI {
             #endif
         }
 */
+
 
         //##########################################\\
         //--      Designer Managed Functions      --\\
@@ -345,18 +349,18 @@ namespace GP4GUI {
                 MouseIsDown = true;
                 DropdownMenu[1].Visible = DropdownMenu[0].Visible = false;
             });
-            MouseUp   += new MouseEventHandler((sender, e) => { MouseIsDown = false; Azem?.BringToFront(); });
+            MouseUp   += new MouseEventHandler((sender, e) => { MouseIsDown = false; if (OptionsPageIsOpen) Azem?.BringToFront(); });
             MouseMove += new MouseEventHandler((sender, e) => DragForm());
 
-            
-            foreach(Control Item in Controls)
-            {
+
+            foreach (Control Item in Controls)
+            { 
                 Item.MouseDown += new MouseEventHandler((sender, e) => {
                     MouseDif = new Point(MousePosition.X - Venat.Location.X, MousePosition.Y - Venat.Location.Y);
                     MouseIsDown = true;
                     DropdownMenu[1].Visible = DropdownMenu[0].Visible = false;
                 });
-                Item.MouseUp   += new MouseEventHandler((sender, e) => { MouseIsDown = false; Azem?.BringToFront(); });
+                Item.MouseUp   += new MouseEventHandler((sender, e) => { MouseIsDown = false; if (OptionsPageIsOpen) Azem?.BringToFront(); });
                 
                 // Avoid Applying MoveForm EventHandler to Text Containters (to retain the ability to drag-select text)
                 if (Item.GetType() != typeof(TextBox) && Item.GetType() != typeof(RichTextBox))
@@ -368,6 +372,7 @@ namespace GP4GUI {
 
         #endregion
         //=======================================\\
+
 
 
         //###############################################\\
@@ -502,17 +507,21 @@ namespace GP4GUI {
             WLog($"{param.Name} == {param.GetValue(gp4?.SfoParams)}");
             WLog($"===============================================\n");
 */
+
+            if (GamedataFolderPathBox.IsDefault && OptionsPage.TestGamedataFolder.Length != 0)
+                GamedataFolderPathBox.Set(OptionsPage.TestGamedataFolder);
+
             #endif
+
 
 
             //#
             //## Assign Defaults/Verify Options.
             //#
-            # region [Assign Defaults/Verify Options]
+            #region [Assign Defaults/Verify Options]
 
             // Apply Current Options to GP4Creator Instance, and Apply Defaults to Any Left Unassigned.
             if (OptionsPageIsOpen) Azem.SaveOptions();
-            gp4.GamedataFolder = GamedataFolderPathBox.Text.Replace("\"", string.Empty);
 
 
             // Check for Unassigned Gamedata Path Before Proceeding
@@ -520,9 +529,12 @@ namespace GP4GUI {
                 WLog("Please Assign A Valid Gamedata Folder Before Building.");
                 return;
             }
+            // Read Current Gamedata Folder Path From The Text Box
+            else gp4.GamedataFolder = GamedataFolderPathBox.Text.Replace("\"", string.Empty);
+
 
             // Ensure Keystone is Present if Applicable
-            if (!gp4.IgnoreKeystone && !File.Exists($@"{gp4.GamedataFolder}\sce_sys\keystone"))
+            if (gp4.SfoParams.category == "gd" && !gp4.IgnoreKeystone && !File.Exists($@"{gp4.GamedataFolder}\sce_sys\keystone"))
             {
                 WLog($"Error; No keystone File Found In Project Folder.\n\n");
                 return;

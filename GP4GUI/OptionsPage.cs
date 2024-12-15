@@ -16,11 +16,6 @@ namespace GP4GUI
             
             Paint += PaintBorder;
             TinyVersionLabel.Text = Version; // Set Version Label
-
-            
-            #if DEBUG
-            VerboseOutputCheckBox.Checked = true;
-            #endif
         }
 
 
@@ -39,7 +34,6 @@ namespace GP4GUI
             this.IgnoreKeystoneCheckBox = new System.Windows.Forms.CheckBox();
             this.Title = new System.Windows.Forms.Label();
             this.CloseBtn = new System.Windows.Forms.Button();
-            this.VerboseOutputCheckBox = new System.Windows.Forms.CheckBox();
             this.GP4OutputDirectoryBrowseBtn = new System.Windows.Forms.Button();
             this.BasePackagePathBrowseBtn = new System.Windows.Forms.Button();
             this.FileBlacklistBrowseBtn = new System.Windows.Forms.Button();
@@ -55,11 +49,11 @@ namespace GP4GUI
             // IgnoreKeystoneCheckBox
             // 
             this.IgnoreKeystoneCheckBox.AutoSize = true;
-            this.IgnoreKeystoneCheckBox.Font = new System.Drawing.Font("Gadugi", 8.25F);
+            this.IgnoreKeystoneCheckBox.Font = new System.Drawing.Font("Gadugi", 9.25F);
             this.IgnoreKeystoneCheckBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(240)))), ((int)(((byte)(250)))));
-            this.IgnoreKeystoneCheckBox.Location = new System.Drawing.Point(172, 97);
+            this.IgnoreKeystoneCheckBox.Location = new System.Drawing.Point(288, 97);
             this.IgnoreKeystoneCheckBox.Name = "IgnoreKeystoneCheckBox";
-            this.IgnoreKeystoneCheckBox.Size = new System.Drawing.Size(109, 18);
+            this.IgnoreKeystoneCheckBox.Size = new System.Drawing.Size(121, 20);
             this.IgnoreKeystoneCheckBox.TabIndex = 5;
             this.IgnoreKeystoneCheckBox.Text = "Ignore Keystone";
             this.IgnoreKeystoneCheckBox.UseVisualStyleBackColor = true;
@@ -89,19 +83,6 @@ namespace GP4GUI
             this.CloseBtn.Text = "X";
             this.CloseBtn.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.CloseBtn.UseVisualStyleBackColor = false;
-            // 
-            // VerboseOutputCheckBox
-            // 
-            this.VerboseOutputCheckBox.AutoSize = true;
-            this.VerboseOutputCheckBox.Font = new System.Drawing.Font("Gadugi", 8.25F);
-            this.VerboseOutputCheckBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(240)))), ((int)(((byte)(250)))));
-            this.VerboseOutputCheckBox.Location = new System.Drawing.Point(291, 97);
-            this.VerboseOutputCheckBox.Name = "VerboseOutputCheckBox";
-            this.VerboseOutputCheckBox.Size = new System.Drawing.Size(109, 18);
-            this.VerboseOutputCheckBox.TabIndex = 6;
-            this.VerboseOutputCheckBox.Text = "Verbose Output";
-            this.VerboseOutputCheckBox.UseVisualStyleBackColor = true;
-            this.VerboseOutputCheckBox.CheckedChanged += new System.EventHandler(this.VerboseOutputBox_CheckedChanged);
             // 
             // GP4OutputDirectoryBrowseBtn
             // 
@@ -159,11 +140,11 @@ namespace GP4GUI
             // UseAbsolutePathsCheckBox
             // 
             this.UseAbsolutePathsCheckBox.AutoSize = true;
-            this.UseAbsolutePathsCheckBox.Font = new System.Drawing.Font("Gadugi", 8.25F);
+            this.UseAbsolutePathsCheckBox.Font = new System.Drawing.Font("Gadugi", 9.25F);
             this.UseAbsolutePathsCheckBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(240)))), ((int)(((byte)(250)))));
-            this.UseAbsolutePathsCheckBox.Location = new System.Drawing.Point(9, 97);
+            this.UseAbsolutePathsCheckBox.Location = new System.Drawing.Point(10, 97);
             this.UseAbsolutePathsCheckBox.Name = "UseAbsolutePathsCheckBox";
-            this.UseAbsolutePathsCheckBox.Size = new System.Drawing.Size(157, 18);
+            this.UseAbsolutePathsCheckBox.Size = new System.Drawing.Size(177, 20);
             this.UseAbsolutePathsCheckBox.TabIndex = 12;
             this.UseAbsolutePathsCheckBox.Text = "Use Absolute Path Names";
             this.UseAbsolutePathsCheckBox.UseVisualStyleBackColor = true;
@@ -245,7 +226,6 @@ namespace GP4GUI
             this.Controls.Add(this.PasscodeTextBox);
             this.Controls.Add(this.FileBlacklistTextBox);
             this.Controls.Add(this.BasePackagePathTextBox);
-            this.Controls.Add(this.VerboseOutputCheckBox);
             this.Controls.Add(this.CloseBtn);
             this.Controls.Add(this.Title);
             this.Controls.Add(this.GP4OutputDirectoryTextBox);
@@ -319,7 +299,9 @@ namespace GP4GUI
         //#######################################\\
         #region Options Related Functions
         
-        // Save and/or Reset Applicable .gp4 Project Options
+        /// <summary>
+        /// Mirror Any Non-Default Options to GP4Creator Instance.
+        /// </summary>
         public void SaveOptions()
         {
             // .gp4 Project Output Directory
@@ -344,9 +326,6 @@ namespace GP4GUI
             gp4.UseAbsoluteFilePaths = UseAbsolutePathsCheckBox.Checked;
             // Keystone Setting
             gp4.IgnoreKeystone       = IgnoreKeystoneCheckBox.Checked;
-            // Verbosity
-            gp4.VerboseOutput        = VerboseOutputCheckBox.Checked;
-
         }
 
 
@@ -396,10 +375,8 @@ namespace GP4GUI
 
         private void KeystoneToggleBox_CheckedChanged(object sender, EventArgs e) => gp4.IgnoreKeystone = IgnoreKeystoneCheckBox.Checked;
         
-
-        private void VerboseOutputBox_CheckedChanged(object sender, EventArgs e) => gp4.VerboseOutput = VerboseOutputCheckBox.Checked;
-
         
+
         // Manually Input Files to Blacklist
         private void FileBlacklistTextBox_TextChanged(object sender, EventArgs _)
         {
@@ -442,7 +419,6 @@ namespace GP4GUI
         private Button BasePackagePathBrowseBtn;
         private Button FileBlacklistBrowseBtn;
         private CheckBox IgnoreKeystoneCheckBox;
-        private CheckBox VerboseOutputCheckBox;
         private CheckBox UseAbsolutePathsCheckBox;
         private TextBox GP4OutputDirectoryTextBox;
         private TextBox BasePackagePathTextBox;
