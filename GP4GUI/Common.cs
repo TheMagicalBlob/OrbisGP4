@@ -178,6 +178,10 @@ namespace GP4GUI {
                 }
             };
         }
+/*
+        public override string Text { get { if (IsDefault) return "fag"; return _Text; } set { _Text = value; base.Text = value; } }
+        private string _Text;*/
+
 
         private void ClearControl()
         {

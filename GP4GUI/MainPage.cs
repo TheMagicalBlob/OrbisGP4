@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using static GP4GUI.Common;
 using System.ComponentModel;
+using System.Diagnostics.Eventing.Reader;
 
 namespace GP4GUI {
     public partial class MainForm : Form {
@@ -156,11 +157,11 @@ namespace GP4GUI {
             this.CreateProjectFileBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.CreateProjectFileBtn.Font = new System.Drawing.Font("Gadugi", 8.25F, System.Drawing.FontStyle.Bold);
             this.CreateProjectFileBtn.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.CreateProjectFileBtn.Location = new System.Drawing.Point(487, 80);
+            this.CreateProjectFileBtn.Location = new System.Drawing.Point(437, 80);
             this.CreateProjectFileBtn.Name = "CreateProjectFileBtn";
-            this.CreateProjectFileBtn.Size = new System.Drawing.Size(50, 24);
+            this.CreateProjectFileBtn.Size = new System.Drawing.Size(100, 24);
             this.CreateProjectFileBtn.TabIndex = 3;
-            this.CreateProjectFileBtn.Text = "Build";
+            this.CreateProjectFileBtn.Text = "Build New .gp4";
             this.CreateProjectFileBtn.UseVisualStyleBackColor = false;
             this.CreateProjectFileBtn.Click += new System.EventHandler(this.SetupAndCreateProjectFile);
             // 
@@ -301,11 +302,11 @@ namespace GP4GUI {
             this.VerifyGP4Btn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.VerifyGP4Btn.Font = new System.Drawing.Font("Gadugi", 8.25F, System.Drawing.FontStyle.Bold);
             this.VerifyGP4Btn.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.VerifyGP4Btn.Location = new System.Drawing.Point(212, 68);
+            this.VerifyGP4Btn.Location = new System.Drawing.Point(317, 80);
             this.VerifyGP4Btn.Name = "VerifyGP4Btn";
-            this.VerifyGP4Btn.Size = new System.Drawing.Size(108, 24);
+            this.VerifyGP4Btn.Size = new System.Drawing.Size(116, 24);
             this.VerifyGP4Btn.TabIndex = 17;
-            this.VerifyGP4Btn.Text = "TEST; Verify .gp4";
+            this.VerifyGP4Btn.Text = "Verify Existing .gp4";
             this.VerifyGP4Btn.UseVisualStyleBackColor = false;
             this.VerifyGP4Btn.Click += new System.EventHandler(this.VerifyGP4Btn_Click);
             // 
@@ -542,7 +543,7 @@ namespace GP4GUI {
 
             // Check for Unassigned Gamedata Path Before Proceeding
             if (GamedataFolderPathBox.IsDefault) {
-                WLog("Please Assign A Valid Gamedata Folder Before Building.");
+                WLog("Please Assign A Valid Gamedata Folder Before Building.\n");
                 return;
             }
             // Read Current Gamedata Folder Path From The Text Box
@@ -552,7 +553,7 @@ namespace GP4GUI {
             // Ensure Keystone is Present if Applicable
             if (gp4.SfoParams.category == "gd" && !gp4.IgnoreKeystone && !File.Exists($@"{gp4.GamedataFolder}\sce_sys\keystone"))
             {
-                WLog($"Error; No keystone File Found In Project Folder.\n\n");
+                WLog($"ERROR; No keystone File Found In Project Folder.\n\n");
                 return;
             }
             #endregion [Assign Defaults/Verify Options]
@@ -572,9 +573,35 @@ namespace GP4GUI {
         //#
         private void VerifyGP4Btn_Click(object sender, EventArgs e)
         {
+            var path = string.Empty;
+# if DEBUG
+            path = OptionsPage.TestGP4Path;
+#else
+            var browser = new OpenFileDialog {
+                Title = "Please Select a .gp4 Project File."
+            };
 
-            var reader = new GP4Reader(@"C:\Users\msblob\Misc\gp4 tst\CUSA00009\CUSA00009-app.gp4");
-            reader.VerifyGP4((message) => { WLog(message); });
+            
+            if (!GamedataFolderPathBox.IsDefault)
+            {
+                var pathboxtext = GamedataFolderPathBox.Text;
+                if (Directory.Exists(pathboxtext))
+                    browser.InitialDirectory = pathboxtext;
+
+                else if (File.Exists(pathboxtext))
+                {
+                    WLog("Using .gp4 Path in Gamedata Folder Path Box Instead of Browsing.");
+                    path = pathboxtext;
+                }
+
+            }
+
+            if (path == string.Empty && browser.ShowDialog() == DialogResult.OK)
+                path = browser.FileName;
+
+#endif
+            if (path != string.Empty)
+            new GP4Reader(path).VerifyGP4((message) => { WLog(message); });
         }
         #endregion
         //===============================================\\
