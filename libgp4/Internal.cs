@@ -594,7 +594,7 @@ namespace libgp4 {
         #region User Functions
         /// <summary> Check Various Parts Of The .gp4 To Try And Find Any Possible Errors In The Project File.
         ///</summary>
-        public void VerifyGP4() {
+        public void VerifyGP4(Action<string> LoggingMethod = null) {
             var Errors = string.Empty;
             int i;
 
@@ -614,7 +614,7 @@ namespace libgp4 {
             ///====================================\\\
             {
                 if(volume_type != "pkg_ps4_app" && volume_type != "pkg_ps4_patch")
-                    Errors += $"Invalid Volume Type:\n ({volume_type})\n\n";
+                    Errors += $"Invalid Volume Type: [{volume_type}]\n\n";
 
                 if(IsPatchProject && volume_type != "pkg_ps4_patch")
                     Errors += $"Unexpacted Volume Type For PS4 Patch Package: {volume_type}";
@@ -636,10 +636,10 @@ namespace libgp4 {
                 if((!IsPatchProject && storage_type != "digital50") || (IsPatchProject && storage_type != "digital25"))
                     Errors +=
                         $"Unexpected Storage Type For {(IsPatchProject ? "Patch" : "Full Game")} Package\n" +
-                        $"(Expected: {(IsPatchProject ? "digital25" : "digital50")}\nRead: {storage_type})\n\n";
+                        $" -   Expected: {(IsPatchProject ? "digital25" : "digital50")}\n -   Read: {storage_type}\n\n";
 
                 if(app_type != "full")
-                    Errors += $"Invalid Application Type In .gp4 Project\n(Expected: full\nRead: {app_type})\n\n";
+                    Errors += $"Invalid Application Type In .gp4 Project\n -   Expected: full\n -   Read: {app_type})\n\n";
 
                 if(Passcode?.Length != 32)
                     Errors += $"Incorrect Passcode Length, Must Be 32 Characters (Actual Length: {Passcode.Length})\n\n";
@@ -813,14 +813,17 @@ namespace libgp4 {
                 var ErrorCount = (Errors.Length - Errors.Replace("\n\n", "").Length) / 2;
 
                 if(ErrorCount == 1)
-                    Message = $"The Following Error Was Found In The .gp4 Project File:\n{Errors}";
+                    Message = $"The Following Error Was Found In The .gp4 Project File:\n\n{Errors}";
 
                 else
-                    Message = $"The Following {ErrorCount} Errors Were Found In The .gp4 Project File:\n{Errors}";
+                    Message = $"The Following {ErrorCount} Errors Were Found In The .gp4 Project File:\n\n{Errors}";
 
                 DLog(Message);
 
-                throw new InvalidDataException(Message);
+                if (LoggingMethod != null)
+                LoggingMethod(Message);
+
+                //throw new InvalidDataException(Message);
             }
         }
 
@@ -977,14 +980,6 @@ namespace libgp4 {
 
                 return Subfolders.ToArray();
             }
-        }
-
-
-        /// <summary> Check Various Parts Of The .gp4 To Try And Find Any Possible Errors In The Project File.
-        ///</summary>
-        public static void VerifyGP4(string GP4Path) {
-            // TODO: replace with a stripped down version instead of a redundant class initialization
-            new GP4Reader(GP4Path).VerifyGP4();
         }
         #endregion
         ///============================\\\

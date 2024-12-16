@@ -2,7 +2,7 @@
 namespace GP4GUI {
     public partial class OptionsPage {
         // Seperate File So I'm More Likely To Open It And Update The Version Number. I Am Lazy
-        public const string Version = "ver 2.63.281 ";
+        public const string Version = "ver 2.63.283 ";
 
 
         #if DEBUG
@@ -16,5 +16,6 @@ namespace GP4GUI {
 
  - [GP4_GUI]: 
 
- - [libgp4]: fized comment at end of file, added toggle for it.
- */
+ - [libgp4]:  
+
+*/
