@@ -246,8 +246,10 @@ namespace GP4GUI
         /// </summary>
         public void PostInitFormLogic()
         {
+          /* This is far more annoying than an occasional single flicker from a form, so fuck it. Commented out.
             // Stop OptionsPage Form From Being Hidden Whenever the Parent Is Clicked
-            //this.TopMost = true; // this is far more annoying than an occasional single flicker from a form
+            this.TopMost = true;
+          */
 
             // Anonomously Create and Set CloseBtn Event Handler
             CloseBtn.Click += new EventHandler((sender, e) =>

@@ -432,7 +432,8 @@ namespace libgp4 {
             gp4.Save(OutputPath);
 
 #if Log
-            WLog($"{(VerboseOutput ? "\n" : "")}GP4 Creation Successful, File Saved As {OutputPath}\n", false);
+            WLog(string.Empty, true); // Lazy output formatting fix
+            WLog($"GP4 Creation Successful, File Saved As {OutputPath}\n", false);
 #endif
             return OutputPath;
         }

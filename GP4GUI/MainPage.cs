@@ -20,7 +20,7 @@ namespace GP4GUI {
             // Initialize .gp4 Creator Instance, and Set Logging Method to OutputWindow
             gp4 = new GP4Creator {
                 LoggingMethod = (object obj) => {
-                    OutputWindow.AppendLine($"{((string)obj != "\n" ? "# " : string.Empty)}{obj}");
+                    OutputWindow.AppendLine($"{((obj.ToString() != "\n" && obj.ToString() != string.Empty) ? "# " : string.Empty)}{obj}");
                     OutputWindow.Update();
                 },
 #if DEBUG

@@ -1487,7 +1487,6 @@ namespace libgp4 {
         /// <summary> Assign Default Values to Unassigned Options. </summary>
         private void ApplyDefaultsToUnsetMembers(SfoParser sfo_data)
         {
-
             //#
             //## Set And Verify Default/Provided Options
             //#
@@ -1503,8 +1502,8 @@ namespace libgp4 {
                 return;
             }
 
-            
-            // Set Full Output Path for .gp4 Project, With the gengp4 Naming Scheme.
+
+            // Set Full Output Path for .gp4 Project File, With the same Naming Scheme as gengp4.
             OutputPath = $"{OutputDirectory}\\{SfoParams.title_id}-{((SfoParams.category == "gd") ? "app" : "patch")}.gp4";
 
 
