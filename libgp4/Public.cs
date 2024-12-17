@@ -428,11 +428,11 @@ namespace libgp4 {
             );
 
 
-            // Write The .go4 File To The Provided Folder / As The Provided Filename
+            // Write The .gp4 File To The Provided Folder / As The Provided Filename
             gp4.Save(OutputPath);
 
 #if Log
-            WLog($"\nGP4 Creation Successful, File Saved As {OutputPath}\n", false);
+            WLog($"{(VerboseOutput ? "\n" : "")}GP4 Creation Successful, File Saved As {OutputPath}\n", false);
 #endif
             return OutputPath;
         }

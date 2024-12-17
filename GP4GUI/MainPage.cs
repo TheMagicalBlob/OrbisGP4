@@ -19,8 +19,8 @@ namespace GP4GUI {
 
             // Initialize .gp4 Creator Instance, and Set Logging Method to OutputWindow
             gp4 = new GP4Creator {
-                LoggingMethod = (object str) => {
-                    OutputWindow.AppendLine(str.ToString());
+                LoggingMethod = (object obj) => {
+                    OutputWindow.AppendLine($"{((string)obj != "\n" ? "# " : string.Empty)}{obj}");
                     OutputWindow.Update();
                 },
 #if DEBUG
@@ -36,6 +36,7 @@ namespace GP4GUI {
             _OutputWindow = OutputWindow;
         }
         public static Button[] DropdownMenu = new Button[2];
+        private CheckBox VerbosityBtn;
 
         /*
                 private void TestBtn_Click(object sender, EventArgs e)
@@ -149,6 +150,7 @@ namespace GP4GUI {
             this.VerifyGP4Btn = new System.Windows.Forms.Button();
             this.OutputWindow = new GP4GUI.RichTextBox();
             this.GamedataFolderPathBox = new GP4GUI.TextBox();
+            this.VerbosityBtn = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // CreateProjectFileBtn
@@ -310,12 +312,28 @@ namespace GP4GUI {
             this.GamedataFolderPathBox.TabIndex = 2;
             this.GamedataFolderPathBox.Text = "Paste The Gamedata Folder Path Here, Or Use The Browse Button...";
             // 
+            // VerbosityBtn
+            // 
+            this.VerbosityBtn.AutoSize = true;
+            this.VerbosityBtn.Checked = true;
+            this.VerbosityBtn.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.VerbosityBtn.Font = new System.Drawing.Font("Gadugi", 7F);
+            this.VerbosityBtn.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(240)))), ((int)(((byte)(250)))));
+            this.VerbosityBtn.Location = new System.Drawing.Point(5, 64);
+            this.VerbosityBtn.Name = "VerbosityBtn";
+            this.VerbosityBtn.Size = new System.Drawing.Size(101, 17);
+            this.VerbosityBtn.TabIndex = 18;
+            this.VerbosityBtn.Text = "Verbose Logging";
+            this.VerbosityBtn.UseVisualStyleBackColor = true;
+            this.VerbosityBtn.CheckedChanged += new System.EventHandler(this.VerbosityBtn_CheckedChanged);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
             this.ClientSize = new System.Drawing.Size(541, 387);
+            this.Controls.Add(this.VerbosityBtn);
             this.Controls.Add(this.VerifyGP4Btn);
             this.Controls.Add(this.SwapBrowseModeBtn);
             this.Controls.Add(this.dummy);
@@ -400,6 +418,10 @@ namespace GP4GUI {
 
         // Wipe the Text in OutputWindow
         private void ClearLogBtn_Click(object _, EventArgs __) => OutputWindow.Clear();
+
+
+        // Verbosity Toggle for GP4Creator Output
+        private void VerbosityBtn_CheckedChanged(object sender, EventArgs e) => gp4.VerboseOutput = ((CheckBox)sender).Checked;
 
 
         // Toggle The OptionsPage Window for .gp4 Option Editing, and Move to New Location
