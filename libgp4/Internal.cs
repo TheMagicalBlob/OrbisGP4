@@ -1152,14 +1152,14 @@ namespace libgp4 {
 
                             case "PUBTOOLINFO":
 #if GUIExtras
-                                // Store Some Extra Things I May Use In My .gp4 GUI
+                                // Store Some Extra Things I May Use In The GUI
                                 Debug.WriteLine((string)SfoParams[i]);
                                 var arr = ((string)SfoParams[i]).Split(',');
                                 foreach(var v in arr)
                                     Debug.WriteLine(v);
-                                Parent.SfoCreationDate = arr[0].Substring(arr[0].IndexOf('='));
-                                Parent.SdkVersion = arr[1].Substring(arr[1].IndexOf('='));
-                                storage_type = arr[2].Substring(arr[2].IndexOf('=')); // (digital25 / bd50)
+                                Parent.SfoCreationDate = arr[0].Substring(arr[0].IndexOf('=') + 1);
+                                Parent.SdkVersion = arr[1].Substring(arr[1].IndexOf('=') + 1);
+                                storage_type = arr[2].Substring(arr[2].IndexOf('=') + 1); // (digital25 / bd50)
                                 ///=================================================
 #else
                                 storage_type = ((string)SfoParams[i]).Split(',')[2]; // (digital25 / bd50)
@@ -1328,7 +1328,7 @@ namespace libgp4 {
                     }
 
 #if Log
-                    Parent.WLog($"Default Scenario Type = {scenario_types[default_scenario_id]}", true);
+                    Parent.WLog($"Default Scenario Type = {scenario_types[default_scenario_id]}\n", true);
 #endif
 
                     // Load Scenario Label Array Byte Length
@@ -1357,10 +1357,6 @@ namespace libgp4 {
                     playgo.Position = chunk_label_pointer;
                     playgo.Read(buffer, 0, buffer.Length);
                     ConvertbufferToStringArray(buffer, chunk_labels);
-
-#if Log
-                    DLog('\n');
-#endif
                 }
             }
 
@@ -1422,37 +1418,6 @@ namespace libgp4 {
         ///</summary>
         private string[][] extra_files;
 
-
-        /// <summary>
-        /// Output Log Messages To A Custom Output Method (GP4Creator.LoggingMethod(string)), And/Or To The Console If Applicable.<br/><br/>
-        /// Duplicates Message To Standard Console Output As Well.
-        ///</summary>
-        private void WLog(object o, bool IsVerboseMsg) {
-#if Log
-            if(LoggingMethod != null && !(VerboseOutput ^ IsVerboseMsg))
-                LoggingMethod(o);
-#endif
-#if DEBUG
-            DLog(o);
-#endif
-        }
-
-        /// <summary> Console Logging Method.
-        ///</summary>
-        private static void DLog(object o) {
-#if DEBUG
-            try {
-                Debug.WriteLine($"#libgp4: {o}");
-            }
-            catch(Exception) {}
-
-            if(!Console.IsOutputRedirected)
-                try {
-                    Console.WriteLine($"#libgp4: {o}");
-                }
-                catch (Exception){}
-#endif
-        }
 
 
         /// <summary> Check Various Parts Of The Parsed .gp4 Parameters To Try And Find Any Possible Errors In The Project Files/Structure. </summary>
@@ -1579,6 +1544,49 @@ namespace libgp4 {
 
                 WLog($"New Passcode: [{Passcode}]\n", false);
             }
+        }
+
+
+
+
+
+        /// <summary>
+        /// Output Log Messages To A Custom Output Method (GP4Creator.LoggingMethod(string)), And/Or To The Console If Applicable.<br/><br/>
+        /// Duplicates Message To Standard Console Output As Well.
+        /// </summary>
+        /// <param name="obj"> The Object to Output The String Representation of. </param>
+        /// <param name="is_verbose_msg"> Only Output obj if the VerboseOutput Option is Enabled. </param>
+        private void WLog(object obj, bool is_verbose_msg)
+        {
+#if Log
+            //if (LoggingMethod != null && !(VerboseOutput ^ IsVerboseMsg))
+            if (LoggingMethod != null && !(!VerboseOutput && is_verbose_msg))
+                    LoggingMethod(obj);
+#endif
+#if DEBUG
+            DLog(obj);
+#endif
+        }
+
+        /// <summary> Console Logging Method.
+        ///</summary>
+        /// <param name="obj"> The Object to Output The String Representation of. </param>
+        private static void DLog(object obj)
+        {
+#if DEBUG
+            try
+            {
+                Debug.WriteLine($"#libgp4: {obj}");
+            }
+            catch (Exception) { }
+
+            if (!Console.IsOutputRedirected)
+                try
+                {
+                    Console.WriteLine($"#libgp4: {obj}");
+                }
+                catch (Exception) { }
+#endif
         }
         #endregion
         ///================================\\\

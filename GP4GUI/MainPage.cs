@@ -27,7 +27,7 @@ namespace GP4GUI {
                 VerboseOutput = true
 #endif
             };
-            
+
             // Set Form Refferences
             Venat = this;
             Azem = new OptionsPage();
@@ -146,9 +146,9 @@ namespace GP4GUI {
             this.ClearLogBtn = new System.Windows.Forms.Button();
             this.dummy = new System.Windows.Forms.Button();
             this.SwapBrowseModeBtn = new System.Windows.Forms.Button();
+            this.VerifyGP4Btn = new System.Windows.Forms.Button();
             this.OutputWindow = new GP4GUI.RichTextBox();
             this.GamedataFolderPathBox = new GP4GUI.TextBox();
-            this.VerifyGP4Btn = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // CreateProjectFileBtn
@@ -272,6 +272,20 @@ namespace GP4GUI {
             this.SwapBrowseModeBtn.UseVisualStyleBackColor = false;
             this.SwapBrowseModeBtn.Click += new System.EventHandler(this.SwapBrowseModeBtn_Click);
             // 
+            // VerifyGP4Btn
+            // 
+            this.VerifyGP4Btn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(125)))), ((int)(((byte)(183)))), ((int)(((byte)(245)))));
+            this.VerifyGP4Btn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.VerifyGP4Btn.Font = new System.Drawing.Font("Gadugi", 8.25F, System.Drawing.FontStyle.Bold);
+            this.VerifyGP4Btn.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.VerifyGP4Btn.Location = new System.Drawing.Point(317, 80);
+            this.VerifyGP4Btn.Name = "VerifyGP4Btn";
+            this.VerifyGP4Btn.Size = new System.Drawing.Size(116, 24);
+            this.VerifyGP4Btn.TabIndex = 17;
+            this.VerifyGP4Btn.Text = "Verify Existing .gp4";
+            this.VerifyGP4Btn.UseVisualStyleBackColor = false;
+            this.VerifyGP4Btn.Click += new System.EventHandler(this.VerifyGP4Btn_Click);
+            // 
             // OutputWindow
             // 
             this.OutputWindow.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(10)))));
@@ -295,20 +309,6 @@ namespace GP4GUI {
             this.GamedataFolderPathBox.Size = new System.Drawing.Size(452, 24);
             this.GamedataFolderPathBox.TabIndex = 2;
             this.GamedataFolderPathBox.Text = "Paste The Gamedata Folder Path Here, Or Use The Browse Button...";
-            // 
-            // VerifyGP4Btn
-            // 
-            this.VerifyGP4Btn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(125)))), ((int)(((byte)(183)))), ((int)(((byte)(245)))));
-            this.VerifyGP4Btn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.VerifyGP4Btn.Font = new System.Drawing.Font("Gadugi", 8.25F, System.Drawing.FontStyle.Bold);
-            this.VerifyGP4Btn.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.VerifyGP4Btn.Location = new System.Drawing.Point(317, 80);
-            this.VerifyGP4Btn.Name = "VerifyGP4Btn";
-            this.VerifyGP4Btn.Size = new System.Drawing.Size(116, 24);
-            this.VerifyGP4Btn.TabIndex = 17;
-            this.VerifyGP4Btn.Text = "Verify Existing .gp4";
-            this.VerifyGP4Btn.UseVisualStyleBackColor = false;
-            this.VerifyGP4Btn.Click += new System.EventHandler(this.VerifyGP4Btn_Click);
             // 
             // MainForm
             // 
@@ -629,6 +629,5 @@ namespace GP4GUI {
 
 
         private readonly Button DesignerManip; // Manipulate Designer Stupidity (Stop Creating Methods Inside Existing Code, You Fucking Moron)
-
     }
 }
