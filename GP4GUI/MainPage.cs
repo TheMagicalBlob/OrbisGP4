@@ -27,6 +27,10 @@ namespace GP4GUI {
                 VerboseOutput = true
 #endif
             };
+#if DEBUG
+            VerbosityBtn.Enabled = VerbosityBtn.Visible = false;
+#endif
+
 
             // Set Form Refferences
             Venat = this;
@@ -41,7 +45,7 @@ namespace GP4GUI {
         /*
                 private void TestBtn_Click(object sender, EventArgs e)
                 {
-                    #if DEBUG
+#if DEBUG
                     gp4.VerboseOutput = true;
                     gp4.OutputDirectory = @"C:\Users\msblob\gp4";
                     var newgp4path = gp4.CreateGP4();
@@ -121,7 +125,7 @@ namespace GP4GUI {
 
                     System.Diagnostics.Process.Start(newgp4path);
 
-                    #endif
+#endif
                 }
         */
 
@@ -539,7 +543,7 @@ namespace GP4GUI {
         {
 
             //# Print GP4Creator Options
-            #if DEBUG
+#if DEBUG
 /*
             WLog($"\n===============================================");
             foreach (var param in typeof(GP4Creator.SfoParser).GetFields())
@@ -550,7 +554,7 @@ namespace GP4GUI {
             if (GamedataFolderPathBox.IsDefault && OptionsPage.TestGamedataFolder.Length != 0)
                 GamedataFolderPathBox.Set(OptionsPage.TestGamedataFolder);
 
-            #endif
+#endif
 
 
 
@@ -596,7 +600,7 @@ namespace GP4GUI {
         private void VerifyGP4Btn_Click(object sender, EventArgs e)
         {
             var path = string.Empty;
-# if DEBUG
+#if DEBUG
             path = OptionsPage.TestGP4Path;
 #else
             var browser = new OpenFileDialog {
