@@ -387,7 +387,7 @@ namespace libgp4 {
         {
             // Timestamp For GP4, Same Format Sony Used Though Sony's Technically Only Tracks The Date,
             // With The Time Left As 00:00, But Imma Just Add The Time. It Doesn't Break Anything).
-            var gp4_timestamp = DateTime.Now.GetDateTimeFormats()[78];
+            var gp4_timestamp = DateTime.Now.GetDateTimeFormats()[91];
 
             
 #if Log
