@@ -5,7 +5,6 @@ using System.Drawing;
 using System.Windows.Forms;
 using static GP4GUI.Common;
 using System.ComponentModel;
-using System.Diagnostics.Eventing.Reader;
 
 namespace GP4GUI {
     public partial class MainForm : Form {
@@ -27,7 +26,7 @@ namespace GP4GUI {
                 VerboseOutput = true
 #endif
             };
-#if DEBUG
+#if !DEBUG
             VerbosityBtn.Enabled = VerbosityBtn.Visible = false;
 #endif
 
