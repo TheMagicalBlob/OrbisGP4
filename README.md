@@ -14,3 +14,8 @@ such as:
 - Building useless gp4's if the folder name isn't formatted "correctly" _(TITLEID-category1.00 == good, but TITLEID-1.00category == bad)._
 - Outputting in two seperate formats to two seperate log windows at the same time and taking it's sweet-ass time as a result, especially when there are thousands of files
 - Being written in fking Delphi for some reason instead of C# like the rest of the sdk tools
+
+## Compiling The Project
+The only real requirement should be **.NET Framework 4.8**. I personally just use **Visual Studio 2022 Community** to build the project from the solution file.
+*(I'll Probably Elaborate Here At Some Point)*
+  
