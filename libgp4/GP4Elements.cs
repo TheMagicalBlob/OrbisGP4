@@ -77,11 +77,19 @@ namespace libgp4 {
         /// </summary>
         private XmlNode CreateFilesElement(int chunk_count, string[][] extra_files, string gamedata_folder, XmlDocument gp4) {
             var files = gp4.CreateElement("files");
-            foreach (var file_path in Directory.GetFiles(GamedataFolder, ".", SearchOption.AllDirectories))
-            {
+            foreach (var file_path in Directory.GetFiles(GamedataFolder, "*", SearchOption.AllDirectories))
+                {
+#if Log
+                WLog($"Processing File \"{file_path}\".", true);
+#endif
+
                 // Skip Blacklisted Items
-                if(FileShouldBeExcluded(file_path))
+                if (FileShouldBeExcluded(file_path)) {
+#if Log
+                    WLog(string.Empty, true);
+#endif
                     continue;
+                }
 
                 var file = gp4.CreateElement("file");
                 file.SetAttribute("targ_path", file_path.Remove(0, gamedata_folder.Length + 1).Replace('\\', '/'));

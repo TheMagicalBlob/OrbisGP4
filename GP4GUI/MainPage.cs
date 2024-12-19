@@ -151,9 +151,9 @@ namespace GP4GUI {
             this.dummy = new System.Windows.Forms.Button();
             this.SwapBrowseModeBtn = new System.Windows.Forms.Button();
             this.VerifyGP4Btn = new System.Windows.Forms.Button();
+            this.VerbosityBtn = new System.Windows.Forms.CheckBox();
             this.OutputWindow = new GP4GUI.RichTextBox();
             this.GamedataFolderPathBox = new GP4GUI.TextBox();
-            this.VerbosityBtn = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // CreateProjectFileBtn
@@ -162,7 +162,7 @@ namespace GP4GUI {
             this.CreateProjectFileBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.CreateProjectFileBtn.Font = new System.Drawing.Font("Gadugi", 8.25F, System.Drawing.FontStyle.Bold);
             this.CreateProjectFileBtn.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.CreateProjectFileBtn.Location = new System.Drawing.Point(437, 80);
+            this.CreateProjectFileBtn.Location = new System.Drawing.Point(531, 80);
             this.CreateProjectFileBtn.Name = "CreateProjectFileBtn";
             this.CreateProjectFileBtn.Size = new System.Drawing.Size(100, 24);
             this.CreateProjectFileBtn.TabIndex = 3;
@@ -173,13 +173,13 @@ namespace GP4GUI {
             // Title
             // 
             this.Title.AutoSize = true;
-            this.Title.Font = new System.Drawing.Font("Gadugi", 9.25F, System.Drawing.FontStyle.Bold);
+            this.Title.Font = new System.Drawing.Font("Gadugi", 10F, System.Drawing.FontStyle.Bold);
             this.Title.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(240)))), ((int)(((byte)(250)))));
-            this.Title.Location = new System.Drawing.Point(196, 4);
+            this.Title.Location = new System.Drawing.Point(210, 4);
             this.Title.Name = "Title";
-            this.Title.Size = new System.Drawing.Size(157, 17);
+            this.Title.Size = new System.Drawing.Size(212, 18);
             this.Title.TabIndex = 0;
-            this.Title.Text = ".gp4 Project File Creator";
+            this.Title.Text = "Orbis .gp4 Project File Creator";
             // 
             // MinimizeBtn
             // 
@@ -188,7 +188,7 @@ namespace GP4GUI {
             this.MinimizeBtn.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold);
             this.MinimizeBtn.ForeColor = System.Drawing.SystemColors.WindowText;
             this.MinimizeBtn.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.MinimizeBtn.Location = new System.Drawing.Point(495, 2);
+            this.MinimizeBtn.Location = new System.Drawing.Point(589, 2);
             this.MinimizeBtn.Name = "MinimizeBtn";
             this.MinimizeBtn.Size = new System.Drawing.Size(22, 22);
             this.MinimizeBtn.TabIndex = 4;
@@ -202,7 +202,7 @@ namespace GP4GUI {
             this.ExitBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.ExitBtn.Font = new System.Drawing.Font("Gadugi", 8.25F, System.Drawing.FontStyle.Bold);
             this.ExitBtn.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.ExitBtn.Location = new System.Drawing.Point(517, 2);
+            this.ExitBtn.Location = new System.Drawing.Point(611, 2);
             this.ExitBtn.Name = "ExitBtn";
             this.ExitBtn.Size = new System.Drawing.Size(22, 22);
             this.ExitBtn.TabIndex = 5;
@@ -215,7 +215,7 @@ namespace GP4GUI {
             this.BrowseBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.BrowseBtn.Font = new System.Drawing.Font("Gadugi", 8.25F, System.Drawing.FontStyle.Bold);
             this.BrowseBtn.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.BrowseBtn.Location = new System.Drawing.Point(458, 38);
+            this.BrowseBtn.Location = new System.Drawing.Point(552, 38);
             this.BrowseBtn.Name = "BrowseBtn";
             this.BrowseBtn.Size = new System.Drawing.Size(65, 24);
             this.BrowseBtn.TabIndex = 7;
@@ -270,7 +270,7 @@ namespace GP4GUI {
             this.SwapBrowseModeBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.SwapBrowseModeBtn.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold);
             this.SwapBrowseModeBtn.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.SwapBrowseModeBtn.Location = new System.Drawing.Point(524, 38);
+            this.SwapBrowseModeBtn.Location = new System.Drawing.Point(618, 38);
             this.SwapBrowseModeBtn.Name = "SwapBrowseModeBtn";
             this.SwapBrowseModeBtn.Size = new System.Drawing.Size(14, 24);
             this.SwapBrowseModeBtn.TabIndex = 16;
@@ -283,37 +283,13 @@ namespace GP4GUI {
             this.VerifyGP4Btn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.VerifyGP4Btn.Font = new System.Drawing.Font("Gadugi", 8.25F, System.Drawing.FontStyle.Bold);
             this.VerifyGP4Btn.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.VerifyGP4Btn.Location = new System.Drawing.Point(317, 80);
+            this.VerifyGP4Btn.Location = new System.Drawing.Point(411, 80);
             this.VerifyGP4Btn.Name = "VerifyGP4Btn";
             this.VerifyGP4Btn.Size = new System.Drawing.Size(116, 24);
             this.VerifyGP4Btn.TabIndex = 17;
             this.VerifyGP4Btn.Text = "Verify Existing .gp4";
             this.VerifyGP4Btn.UseVisualStyleBackColor = false;
             this.VerifyGP4Btn.Click += new System.EventHandler(this.VerifyGP4Btn_Click);
-            // 
-            // OutputWindow
-            // 
-            this.OutputWindow.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(10)))));
-            this.OutputWindow.Font = new System.Drawing.Font("Segoe UI Semibold", 9F);
-            this.OutputWindow.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(240)))), ((int)(((byte)(250)))));
-            this.OutputWindow.Location = new System.Drawing.Point(5, 107);
-            this.OutputWindow.MaxLength = 21474836;
-            this.OutputWindow.Name = "OutputWindow";
-            this.OutputWindow.ReadOnly = true;
-            this.OutputWindow.Size = new System.Drawing.Size(532, 275);
-            this.OutputWindow.TabIndex = 6;
-            this.OutputWindow.Text = "";
-            // 
-            // GamedataFolderPathBox
-            // 
-            this.GamedataFolderPathBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(240)))), ((int)(((byte)(250)))));
-            this.GamedataFolderPathBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.GamedataFolderPathBox.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Italic);
-            this.GamedataFolderPathBox.Location = new System.Drawing.Point(5, 38);
-            this.GamedataFolderPathBox.Name = "GamedataFolderPathBox";
-            this.GamedataFolderPathBox.Size = new System.Drawing.Size(452, 24);
-            this.GamedataFolderPathBox.TabIndex = 2;
-            this.GamedataFolderPathBox.Text = "Paste The Gamedata Folder Path Here, Or Use The Browse Button...";
             // 
             // VerbosityBtn
             // 
@@ -330,12 +306,36 @@ namespace GP4GUI {
             this.VerbosityBtn.UseVisualStyleBackColor = true;
             this.VerbosityBtn.CheckedChanged += new System.EventHandler(this.VerbosityBtn_CheckedChanged);
             // 
+            // OutputWindow
+            // 
+            this.OutputWindow.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(10)))));
+            this.OutputWindow.Font = new System.Drawing.Font("Segoe UI Semibold", 9F);
+            this.OutputWindow.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(240)))), ((int)(((byte)(250)))));
+            this.OutputWindow.Location = new System.Drawing.Point(5, 107);
+            this.OutputWindow.MaxLength = 21474836;
+            this.OutputWindow.Name = "OutputWindow";
+            this.OutputWindow.ReadOnly = true;
+            this.OutputWindow.Size = new System.Drawing.Size(626, 275);
+            this.OutputWindow.TabIndex = 6;
+            this.OutputWindow.Text = "";
+            // 
+            // GamedataFolderPathBox
+            // 
+            this.GamedataFolderPathBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(240)))), ((int)(((byte)(250)))));
+            this.GamedataFolderPathBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.GamedataFolderPathBox.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Italic);
+            this.GamedataFolderPathBox.Location = new System.Drawing.Point(5, 38);
+            this.GamedataFolderPathBox.Name = "GamedataFolderPathBox";
+            this.GamedataFolderPathBox.Size = new System.Drawing.Size(546, 24);
+            this.GamedataFolderPathBox.TabIndex = 2;
+            this.GamedataFolderPathBox.Text = "Paste The Gamedata Folder Path Here, Or Use The Browse Button...";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
-            this.ClientSize = new System.Drawing.Size(541, 387);
+            this.ClientSize = new System.Drawing.Size(636, 387);
             this.Controls.Add(this.VerbosityBtn);
             this.Controls.Add(this.VerifyGP4Btn);
             this.Controls.Add(this.SwapBrowseModeBtn);

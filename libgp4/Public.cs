@@ -34,32 +34,6 @@ namespace libgp4 {
         // TODO: sort these options, I can never remember what's where ffs
 
 
-        /// <summary> Skip Checking the Project Data for Possible Errors Before Beginning the Creation Process. </summary>
-        public bool SkipIntegrityCheck {
-            get => _SkipIntegrityCheck;
-
-            set {
-                _SkipIntegrityCheck= value;
-                DLog($"VerifyIntegrity => [{_SkipIntegrityCheck}]");
-            }
-        }
-        private bool _SkipIntegrityCheck;
-
-
-        /// <summary> Skip End-of-GP4 Comment W/ the Github Repo Link. </summary>
-        public bool SkipEndComment
-        {
-            get => _SkipEndComment;
-
-            set
-            {
-                _SkipEndComment = value;
-                DLog($"VerifyIntegrity => [{_SkipEndComment}]");
-            }
-        }
-        private bool _SkipEndComment;
-
-
         /// <summary> An Array Of Parameters Parsed From The param.sfo File In The Application/Patch's System Folder (sce_sys\param.sfo)
         ///</summary>
         public SfoParser SfoParams {
@@ -105,7 +79,7 @@ namespace libgp4 {
         private string _GamedataFolder;
 
         
-        /// <summary> Output Directory for the .go4 Project File.
+        /// <summary> Output Directory for the .gp4 Project File.
         ///</summary>
         public string OutputDirectory {
             get => _OutputDirectory ?? string.Empty;
@@ -128,21 +102,6 @@ namespace libgp4 {
             }
         }
         private string _OutputPath;
-
-        /// <summary>
-        /// Include The Keystone File Used For Savedata Creation/Usage In The .gp4's File Listing.
-        /// <br/> Including The Original Is Recommended To Maintain Support For Savedata Created By The Original Application.
-        /// <br/><br/> (True By Default)
-        /// </summary>
-        public bool IgnoreKeystone {
-            get => _IgnoreKeystone;
-
-            set {
-                _IgnoreKeystone = value;
-                DLog($"IgnoreKeystone => [{_IgnoreKeystone}]");
-            }
-        }
-        private bool _IgnoreKeystone;
 
 
         /// <summary>
@@ -186,21 +145,6 @@ namespace libgp4 {
             }
         }
         private string _BasePackagePath;
-
-
-        /// <summary>
-        /// [Defaults to: True]<br/><br/> 
-        /// Set Whether Or Not To Use Absolute Or Relative Pathnames For The .gp4 Project's File Listing 
-        /// </summary>
-        public bool UseAbsoluteFilePaths {
-            get => _AbsoluteFilePaths;
-
-            set {
-                _AbsoluteFilePaths = value;
-                DLog($"AbsoluteFilePaths => [{_AbsoluteFilePaths}]");
-            }
-        }
-        private bool _AbsoluteFilePaths;
 
 
 #if GUIExtras
@@ -286,36 +230,108 @@ namespace libgp4 {
             }
         }
         private string _SdkVersion;
-
 #endif
-#if Log
-        /// <summary>
-        /// Set GP4Creator Output Verbosity.
-        /// </summary>
-        public bool VerboseOutput {
-            get => _VerboseOutput;
 
-            set {
-                _VerboseOutput = value;
-                DLog($"VerboseLogging => [{_VerboseOutput}]");
-            }
-        }
-        private bool _VerboseOutput;
-        
+
+#if Log
         /// <summary>
         /// Optional Method To Use For Logging. [Function(string s)]
         /// </summary>
-        public Action<object> LoggingMethod {
+        public Action<object> LoggingMethod
+        {
             get => _LoggingMethod;
 
-            set {
+            set
+            {
                 _LoggingMethod = value;
                 DLog($"LoggingMethod => [Method: ({_LoggingMethod.Method}) | Target: ({_LoggingMethod.Target})]");
             }
         }
         private Action<object> _LoggingMethod;
 #endif
-        #endregion
+
+
+        #region [Boolean Options]
+#if Log
+        /// <summary>
+        /// Set GP4Creator Output Verbosity.
+        /// </summary>
+        public bool VerboseOutput
+        {
+            get => _VerboseOutput;
+
+            set
+            {
+                _VerboseOutput = value;
+                DLog($"VerboseLogging => [{_VerboseOutput}]");
+            }
+        }
+        private bool _VerboseOutput;
+#endif
+
+        /// <summary>
+        /// [Defaults to: True]<br/><br/> 
+        /// Set Whether Or Not To Use Absolute Or Relative Pathnames For The .gp4 Project's File Listing 
+        /// </summary>
+        public bool UseAbsoluteFilePaths
+        {
+            get => _AbsoluteFilePaths;
+
+            set
+            {
+                _AbsoluteFilePaths = value;
+                DLog($"AbsoluteFilePaths => [{_AbsoluteFilePaths}]");
+            }
+        }
+        private bool _AbsoluteFilePaths;
+
+        /// <summary>
+        /// Include The Keystone File Used For Savedata Creation/Usage In The .gp4's File Listing.
+        /// <br/> Including The Original Is Recommended To Maintain Support For Savedata Created By The Original Application.
+        /// <br/><br/> (True By Default)
+        /// </summary>
+        public bool IgnoreKeystone
+        {
+            get => _IgnoreKeystone;
+
+            set
+            {
+                _IgnoreKeystone = value;
+                DLog($"IgnoreKeystone => [{_IgnoreKeystone}]");
+            }
+        }
+        private bool _IgnoreKeystone;
+
+
+        /// <summary> Skip Checking the Project Data for Possible Errors Before Beginning the Creation Process. </summary>
+        public bool SkipIntegrityCheck
+        {
+            get => _SkipIntegrityCheck;
+
+            set
+            {
+                _SkipIntegrityCheck = value;
+                DLog($"VerifyIntegrity => [{_SkipIntegrityCheck}]");
+            }
+        }
+        private bool _SkipIntegrityCheck;
+
+
+        /// <summary> Skip End-of-GP4 Comment W/ the Github Repo Link. </summary>
+        public bool SkipEndComment
+        {
+            get => _SkipEndComment;
+
+            set
+            {
+                _SkipEndComment = value;
+                DLog($"VerifyIntegrity => [{_SkipEndComment}]");
+            }
+        }
+        private bool _SkipEndComment;
+
+        #endregion [Boolean Options]
+        #endregion User Options
         ///========================\\\
 
 
@@ -326,52 +342,52 @@ namespace libgp4 {
         #region User Functions
 
         #region WIP AddFile(s) Shit
-/*
-        // TODO: TEST THESE TWO THINGS
-        /// <summary>
-        /// Add External Files To The Project's File Listing (wip, this wouldn't work the way it is lol)
-        /// </summary>
-        /// <param name="TargetPaths"> The Destination Paths In The Created Package. </param>
-        /// <param name="OriginalPaths"> Source Paths Of The Files Being Added. </param>
-        public void AddFiles(string[] TargetPaths, string[] OriginalPaths) {
-            if(extra_files == null) {
-                extra_files = new string[OriginalPaths.Length][];
+        /*
+                // TODO: TEST THESE TWO THINGS
+                /// <summary>
+                /// Add External Files To The Project's File Listing (wip, this wouldn't work the way it is lol)
+                /// </summary>
+                /// <param name="TargetPaths"> The Destination Paths In The Created Package. </param>
+                /// <param name="OriginalPaths"> Source Paths Of The Files Being Added. </param>
+                public void AddFiles(string[] TargetPaths, string[] OriginalPaths) {
+                    if(extra_files == null) {
+                        extra_files = new string[OriginalPaths.Length][];
 
-                for(var i = 0; i < extra_files.Length; ++i) {
-                    extra_files[i][0] = TargetPaths[i];
-                    extra_files[i][1] = OriginalPaths[i];
+                        for(var i = 0; i < extra_files.Length; ++i) {
+                            extra_files[i][0] = TargetPaths[i];
+                            extra_files[i][1] = OriginalPaths[i];
+                        }
+                        return;
+                    }
+
+
+                    var buffer = extra_files;
+                    buffer.CopyTo(extra_files = new string[buffer.Length + OriginalPaths.Length][], 0);
+
+                    for(var i = buffer.Length; i < extra_files.Length; ++i) {
+                        extra_files[i][0] = TargetPaths[i];
+                        extra_files[i][1] = OriginalPaths[i];
+                    }
                 }
-                return;
-            }
 
+                /// <summary>
+                /// Add An External File To The Project's File Listing (W.I.P. ; this wouldn't work the way it is lol)
+                /// </summary>
+                /// <param name="TargetPath"> The Destination Path In The Created Package. </param>
+                /// <param name="OriginalPath"> Source Path Of The File Being Added. </param>
+                public void AddFile(string TargetPath, string OriginalPath) {
+                    if(extra_files != null) {
+                        var buffer = extra_files;
+                        buffer.CopyTo(extra_files = new string[buffer.Length + 1][], 0);
 
-            var buffer = extra_files;
-            buffer.CopyTo(extra_files = new string[buffer.Length + OriginalPaths.Length][], 0);
+                        extra_files[extra_files.Length - 1][0] = OriginalPath;
+                        extra_files[extra_files.Length - 1][1] = TargetPath;
+                        return;
+                    }
 
-            for(var i = buffer.Length; i < extra_files.Length; ++i) {
-                extra_files[i][0] = TargetPaths[i];
-                extra_files[i][1] = OriginalPaths[i];
-            }
-        }
-
-        /// <summary>
-        /// Add An External File To The Project's File Listing (W.I.P. ; this wouldn't work the way it is lol)
-        /// </summary>
-        /// <param name="TargetPath"> The Destination Path In The Created Package. </param>
-        /// <param name="OriginalPath"> Source Path Of The File Being Added. </param>
-        public void AddFile(string TargetPath, string OriginalPath) {
-            if(extra_files != null) {
-                var buffer = extra_files;
-                buffer.CopyTo(extra_files = new string[buffer.Length + 1][], 0);
-
-                extra_files[extra_files.Length - 1][0] = OriginalPath;
-                extra_files[extra_files.Length - 1][1] = TargetPath;
-                return;
-            }
-
-            extra_files = new string[][] { new string[] { OriginalPath, TargetPath } };
-        }
-*/
+                    extra_files = new string[][] { new string[] { OriginalPath, TargetPath } };
+                }
+        */
         #endregion
 
 
