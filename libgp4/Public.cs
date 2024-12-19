@@ -401,11 +401,15 @@ namespace libgp4 {
         /// <returns> The Absolute Path to the Created .gp4 Project File. </returns>
         public string CreateGP4()
         {
+            //// TODO: Test this more thoroughly
+
             // Timestamp For GP4, Same Format Sony Used Though Sony's Technically Only Tracks The Date,
             // With The Time Left As 00:00, But Imma Just Add The Time. It Doesn't Break Anything).
             var gp4_timestamp = DateTime.Now.GetDateTimeFormats()[91];
-
+            ////^^
             
+
+
 #if Log
             WLog($"Starting .gp4 Creation.\n", false);
 #endif

@@ -2,6 +2,7 @@
 using libgp4;
 using System.IO;
 using System.Drawing;
+using System.Net.Http;
 using System.Windows.Forms;
 using static GP4GUI.Common;
 using System.ComponentModel;
@@ -40,6 +41,7 @@ namespace GP4GUI {
         }
         public static Button[] DropdownMenu = new Button[2];
         private CheckBox VerbosityBtn;
+        private Button CheckForNewVersionBtn;
 
         /*
                 private void TestBtn_Click(object sender, EventArgs e)
@@ -154,6 +156,7 @@ namespace GP4GUI {
             this.VerbosityBtn = new System.Windows.Forms.CheckBox();
             this.OutputWindow = new GP4GUI.RichTextBox();
             this.GamedataFolderPathBox = new GP4GUI.TextBox();
+            this.CheckForNewVersionBtn = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // CreateProjectFileBtn
@@ -330,12 +333,27 @@ namespace GP4GUI {
             this.GamedataFolderPathBox.TabIndex = 2;
             this.GamedataFolderPathBox.Text = "Paste The Gamedata Folder Path Here, Or Use The Browse Button...";
             // 
+            // CheckForNewVersionBtn
+            // 
+            this.CheckForNewVersionBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(125)))), ((int)(((byte)(183)))), ((int)(((byte)(245)))));
+            this.CheckForNewVersionBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.CheckForNewVersionBtn.Font = new System.Drawing.Font("Gadugi", 4.25F, System.Drawing.FontStyle.Bold);
+            this.CheckForNewVersionBtn.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.CheckForNewVersionBtn.Location = new System.Drawing.Point(91, 4);
+            this.CheckForNewVersionBtn.Name = "CheckForNewVersionBtn";
+            this.CheckForNewVersionBtn.Size = new System.Drawing.Size(31, 16);
+            this.CheckForNewVersionBtn.TabIndex = 19;
+            this.CheckForNewVersionBtn.Text = "CHK";
+            this.CheckForNewVersionBtn.UseVisualStyleBackColor = false;
+            this.CheckForNewVersionBtn.Click += new System.EventHandler(this.CheckForNewVersionBtn_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
             this.ClientSize = new System.Drawing.Size(636, 387);
+            this.Controls.Add(this.CheckForNewVersionBtn);
             this.Controls.Add(this.VerbosityBtn);
             this.Controls.Add(this.VerifyGP4Btn);
             this.Controls.Add(this.SwapBrowseModeBtn);
@@ -654,5 +672,22 @@ namespace GP4GUI {
 
 
         private readonly Button DesignerManip; // Manipulate Designer Stupidity (Stop Creating Methods Inside Existing Code, You Fucking Moron)
+
+        private async void CheckForNewVersionBtn_Click(object sender, EventArgs e)
+        {
+            using (var t = new HttpClientHandler())
+            {
+                t.UseDefaultCredentials = true;
+                t.UseProxy = false;
+
+                using (var f = new HttpClient(t))
+                {
+                    f.DefaultRequestHeaders.Add("User-Agent", "Other");
+                    var ff = await f.GetAsync("https://api.github.com/TheMagicalBlob/OrbisGP4/releases/latest");
+                    WLog($"ff content: [{ff}]");
+                }
+            }
+
+        }
     }
 }
