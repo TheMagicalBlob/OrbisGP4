@@ -7,6 +7,7 @@
 #define Log
 
 using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -1032,9 +1033,7 @@ namespace libgp4 {
                 storage_type = null;
 
                 using(var sfo = File.OpenRead($@"{gamedataFolder}\sce_sys\param.sfo")) {
-#if Log
                     Parent.WLog($"Parsing param.sfo File\nPath: {gamedataFolder}\\sce_sys\\param.sfo", true);
-#endif
 
                     byte[] buffer;
                     object[] SfoParams;
@@ -1056,9 +1055,7 @@ namespace libgp4 {
                     // Read PSF Parameter Count
                     sfo.Read(buffer, 0, 4);
                     var ParameterCount = BitConverter.ToInt32(buffer, 0);
-#if Log
                     Parent.WLog($"{ParameterCount} Parameters In .sfo", true);
-#endif
 
 
                     // Initialize Arrays
@@ -1105,9 +1102,7 @@ namespace libgp4 {
 
                         sfo.Read(buffer = new byte[ParamLengths[i]], 0, ParamLengths[i]);
 
-#if Log
                         DLog($"Label: {SfoParamLabels[i]}");
-#endif
 
                         // Datatype = string
                         if(DataTypes[i] == 2) {
@@ -1116,17 +1111,13 @@ namespace libgp4 {
                             else
                                 SfoParams[i] = Encoding.UTF8.GetString(buffer);
 
-#if Log
                             DLog($"Param: {SfoParams[i]}");
-#endif
                         }
 
                         // Datatype = Int32
                         else if(DataTypes[i] == 4) {
                             SfoParams[i] = BitConverter.ToInt32(buffer, 0);
-#if Log
                             DLog($"Param: {SfoParams[i]}");
-#endif
                         }
                     }
 
@@ -1248,12 +1239,11 @@ namespace libgp4 {
                 scenario_labels = null;
 
 
-                using(var playgo = File.OpenRead($@"{gamedataFolder}\sce_sys\playgo-chunk.dat")) {
-#if Log
+                using(var playgo = File.OpenRead($@"{gamedataFolder}\sce_sys\playgo-chunk.dat"))
+                {
                     Parent.WLog($"Parsing playgo-chunk.dat File\nPath: {gamedataFolder}\\sce_sys\\playgo-chunk.dat", true);
-#endif
-                    var buffer = new byte[4];
 
+                    var buffer = new byte[4];
 
 
                     // Check playgo-chunk.dat File Magic
@@ -1266,9 +1256,7 @@ namespace libgp4 {
                     playgo.Position = 0x0A;
                     chunk_count = (byte)playgo.ReadByte();
                     chunk_labels = new string[chunk_count];
-#if Log
                     Parent.WLog($"{chunk_count} Chunks in Project File", true);
-#endif
 
 
                     // Read Scenario Count, An Initialize Related Arrays
@@ -1278,9 +1266,7 @@ namespace libgp4 {
                     scenario_labels = new string[scenario_count];
                     initial_chunk_count = new int[scenario_count];
                     scenario_chunk_range = new int[scenario_count];
-#if Log
                     Parent.WLog($"{scenario_count} Scenarios in Project File", true);
-#endif
 
 
                     // Read Default Scenario Id
@@ -1327,9 +1313,7 @@ namespace libgp4 {
                         scenario_chunk_range[index] = BitConverter.ToInt16(buffer, 2);
                     }
 
-#if Log
                     Parent.WLog($"Default Scenario Type = {scenario_types[default_scenario_id]}\n", true);
-#endif
 
                     // Load Scenario Label Array Byte Length
                     buffer = new byte[2];
@@ -1475,11 +1459,9 @@ namespace libgp4 {
                 else
                     Errors = $"The Following {ErrorCount} Errors Were Found During The .gp4 Project Creation With Gamedata In: {gamedata_folder}.\n{Errors}";
 
-#if Log
                 WLog(Errors, true);
-#endif
 
-                throw new InvalidDataException(Errors);
+                //throw new InvalidDataException(Errors);
             }
         }
 
@@ -1555,15 +1537,19 @@ namespace libgp4 {
         /// </summary>
         /// <param name="obj"> The Object to Output The String Representation of. </param>
         /// <param name="is_verbose_msg"> Only Output obj if the VerboseOutput Option is Enabled. </param>
-        private void WLog(object obj, bool is_verbose_msg)
+        /// <param name="indentation"> Indentation for the current message (for readability). </param>
+        private void WLog(object obj, bool is_verbose_msg, int? indentation = null)
         {
 #if Log
+            var indent = new string('>', (int)(indentation ?? 0));
+            var msg = indent + obj.ToString();
+
             //if (LoggingMethod != null && !(VerboseOutput ^ IsVerboseMsg))
             if (LoggingMethod != null && !(!VerboseOutput && is_verbose_msg))
-                    LoggingMethod(obj);
+                    LoggingMethod(msg);
 #endif
 #if DEBUG
-            DLog(obj);
+            DLog(msg);
 #endif
         }
 
@@ -1585,6 +1571,9 @@ namespace libgp4 {
                     Console.WriteLine($"#libgp4: {obj}");
                 }
                 catch (Exception) { }
+
+            if (_LoggingMethod != null && DebugOutput)
+                _LoggingMethod(obj);
 #endif
         }
         #endregion

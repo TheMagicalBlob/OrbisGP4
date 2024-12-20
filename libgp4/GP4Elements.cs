@@ -9,6 +9,7 @@
 
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Xml;
 
 
@@ -57,12 +58,13 @@ namespace libgp4 {
             package.SetAttribute("app_type", "full");
 
 
-            if (sfo_data.category == "gp")
+            if (sfo_data.category == "gp") {
                 package.SetAttribute("app_path", base_package);
-#if Log
-            if(sfo_data.category == "gd" && base_package != string.Empty)
+            }
+            else if (sfo_data.category == "gd" && base_package != string.Empty) {
                 WLog($"WARNING: A Base Game Package Path Was Given, But The Package Category Was Set To Full Game.\n(Base Package: {base_package})", true);
-#endif
+            }
+
 
             var chunk_info = gp4.CreateElement("chunk_info");
             chunk_info.SetAttribute("chunk_count", $"{playgo_data.chunk_count}");
@@ -79,17 +81,12 @@ namespace libgp4 {
             var files = gp4.CreateElement("files");
             foreach (var file_path in Directory.GetFiles(GamedataFolder, "*", SearchOption.AllDirectories))
                 {
-#if Log
                 WLog($"Processing File \"{file_path}\".", true);
-#endif
 
                 // Skip Blacklisted Items
-                if (FileShouldBeExcluded(file_path)) {
-#if Log
-                    WLog(string.Empty, true);
-#endif
+                if (FileShouldBeExcluded(file_path))
                     continue;
-                }
+
 
                 var file = gp4.CreateElement("file");
                 file.SetAttribute("targ_path", file_path.Remove(0, gamedata_folder.Length + 1).Replace('\\', '/'));
@@ -100,10 +97,18 @@ namespace libgp4 {
                     file_path.Remove(0, gamedata_folder.Length + 1) // Strip Gamedata Folder Path From Filepath
                 );
 
-                if(!SkipPfsCompressionForFile(file_path))
+                bool ext;
+                if (!SkipPfsCompressionForFile(file_path)) {
                     file.SetAttribute("pfs_compression", "enable");
+                    ext = true;
+                }
+                else
+                    ext = false;
+                WLog($"PFS Compression {(ext? "En":"Dis")}abled", true, 1);
 
-                if(!SkipChunkAttributeForFile(file_path) && chunk_count - 1 != 0)
+                
+
+                if (!SkipChunkAttributeForFile(file_path) && chunk_count - 1 != 0)
                     file.SetAttribute("chunks", $"0-{chunk_count - 1}");
 
                 files.AppendChild(file);
@@ -244,28 +249,24 @@ namespace libgp4 {
         /// <returns> True If The File in filepath Shouldn't Be Included In The .gp4 </returns>
         private bool FileShouldBeExcluded(string filepath) {
             if(filepath.Contains("sce_sys") && filepath.Contains(".dds")) {
-                WLog("Ignoring .dds In System Folder.", true);
+                WLog("Ignoring .dds In System Folder.", true, 1);
                 return true;
             }
             else if (filepath.Contains("keystone") && IgnoreKeystone) {
-                WLog("Ignoring keystone File.", true);
+                WLog("Ignoring keystone File.", true, 1);
                 return true;
             }
 
 
             // Exclude Default Items.
             if(DefaultBlacklist.Any(filepath.Contains)) {
-#if Log
-                WLog($"Ignoring: {filepath}", true);
-#endif
+                WLog($"Ignoring: {filepath}", true, 1);
                 return true;
             }
 
             // Exclude User-Specified Items
             if(FileBlacklist != null && FileBlacklist.Any(filepath.Contains)) {
-#if Log
-                WLog($"User Ignoring: {filepath}", true);
-#endif
+                WLog($"User Ignoring: {filepath}", true, 1);
                 return true;
             }
 
@@ -280,7 +281,7 @@ namespace libgp4 {
         /// 
         /// <returns> True If Pfs Compression Should Be Enabled. </returns>
         private bool SkipPfsCompressionForFile(string filepath) {
-            return new string[] {
+            var ret = new string[] {
                 "sce_sys",
                 "sce_module",
                 ".fself",
@@ -288,8 +289,22 @@ namespace libgp4 {
                 ".elf",
                 ".bin",
                 ".prx",
-                ".dll"
-            }.Any(filepath.Contains);
+                ".dll",
+                ".mp3",
+                ".mp4",
+                ".jpeg",
+                ".png",
+                ".arc",
+                ".tar",
+                ".gz",
+                ".zip",
+                ".7z"
+            }.Any(filepath.ToLower().Contains);
+            if (ret) {
+
+            }
+
+            return ret;
         }
 
 

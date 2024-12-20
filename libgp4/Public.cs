@@ -247,7 +247,7 @@ namespace libgp4 {
                 DLog($"LoggingMethod => [Method: ({_LoggingMethod.Method}) | Target: ({_LoggingMethod.Target})]");
             }
         }
-        private Action<object> _LoggingMethod;
+        private static Action<object> _LoggingMethod;
 #endif
 
 
@@ -267,6 +267,23 @@ namespace libgp4 {
             }
         }
         private bool _VerboseOutput;
+#if DEBUG
+
+        /// <summary>
+        /// Further Extend Verbosity by Duplicating DLog() Messages to LoggingMethod if Provided.
+        /// </summary>
+        public static bool DebugOutput
+        {
+            get => _DebugOutput;
+
+            set
+            {
+                _DebugOutput = value;
+                DLog($"VerboseLogging => [{_DebugOutput}]");
+            }
+        }
+        private static bool _DebugOutput;
+#endif
 #endif
 
         /// <summary>
@@ -410,17 +427,13 @@ namespace libgp4 {
             
 
 
-#if Log
             WLog($"Starting .gp4 Creation.\n", false);
-#endif
 
             // Check The Parsed Data For Any Potential Errors Before Building The .gp4 With It
             ApplyDefaultsToUnsetMembers(SfoParams);
             VerifyProjectData(GamedataFolder, PlaygoData.playgo_content_id, SfoParams);
 
-#if Log
             WLog($".gp4 Project File Destination: {OutputPath}\nPKG Passcode: {Passcode}\n", true);
-#endif
 
             // Initialize new Document Instance for the .gp4 Project.
             var gp4 = new XmlDocument();
@@ -451,10 +464,8 @@ namespace libgp4 {
             // Write The .gp4 File To The Provided Folder / As The Provided Filename
             gp4.Save(OutputPath);
 
-#if Log
             WLog(string.Empty, true); // Lazy output formatting fix
             WLog($"GP4 Creation Successful, File Saved As {OutputPath}\n", false);
-#endif
             return OutputPath;
         }
         #endregion
