@@ -20,7 +20,8 @@ namespace GP4GUI {
             // Initialize .gp4 Creator Instance, and Set Logging Method to OutputWindow
             gp4 = new GP4Creator {
                 LoggingMethod = (obj) => {
-                    OutputWindow.AppendLine($"{((obj.ToString() != "\n" && obj.ToString() != string.Empty) ? "# " : string.Empty)}{obj}");
+                    //OutputWindow.AppendLine($"{((obj.ToString() != "\n" && obj.ToString() != string.Empty) ? "# " : string.Empty)}{obj}");
+                    OutputWindow.AppendLine($"{obj}");
                     OutputWindow.Update();
                 },
 #if DEBUG
@@ -42,6 +43,7 @@ namespace GP4GUI {
         public static Button[] DropdownMenu = new Button[2];
         private CheckBox VerbosityBtn;
         private Button CheckForNewVersionBtn;
+        private Button button1;
 
         /*
                 private void TestBtn_Click(object sender, EventArgs e)
@@ -154,9 +156,10 @@ namespace GP4GUI {
             this.SwapBrowseModeBtn = new System.Windows.Forms.Button();
             this.VerifyGP4Btn = new System.Windows.Forms.Button();
             this.VerbosityBtn = new System.Windows.Forms.CheckBox();
+            this.CheckForNewVersionBtn = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
             this.OutputWindow = new GP4GUI.RichTextBox();
             this.GamedataFolderPathBox = new GP4GUI.TextBox();
-            this.CheckForNewVersionBtn = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // CreateProjectFileBtn
@@ -165,7 +168,7 @@ namespace GP4GUI {
             this.CreateProjectFileBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.CreateProjectFileBtn.Font = new System.Drawing.Font("Gadugi", 8.25F, System.Drawing.FontStyle.Bold);
             this.CreateProjectFileBtn.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.CreateProjectFileBtn.Location = new System.Drawing.Point(531, 80);
+            this.CreateProjectFileBtn.Location = new System.Drawing.Point(531, 114);
             this.CreateProjectFileBtn.Name = "CreateProjectFileBtn";
             this.CreateProjectFileBtn.Size = new System.Drawing.Size(100, 24);
             this.CreateProjectFileBtn.TabIndex = 3;
@@ -247,7 +250,7 @@ namespace GP4GUI {
             this.ClearLogBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.ClearLogBtn.Font = new System.Drawing.Font("Segoe UI Semibold", 7F, System.Drawing.FontStyle.Bold);
             this.ClearLogBtn.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(240)))), ((int)(((byte)(250)))));
-            this.ClearLogBtn.Location = new System.Drawing.Point(5, 82);
+            this.ClearLogBtn.Location = new System.Drawing.Point(5, 115);
             this.ClearLogBtn.Name = "ClearLogBtn";
             this.ClearLogBtn.Size = new System.Drawing.Size(38, 22);
             this.ClearLogBtn.TabIndex = 15;
@@ -286,7 +289,7 @@ namespace GP4GUI {
             this.VerifyGP4Btn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.VerifyGP4Btn.Font = new System.Drawing.Font("Gadugi", 8.25F, System.Drawing.FontStyle.Bold);
             this.VerifyGP4Btn.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.VerifyGP4Btn.Location = new System.Drawing.Point(411, 80);
+            this.VerifyGP4Btn.Location = new System.Drawing.Point(411, 114);
             this.VerifyGP4Btn.Name = "VerifyGP4Btn";
             this.VerifyGP4Btn.Size = new System.Drawing.Size(116, 24);
             this.VerifyGP4Btn.TabIndex = 17;
@@ -301,7 +304,7 @@ namespace GP4GUI {
             this.VerbosityBtn.CheckState = System.Windows.Forms.CheckState.Checked;
             this.VerbosityBtn.Font = new System.Drawing.Font("Gadugi", 7F);
             this.VerbosityBtn.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(240)))), ((int)(((byte)(250)))));
-            this.VerbosityBtn.Location = new System.Drawing.Point(5, 64);
+            this.VerbosityBtn.Location = new System.Drawing.Point(161, 65);
             this.VerbosityBtn.Name = "VerbosityBtn";
             this.VerbosityBtn.Size = new System.Drawing.Size(101, 17);
             this.VerbosityBtn.TabIndex = 18;
@@ -309,12 +312,39 @@ namespace GP4GUI {
             this.VerbosityBtn.UseVisualStyleBackColor = true;
             this.VerbosityBtn.CheckedChanged += new System.EventHandler(this.VerbosityBtn_CheckedChanged);
             // 
+            // CheckForNewVersionBtn
+            // 
+            this.CheckForNewVersionBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(125)))), ((int)(((byte)(183)))), ((int)(((byte)(245)))));
+            this.CheckForNewVersionBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.CheckForNewVersionBtn.Font = new System.Drawing.Font("Gadugi", 4.25F, System.Drawing.FontStyle.Bold);
+            this.CheckForNewVersionBtn.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.CheckForNewVersionBtn.Location = new System.Drawing.Point(268, 68);
+            this.CheckForNewVersionBtn.Name = "CheckForNewVersionBtn";
+            this.CheckForNewVersionBtn.Size = new System.Drawing.Size(31, 16);
+            this.CheckForNewVersionBtn.TabIndex = 19;
+            this.CheckForNewVersionBtn.Text = "CHK";
+            this.CheckForNewVersionBtn.UseVisualStyleBackColor = false;
+            this.CheckForNewVersionBtn.Click += new System.EventHandler(this.CheckForNewVersionBtn_Click);
+            // 
+            // button1
+            // 
+            this.button1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(125)))), ((int)(((byte)(183)))), ((int)(((byte)(245)))));
+            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.button1.Font = new System.Drawing.Font("Gadugi", 7.25F, System.Drawing.FontStyle.Bold);
+            this.button1.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.button1.Location = new System.Drawing.Point(4, 68);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(84, 23);
+            this.button1.TabIndex = 20;
+            this.button1.Text = "Debug Options";
+            this.button1.UseVisualStyleBackColor = false;
+            // 
             // OutputWindow
             // 
             this.OutputWindow.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(10)))));
             this.OutputWindow.Font = new System.Drawing.Font("Segoe UI Semibold", 9F);
             this.OutputWindow.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(240)))), ((int)(((byte)(250)))));
-            this.OutputWindow.Location = new System.Drawing.Point(5, 107);
+            this.OutputWindow.Location = new System.Drawing.Point(5, 141);
             this.OutputWindow.MaxLength = 21474836;
             this.OutputWindow.Name = "OutputWindow";
             this.OutputWindow.ReadOnly = true;
@@ -333,26 +363,13 @@ namespace GP4GUI {
             this.GamedataFolderPathBox.TabIndex = 2;
             this.GamedataFolderPathBox.Text = "Paste The Gamedata Folder Path Here, Or Use The Browse Button...";
             // 
-            // CheckForNewVersionBtn
-            // 
-            this.CheckForNewVersionBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(125)))), ((int)(((byte)(183)))), ((int)(((byte)(245)))));
-            this.CheckForNewVersionBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.CheckForNewVersionBtn.Font = new System.Drawing.Font("Gadugi", 4.25F, System.Drawing.FontStyle.Bold);
-            this.CheckForNewVersionBtn.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.CheckForNewVersionBtn.Location = new System.Drawing.Point(91, 4);
-            this.CheckForNewVersionBtn.Name = "CheckForNewVersionBtn";
-            this.CheckForNewVersionBtn.Size = new System.Drawing.Size(31, 16);
-            this.CheckForNewVersionBtn.TabIndex = 19;
-            this.CheckForNewVersionBtn.Text = "CHK";
-            this.CheckForNewVersionBtn.UseVisualStyleBackColor = false;
-            this.CheckForNewVersionBtn.Click += new System.EventHandler(this.CheckForNewVersionBtn_Click);
-            // 
             // MainForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
-            this.ClientSize = new System.Drawing.Size(636, 387);
+            this.ClientSize = new System.Drawing.Size(636, 420);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.CheckForNewVersionBtn);
             this.Controls.Add(this.VerbosityBtn);
             this.Controls.Add(this.VerifyGP4Btn);
