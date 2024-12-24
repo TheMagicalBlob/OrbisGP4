@@ -18,7 +18,6 @@ namespace GP4GUI {
         //--     Variable Declarations     --\\
         //###################################\\
         #region Variable Declarations
-
         
         //#
         //## Form Functionality Variables
@@ -74,7 +73,6 @@ namespace GP4GUI {
         //--     Function Declarations     --\\
         //###################################\\
         #region Function Declarations
-
 
         //#
         //## Form Functionality Functions

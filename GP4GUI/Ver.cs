@@ -1,16 +1,151 @@
 ﻿
+using System;
+using System.Drawing;
+using System.Drawing.Text;
+using System.Net.Http;
+using System.Windows.Forms;
+using libgp4;
+
 namespace GP4GUI {
     public partial class OptionsPage {
         // Seperate File So I'm More Likely To Open It And Update The Version Number. I Am Lazy
         public const string Version = "ver 2.65.305 ";
 
-        #if DEBUG
-        // quick debugging shit
-        //public static string TestGamedataFolder = @"E:\Modding\CUSA00552-app";
-        public static string TestGamedataFolder = @"C:\Users\msblob\Misc\gp4 tst\CUSA00009-app";
-        public static string TestGP4Path = @"C:\Users\msblob\Misc\gp4 tst\CUSA00009\CUSA00009-app.gp4";
-        #endif 
     }
+
+
+  #if DEBUG
+    
+    public class DebugContents : GroupBox
+    {
+        // Variable Declarations
+        public static string TestGamedataFolder;
+        public static string TestGP4Path;
+
+        /// <summary>
+        ///   Collection of Controls Specifically for Debug Functionality.
+        ///</summary>
+        public Control[] DebugControls { get; private set; }
+
+        public DebugContents(Form Venat, GP4Creator gp4, Point location) {
+            // Error / Improper Usage Checking
+            if (Venat == null) {
+                Common.WLog($"ERROR: Provided Parent Form Was Null, Aborting Dropdown Menu Creation.");
+                return;
+            }
+            else if (gp4 == null) {
+                Common.WLog($"ERROR: Provided GP4Creator Instance Was Null, Aborting Dropdown Menu Creation.");
+                return;
+            }
+
+
+            // Variable Declarations
+            TestGamedataFolder = @"C:\Users\msblob\Misc\gp4 tst\CUSA00009-app";
+            TestGP4Path = @"C:\Users\msblob\Misc\gp4 tst\CUSA00009\CUSA00009-app.gp4";
+
+            // Control Declarations
+            Control
+                VerbosityBtn,
+                VerbosityBtn2,
+                CheckForNewVersionBtn
+            ;
+
+            // Init Debug Control Collection
+            DebugControls = new Control[]
+            {
+                VerbosityBtn = new CheckBox
+                {
+                    Name = "VerbosityBtn",
+                    Location = new System.Drawing.Point(161, 65),
+                    Size = new System.Drawing.Size(101, 17),
+                    Font = new System.Drawing.Font("Gadugi", 7F),
+                    Text = "Verbose Logging",
+                    ForeColor = System.Drawing.Color.FromArgb(210, 240, 250),
+                    CheckState = CheckState.Checked,
+                    TabIndex = 18,
+                    Checked = true,
+                    AutoSize = true,
+                    UseVisualStyleBackColor = true
+                },
+
+                VerbosityBtn2 = new CheckBox
+                {
+                    Name = "VerbosityBtn2",
+                    Location = new System.Drawing.Point(161, 65),
+                    Size = new System.Drawing.Size(101, 17),
+                    Font = new System.Drawing.Font("Gadugi", 7F),
+                    Text = "Verbose Logging",
+                    ForeColor = System.Drawing.Color.FromArgb(210, 240, 250),
+                    CheckState = CheckState.Checked,
+                    TabIndex = 18,
+                    Checked = true,
+                    AutoSize = true,
+                    UseVisualStyleBackColor = true
+                },
+
+                CheckForNewVersionBtn = new Button()
+                {
+                    // 
+                    // CheckForNewVersionBtn
+                    // 
+                    BackColor = System.Drawing.Color.FromArgb(125, 183, 245),
+                    FlatStyle = System.Windows.Forms.FlatStyle.Popup,
+                    Font = new System.Drawing.Font("Gadugi", 4.25F, System.Drawing.FontStyle.Bold),
+                    ForeColor = System.Drawing.SystemColors.WindowText,
+                    Location = new System.Drawing.Point(268, 68),
+                    Name = "CheckForNewVersionBtn",
+                    Size = new System.Drawing.Size(31, 16),
+                    TabIndex = 19,
+                    Text = "CHK",
+                    UseVisualStyleBackColor = false
+                }
+            };
+
+
+            #region Function Delcarations
+            // Verbosity Button Event Handler
+            ((CheckBox)VerbosityBtn).CheckedChanged += (sender, e) => {
+                gp4.VerboseOutput = ((CheckBox)sender).Checked ^= true;
+            };
+            // Verbosity Button Event Handler
+            ((CheckBox)VerbosityBtn2).CheckedChanged += (sender, e) => {
+                gp4.VerboseOutput = ((CheckBox)sender).Checked ^= true;
+            };
+
+            CheckForNewVersionBtn.Click += async (sender, e) => {
+                using (var t = new HttpClientHandler())
+                {
+                    t.UseDefaultCredentials = true;
+                    t.UseProxy = false;
+
+                    using (var f = new HttpClient(t))
+                    {
+                        f.DefaultRequestHeaders.Add("User-Agent", "Other");
+                        var ff = await f.GetAsync("https://api.github.com/TheMagicalBlob/NaughtyDog-Debug-Menu-Patch-Tool/releases/latest");
+                        Common.WLog($"ff content: [{ff}]");
+                    }
+                }
+            };
+            #endregion
+
+            this.Size = new Size(70, 70);
+            this.Location = location;
+            int vert = 4, hori = 0;
+            foreach (var control in DebugControls) {
+                this.Controls.Add(control);
+                control.Location = new Point(2, vert);
+                vert += control.Height;
+
+                if (control.Width > this.Width + 4)
+                    this.Width = control.Width + 4;
+            }
+
+            this.Visible = this.Enabled = false;
+            Venat.Controls.Add(this);
+            this.BringToFront();
+        }
+    }
+#endif
 }
 
 /*

@@ -264,7 +264,7 @@ namespace GP4GUI
             MouseDown += new MouseEventHandler((sender, e) => {
                 MouseDif = new Point(MousePosition.X - Venat.Location.X, MousePosition.Y - Venat.Location.Y);
                 MouseIsDown = true;
-                MainForm.DropdownMenu[1].Visible = MainForm.DropdownMenu[0].Visible = false;
+                Venat.DropdownMenu[1].Visible = Venat.DropdownMenu[0].Visible = false;
 
             });
             MouseUp += new MouseEventHandler((sender, e) => 
@@ -278,7 +278,7 @@ namespace GP4GUI
                 Item.MouseDown += new MouseEventHandler((sender, e) => {
                     MouseDif = new Point(MousePosition.X - Venat.Location.X, MousePosition.Y - Venat.Location.Y);
                     MouseIsDown = true;
-                    MainForm.DropdownMenu[1].Visible = MainForm.DropdownMenu[0].Visible = false;
+                    Venat.DropdownMenu[1].Visible = Venat.DropdownMenu[0].Visible = false;
                 });
                 Item.MouseUp   += new MouseEventHandler((sender, e) => 
                     MouseIsDown = false
