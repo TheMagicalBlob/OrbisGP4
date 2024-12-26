@@ -4,6 +4,9 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.ComponentModel;
 using static GP4GUI.Common;
+using System.IO;
+using System.Net.Http;
+using System.Text;
 
 
 namespace GP4GUI
@@ -17,6 +20,9 @@ namespace GP4GUI
             Paint += PaintBorder;
             TinyVersionLabel.Text = Version; // Set Version Label
         }
+
+        private Label SeperatorLine1;
+        private Button VersionCheckBtn;
 
 
 
@@ -44,6 +50,8 @@ namespace GP4GUI
             this.FileBlacklistTextBox = new GP4GUI.TextBox();
             this.GP4OutputDirectoryTextBox = new GP4GUI.TextBox();
             this.BasePackagePathTextBox = new GP4GUI.TextBox();
+            this.SeperatorLine1 = new System.Windows.Forms.Label();
+            this.VersionCheckBtn = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // IgnoreKeystoneCheckBox
@@ -51,7 +59,7 @@ namespace GP4GUI
             this.IgnoreKeystoneCheckBox.AutoSize = true;
             this.IgnoreKeystoneCheckBox.Font = new System.Drawing.Font("Gadugi", 9.25F);
             this.IgnoreKeystoneCheckBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(240)))), ((int)(((byte)(250)))));
-            this.IgnoreKeystoneCheckBox.Location = new System.Drawing.Point(288, 97);
+            this.IgnoreKeystoneCheckBox.Location = new System.Drawing.Point(288, 94);
             this.IgnoreKeystoneCheckBox.Name = "IgnoreKeystoneCheckBox";
             this.IgnoreKeystoneCheckBox.Size = new System.Drawing.Size(121, 20);
             this.IgnoreKeystoneCheckBox.TabIndex = 5;
@@ -64,7 +72,7 @@ namespace GP4GUI
             this.Title.AutoSize = true;
             this.Title.Font = new System.Drawing.Font("Gadugi", 9.25F, System.Drawing.FontStyle.Bold);
             this.Title.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(240)))), ((int)(((byte)(250)))));
-            this.Title.Location = new System.Drawing.Point(169, 1);
+            this.Title.Location = new System.Drawing.Point(169, 3);
             this.Title.Name = "Title";
             this.Title.Size = new System.Drawing.Size(57, 17);
             this.Title.TabIndex = 0;
@@ -90,7 +98,7 @@ namespace GP4GUI
             this.GP4OutputDirectoryBrowseBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.GP4OutputDirectoryBrowseBtn.Font = new System.Drawing.Font("Gadugi", 8.25F, System.Drawing.FontStyle.Bold);
             this.GP4OutputDirectoryBrowseBtn.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.GP4OutputDirectoryBrowseBtn.Location = new System.Drawing.Point(347, 34);
+            this.GP4OutputDirectoryBrowseBtn.Location = new System.Drawing.Point(347, 31);
             this.GP4OutputDirectoryBrowseBtn.Name = "GP4OutputDirectoryBrowseBtn";
             this.GP4OutputDirectoryBrowseBtn.Size = new System.Drawing.Size(62, 24);
             this.GP4OutputDirectoryBrowseBtn.TabIndex = 8;
@@ -104,7 +112,7 @@ namespace GP4GUI
             this.BasePackagePathBrowseBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.BasePackagePathBrowseBtn.Font = new System.Drawing.Font("Gadugi", 8.25F, System.Drawing.FontStyle.Bold);
             this.BasePackagePathBrowseBtn.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.BasePackagePathBrowseBtn.Location = new System.Drawing.Point(347, 62);
+            this.BasePackagePathBrowseBtn.Location = new System.Drawing.Point(347, 59);
             this.BasePackagePathBrowseBtn.Name = "BasePackagePathBrowseBtn";
             this.BasePackagePathBrowseBtn.Size = new System.Drawing.Size(62, 24);
             this.BasePackagePathBrowseBtn.TabIndex = 9;
@@ -118,7 +126,7 @@ namespace GP4GUI
             this.FileBlacklistBrowseBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.FileBlacklistBrowseBtn.Font = new System.Drawing.Font("Gadugi", 8.25F, System.Drawing.FontStyle.Bold);
             this.FileBlacklistBrowseBtn.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.FileBlacklistBrowseBtn.Location = new System.Drawing.Point(347, 127);
+            this.FileBlacklistBrowseBtn.Location = new System.Drawing.Point(347, 124);
             this.FileBlacklistBrowseBtn.Name = "FileBlacklistBrowseBtn";
             this.FileBlacklistBrowseBtn.Size = new System.Drawing.Size(62, 24);
             this.FileBlacklistBrowseBtn.TabIndex = 10;
@@ -131,7 +139,7 @@ namespace GP4GUI
             this.TinyVersionLabel.AutoSize = true;
             this.TinyVersionLabel.Font = new System.Drawing.Font("Gadugi", 7F, System.Drawing.FontStyle.Bold);
             this.TinyVersionLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(240)))), ((int)(((byte)(250)))));
-            this.TinyVersionLabel.Location = new System.Drawing.Point(1, 1);
+            this.TinyVersionLabel.Location = new System.Drawing.Point(9, 201);
             this.TinyVersionLabel.Name = "TinyVersionLabel";
             this.TinyVersionLabel.Size = new System.Drawing.Size(59, 12);
             this.TinyVersionLabel.TabIndex = 0;
@@ -142,7 +150,7 @@ namespace GP4GUI
             this.UseAbsolutePathsCheckBox.AutoSize = true;
             this.UseAbsolutePathsCheckBox.Font = new System.Drawing.Font("Gadugi", 9.25F);
             this.UseAbsolutePathsCheckBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(240)))), ((int)(((byte)(250)))));
-            this.UseAbsolutePathsCheckBox.Location = new System.Drawing.Point(10, 97);
+            this.UseAbsolutePathsCheckBox.Location = new System.Drawing.Point(10, 94);
             this.UseAbsolutePathsCheckBox.Name = "UseAbsolutePathsCheckBox";
             this.UseAbsolutePathsCheckBox.Size = new System.Drawing.Size(177, 20);
             this.UseAbsolutePathsCheckBox.TabIndex = 12;
@@ -167,7 +175,7 @@ namespace GP4GUI
             this.PasscodeTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(240)))), ((int)(((byte)(250)))));
             this.PasscodeTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.PasscodeTextBox.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Italic);
-            this.PasscodeTextBox.Location = new System.Drawing.Point(6, 155);
+            this.PasscodeTextBox.Location = new System.Drawing.Point(6, 152);
             this.PasscodeTextBox.MaxLength = 32;
             this.PasscodeTextBox.Name = "PasscodeTextBox";
             this.PasscodeTextBox.Size = new System.Drawing.Size(340, 24);
@@ -180,7 +188,7 @@ namespace GP4GUI
             this.FileBlacklistTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(240)))), ((int)(((byte)(250)))));
             this.FileBlacklistTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.FileBlacklistTextBox.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Italic);
-            this.FileBlacklistTextBox.Location = new System.Drawing.Point(7, 127);
+            this.FileBlacklistTextBox.Location = new System.Drawing.Point(7, 124);
             this.FileBlacklistTextBox.Name = "FileBlacklistTextBox";
             this.FileBlacklistTextBox.Size = new System.Drawing.Size(339, 24);
             this.FileBlacklistTextBox.TabIndex = 3;
@@ -192,7 +200,7 @@ namespace GP4GUI
             this.GP4OutputDirectoryTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(240)))), ((int)(((byte)(250)))));
             this.GP4OutputDirectoryTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.GP4OutputDirectoryTextBox.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Italic);
-            this.GP4OutputDirectoryTextBox.Location = new System.Drawing.Point(6, 34);
+            this.GP4OutputDirectoryTextBox.Location = new System.Drawing.Point(6, 31);
             this.GP4OutputDirectoryTextBox.Name = "GP4OutputDirectoryTextBox";
             this.GP4OutputDirectoryTextBox.Size = new System.Drawing.Size(340, 24);
             this.GP4OutputDirectoryTextBox.TabIndex = 1;
@@ -204,22 +212,50 @@ namespace GP4GUI
             this.BasePackagePathTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(240)))), ((int)(((byte)(250)))));
             this.BasePackagePathTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.BasePackagePathTextBox.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Italic);
-            this.BasePackagePathTextBox.Location = new System.Drawing.Point(6, 62);
+            this.BasePackagePathTextBox.Location = new System.Drawing.Point(6, 59);
             this.BasePackagePathTextBox.Name = "BasePackagePathTextBox";
             this.BasePackagePathTextBox.Size = new System.Drawing.Size(340, 24);
             this.BasePackagePathTextBox.TabIndex = 2;
             this.BasePackagePathTextBox.Text = "Base Game .pkg Path... (For Game Patches)";
             this.BasePackagePathTextBox.TextChanged += new System.EventHandler(this.BasePackagePathTextBox_TextChanged);
             // 
+            // SeperatorLine1
+            // 
+            this.SeperatorLine1.Font = new System.Drawing.Font("Gadugi", 9.25F, System.Drawing.FontStyle.Bold);
+            this.SeperatorLine1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(240)))), ((int)(((byte)(250)))));
+            this.SeperatorLine1.Location = new System.Drawing.Point(3, 180);
+            this.SeperatorLine1.Name = "SeperatorLine1";
+            this.SeperatorLine1.Size = new System.Drawing.Size(411, 17);
+            this.SeperatorLine1.TabIndex = 13;
+            this.SeperatorLine1.Text = "---------------------------------------------------------------------------------" +
+    "";
+            // 
+            // VersionCheckBtn
+            // 
+            this.VersionCheckBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(18)))), ((int)(((byte)(18)))), ((int)(((byte)(18)))));
+            this.VersionCheckBtn.FlatAppearance.BorderSize = 0;
+            this.VersionCheckBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.VersionCheckBtn.Font = new System.Drawing.Font("Gadugi", 7F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Underline))));
+            this.VersionCheckBtn.ForeColor = System.Drawing.SystemColors.Window;
+            this.VersionCheckBtn.Location = new System.Drawing.Point(3, 212);
+            this.VersionCheckBtn.Name = "VersionCheckBtn";
+            this.VersionCheckBtn.Size = new System.Drawing.Size(117, 23);
+            this.VersionCheckBtn.TabIndex = 14;
+            this.VersionCheckBtn.Text = "check for new version";
+            this.VersionCheckBtn.UseVisualStyleBackColor = false;
+            this.VersionCheckBtn.Click += new System.EventHandler(this.VersionCheckBtn_Click);
+            // 
             // OptionsPage
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(18)))), ((int)(((byte)(18)))), ((int)(((byte)(18)))));
-            this.ClientSize = new System.Drawing.Size(415, 188);
+            this.ClientSize = new System.Drawing.Size(415, 244);
+            this.Controls.Add(this.TinyVersionLabel);
+            this.Controls.Add(this.VersionCheckBtn);
+            this.Controls.Add(this.SeperatorLine1);
             this.Controls.Add(this.dummy);
             this.Controls.Add(this.UseAbsolutePathsCheckBox);
-            this.Controls.Add(this.TinyVersionLabel);
             this.Controls.Add(this.FileBlacklistBrowseBtn);
             this.Controls.Add(this.BasePackagePathBrowseBtn);
             this.Controls.Add(this.GP4OutputDirectoryBrowseBtn);
@@ -331,7 +367,66 @@ namespace GP4GUI
         }
 
 
-        
+
+        // Check for new app version by comparing newest tag to version text
+        private async void VersionCheckBtn_Click(object sender, EventArgs e)
+        {
+            using (var Handler = new HttpClientHandler())
+            {
+                Handler.UseDefaultCredentials = true;
+                Handler.UseProxy = false;
+
+
+                using (var Client = new HttpClient(Handler))
+                {
+                    HttpResponseMessage reply;
+                    Client.DefaultRequestHeaders.Add("User-Agent", "Other"); // Set Request Headers to Avoid a 403 Error
+                   
+                    if ((reply = await Client.GetAsync("https://api.github.com/repos/TheMagicalBlob/OrbisGP4/tags")).IsSuccessStatusCode)
+                    {
+                        var message = reply.Content.ReadAsStringAsync().Result;
+                        var tag = message.Remove(message.IndexOf(',') - 1).Substring(message.IndexOf(':') + 2);
+#if DEBUG
+                        WLog($"Newest Tag: [{tag}]");
+#endif
+                        // TODO: change to numb comp
+                        if (tag != Version) {
+                            var checkedVersion = tag.Split('.');
+                            var currentVersion = Version.Split('.');
+                            
+                            if (checkedVersion.Length != currentVersion.Length)
+                            {
+                                if (checkedVersion.Length < currentVersion.Length) {
+                                    WLog("Application Up-to-Date");
+                                }
+                                else {
+                                    WLog($"New Version Available. (//! print link or prompt to open in browser)");
+                                }
+                                return;
+                            }
+
+                            for (var i = 0; i < currentVersion.Length; ++i)
+                            {
+                                var currnum = currentVersion[i];
+                                var newnum = checkedVersion[i];
+
+                                if (int.Parse(currnum) < int.Parse(newnum))
+                                {
+                                    WLog($"New Version Available. (//! print link or prompt to open in browser)");
+                                    return;
+                                }
+                            }
+                            
+                            WLog("Application Up-to-Date");
+                        }
+                    }
+                    else
+                        WLog($"Error checking for newest tag (Status: {reply.StatusCode})");
+                }
+            }
+        }
+
+
         // Manually Set .gp4 Project Output Directory
         private void GP4OutputDirectoryTextBox_TextChanged(object sender, EventArgs e) => gp4.OutputDirectory = GP4OutputDirectoryTextBox.Text;
 

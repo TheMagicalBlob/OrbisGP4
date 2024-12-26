@@ -29,15 +29,14 @@ namespace GP4GUI {
                 VerboseOutput = true
 #endif
             };
-#if !DEBUG
-            VerbosityBtn.Enabled = VerbosityBtn.Visible = false;
-#endif
 
 
             // Set Form Refferences
             Venat = this;
             Azem = new OptionsPage();
+#if DEBUG
             DebugOptions = new DebugContents(Venat, gp4, new Point(OptionsBtn.Location.X, OptionsBtn.Location.Y + OptionsBtn.Size.Height + 2));
+#endif
 
             // Set Output Box Ptr
             _OutputWindow = OutputWindow;
@@ -420,9 +419,12 @@ namespace GP4GUI {
         #region Main Form Functions & Variables
 
 
-        #if DEBUG
-        private void DebugOptionsBtn_Click(object sender, EventArgs e) => DebugOptions.Visible = DebugOptions.Enabled ^= true;
-        #endif
+        private void DebugOptionsBtn_Click(object sender, EventArgs e)
+        {
+#if DEBUG
+            DebugOptions.Visible = DebugOptions.Enabled ^= true;
+#endif
+        }
 
 
 
@@ -432,7 +434,6 @@ namespace GP4GUI {
 
         // Verbosity Toggle for GP4Creator Output
         private void VerbosityBtn_CheckedChanged(object sender, EventArgs e) => gp4.VerboseOutput = ((CheckBox)sender).Checked;
-
 
 
         // Toggle The OptionsPage Window for .gp4 Option Editing, and Move to New Location
@@ -667,7 +668,7 @@ namespace GP4GUI {
 #if DEBUG
         private GroupBox DebugOptions;
 #endif
-        #endregion Control Declarations
+#endregion Control Declarations
         ///==================================\\\
 
 

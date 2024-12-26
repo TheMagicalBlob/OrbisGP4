@@ -2,20 +2,23 @@
 using System;
 using System.Drawing;
 using System.Drawing.Text;
+using System.IO;
+using System.Linq;
 using System.Net.Http;
+using System.Runtime.Serialization;
+using System.Text;
 using System.Windows.Forms;
 using libgp4;
 
 namespace GP4GUI {
-    public partial class OptionsPage {
-        // Seperate File So I'm More Likely To Open It And Update The Version Number. I Am Lazy
-        public const string Version = "ver 2.65.305 ";
-
+    public partial class OptionsPage
+    {
+        public const string Version = "2.66.308 "; // Easier to see, more likely to remember to update
     }
 
 
+
   #if DEBUG
-    
     public class DebugContents : GroupBox
     {
         // Variable Declarations
@@ -112,17 +115,29 @@ namespace GP4GUI {
                 gp4.VerboseOutput = ((CheckBox)sender).Checked ^= true;
             };
 
+            // CHK
             CheckForNewVersionBtn.Click += async (sender, e) => {
-                using (var t = new HttpClientHandler())
+                using (var Handler = new HttpClientHandler())
                 {
-                    t.UseDefaultCredentials = true;
-                    t.UseProxy = false;
+                    Handler.UseDefaultCredentials = true;
+                    Handler.UseProxy = false;
 
-                    using (var f = new HttpClient(t))
+
+                    using (var Client = new HttpClient(Handler))
                     {
-                        f.DefaultRequestHeaders.Add("User-Agent", "Other");
-                        var ff = await f.GetAsync("https://api.github.com/TheMagicalBlob/NaughtyDog-Debug-Menu-Patch-Tool/releases/latest");
-                        Common.WLog($"ff content: [{ff}]");
+                        Client.DefaultRequestHeaders.Add("User-Agent", "Other");
+                        var reply = await Client.GetAsync("https://api.github.com/repos/TheMagicalBlob/OrbisGP4/tags");
+                        var message = reply.Content.ReadAsStringAsync().Result;
+
+                        using (var file = new FileStream("C:\\Users\\msblob\\Misc\\tst.txt", FileMode.Create, FileAccess.ReadWrite))
+                        {
+                            var str = Encoding.UTF8.GetBytes(message);
+
+                            file.Write(str, 0, str.Length);
+                            await file.FlushAsync();
+                        }
+                        var tag = message.Remove(message.IndexOf(',') - 1).Substring(message.IndexOf(':') + 2);
+                        Common.WLog($"\n[{tag}]");
                     }
                 }
             };
