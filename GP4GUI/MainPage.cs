@@ -2,11 +2,9 @@
 using libgp4;
 using System.IO;
 using System.Drawing;
-using System.Net.Http;
 using System.Windows.Forms;
 using static GP4GUI.Common;
 using System.ComponentModel;
-using System.Runtime.CompilerServices;
 
 namespace GP4GUI {
     public partial class MainForm : Form {
@@ -21,7 +19,6 @@ namespace GP4GUI {
             // Initialize .gp4 Creator Instance, and Set Logging Method to OutputWindow
             gp4 = new GP4Creator {
                 LoggingMethod = (obj) => {
-                    //OutputWindow.AppendLine($"{((obj.ToString() != "\n" && obj.ToString() != string.Empty) ? "# " : string.Empty)}{obj}");
                     OutputWindow.AppendLine($"{obj}");
                     OutputWindow.Update();
                 },
@@ -35,98 +32,13 @@ namespace GP4GUI {
             Venat = this;
             Azem = new OptionsPage();
 #if DEBUG
-            DebugOptions = new DebugContents(Venat, gp4, new Point(OptionsBtn.Location.X, OptionsBtn.Location.Y + OptionsBtn.Size.Height + 2));
+            DebugOptions = new DebugContents(Venat, gp4, new Point(DebugOptionsBtn.Location.X, DebugOptionsBtn.Location.Y + DebugOptionsBtn.Size.Height - 2));
+#else
+            DebugOptionsBtn.Visible = DebugOptionsBtn.Enabled = false;
 #endif
 
             // Set Output Box Ptr
             _OutputWindow = OutputWindow;
-        }
-
-
-        private void TestBtn_Click(object sender, EventArgs e)
-        {
-#if DEBUG
-            gp4.VerboseOutput = true;
-            gp4.OutputDirectory = @"C:\Users\msblob\gp4 tst";
-
-            var newgp4path = gp4.CreateGP4();
-            if (newgp4path == null) {
-                WLog("Error: CreateGP4() Returned Null, Aborting.");
-                return;
-            }
-
-
-            // instance tests \\
-            var newgp4 = new GP4Reader(newgp4path);
-
-            newgp4.VerifyGP4();
-            WLog("================== Instnce Tests Start ====================");
-            var cat = newgp4.IsPatchProject;
-            WLog($"Is Patch Project: {cat}");
-            if (cat) WLog($"Source .pkg Path: {newgp4.BaseAppPkgPath}");
-
-
-            WLog($"{newgp4.Files.Length} Files");
-            foreach(var f in newgp4.Files)
-                WLog($"  {f}");
-            WLog($"{newgp4.Subfolders.Length} Subfolders");
-            foreach(var s in newgp4.Subfolders)
-                WLog($"  {s}");
-            foreach(var sn in newgp4.SubfolderNames)
-                WLog($"  {sn}");
-
-
-            WLog($"{newgp4.ChunkCount} Chunks");
-            foreach(var c in newgp4.Chunks)
-                WLog($"  {c}");
-            WLog($"{newgp4.ScenarioCount} Scenarios");
-            WLog($"(Default Scenario: {newgp4.DefaultScenarioId})");
-            foreach(var sc in newgp4.Scenarios)
-                WLog($"Scenario {sc.Id}: Label={sc.Label} Type={sc.Type} InitialChunkCount:{sc.InitialChunkCount} Range={sc.ChunkRange}");
-
-
-            WLog($"Content Id: {newgp4.ContentID}");
-            WLog($"Passcode: {newgp4.Passcode}");
-            WLog($".sfo Timestamp: {newgp4.Timestamp}");
-            WLog("================== Instnce Tests End ====================\n\n");
-            ///==============\\\
-
-
-            // static tests \\
-            WLog("================== Static Tests Start ====================");
-            string[] files, subfolders;
-            var _cat = GP4Reader.IsPatchPackage(newgp4path);
-            WLog($"Is Patch Project: {_cat}");
-            if(_cat) WLog($"Source .pkg Path: {GP4Reader.GetBasePkgPath(newgp4path)}");
-
-            WLog($"{(files = GP4Reader.GetFileListing(newgp4path)).Length} Files");
-            foreach(var f in files)
-                WLog($"  {f}");
-            WLog($"{(subfolders = GP4Reader.GetFolderListing(newgp4path)).Length} Subfolders");
-            foreach(var s in subfolders)
-                WLog($"  {s}");
-            foreach(var sn in GP4Reader.GetFolderNames(newgp4path))
-                WLog($"  {sn}");
-
-
-            WLog($"{GP4Reader.GetChunkCount(newgp4path)} Chunks");
-            foreach(var c in GP4Reader.GetChunkListing(newgp4path))
-                WLog($"  {c}");
-            WLog($"{GP4Reader.GetScenarioCount(newgp4path)} Scenarios");
-            WLog($"(Default Scenario: {GP4Reader.GetDefaultScenarioId(newgp4path)})");
-            foreach(var sc in GP4Reader.GetScenarioListing(newgp4path))
-                WLog($"Scenario {sc.Id}: Label={sc.Label} Type={sc.Type} InitialChunkCount:{sc.InitialChunkCount} Range={sc.ChunkRange}");
-
-
-            WLog($"Content Id: {GP4Reader.GetContentId(newgp4path)}");
-            WLog($"Passcode: {GP4Reader.GetPkgPasscode(newgp4path)}");
-            WLog($".sfo Timestamp: {GP4Reader.GetTimestamp(newgp4path)}");
-            WLog("================== Static Tests End ====================");
-            ///=============\\\
-
-            System.Diagnostics.Process.Start(newgp4path);
-
-#endif
         }
 
 
@@ -298,7 +210,7 @@ namespace GP4GUI {
             this.DebugOptionsBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.DebugOptionsBtn.Font = new System.Drawing.Font("Gadugi", 7.25F, System.Drawing.FontStyle.Bold);
             this.DebugOptionsBtn.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.DebugOptionsBtn.Location = new System.Drawing.Point(79, 4);
+            this.DebugOptionsBtn.Location = new System.Drawing.Point(73, 4);
             this.DebugOptionsBtn.Name = "DebugOptionsBtn";
             this.DebugOptionsBtn.Size = new System.Drawing.Size(84, 23);
             this.DebugOptionsBtn.TabIndex = 20;
@@ -440,7 +352,7 @@ namespace GP4GUI {
         private void ToggleOptionsWindowVisibility(object _, EventArgs __)
         {
             Azem.Visible = OptionsPageIsOpen ^= true;
-		    Azem.Location = new Point(Venat.Location.X + (Venat.Size.Width - Azem.Size.Width)/2, Venat.Location.Y + 130);
+		    Azem.Location = new Point(Venat.Location.X + (Venat.Size.Width - Azem.Size.Width)/2, Venat.Location.Y + 80);
             Azem.Update();
 
             DropdownMenu[1].Visible = DropdownMenu[0].Visible = false;

@@ -4,9 +4,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.ComponentModel;
 using static GP4GUI.Common;
-using System.IO;
 using System.Net.Http;
-using System.Text;
 
 
 namespace GP4GUI
@@ -236,7 +234,7 @@ namespace GP4GUI
             this.VersionCheckBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.VersionCheckBtn.Font = new System.Drawing.Font("Gadugi", 7F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Underline))));
             this.VersionCheckBtn.ForeColor = System.Drawing.SystemColors.Window;
-            this.VersionCheckBtn.Location = new System.Drawing.Point(293, 229);
+            this.VersionCheckBtn.Location = new System.Drawing.Point(291, 229);
             this.VersionCheckBtn.Name = "VersionCheckBtn";
             this.VersionCheckBtn.Size = new System.Drawing.Size(120, 22);
             this.VersionCheckBtn.TabIndex = 14;
@@ -250,7 +248,7 @@ namespace GP4GUI
             this.DownloadSourceBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.DownloadSourceBtn.Font = new System.Drawing.Font("Gadugi", 7F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Underline))));
             this.DownloadSourceBtn.ForeColor = System.Drawing.SystemColors.Window;
-            this.DownloadSourceBtn.Location = new System.Drawing.Point(293, 263);
+            this.DownloadSourceBtn.Location = new System.Drawing.Point(291, 263);
             this.DownloadSourceBtn.Name = "DownloadSourceBtn";
             this.DownloadSourceBtn.Size = new System.Drawing.Size(120, 22);
             this.DownloadSourceBtn.TabIndex = 15;
