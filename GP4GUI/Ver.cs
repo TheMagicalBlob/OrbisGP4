@@ -1,11 +1,7 @@
 ﻿
-using System;
 using System.Drawing;
-using System.Drawing.Text;
 using System.IO;
-using System.Linq;
 using System.Net.Http;
-using System.Runtime.Serialization;
 using System.Text;
 using System.Windows.Forms;
 using libgp4;
@@ -13,7 +9,7 @@ using libgp4;
 namespace GP4GUI {
     public partial class OptionsPage
     {
-        public const string Version = "2.66.308 "; // Easier to see, more likely to remember to update
+        public const string Version = "2.67.313 "; // Easier to see, more likely to remember to update
     }
 
 
@@ -86,21 +82,7 @@ namespace GP4GUI {
                     UseVisualStyleBackColor = true
                 },
 
-                CheckForNewVersionBtn = new Button()
-                {
-                    // 
-                    // CheckForNewVersionBtn
-                    // 
-                    BackColor = System.Drawing.Color.FromArgb(125, 183, 245),
-                    FlatStyle = System.Windows.Forms.FlatStyle.Popup,
-                    Font = new System.Drawing.Font("Gadugi", 4.25F, System.Drawing.FontStyle.Bold),
-                    ForeColor = System.Drawing.SystemColors.WindowText,
-                    Location = new System.Drawing.Point(268, 68),
-                    Name = "CheckForNewVersionBtn",
-                    Size = new System.Drawing.Size(31, 16),
-                    TabIndex = 19,
-                    Text = "CHK",
-                    UseVisualStyleBackColor = false
+                CheckForNewVersionBtn = new Button(){
                 }
             };
 
@@ -108,38 +90,15 @@ namespace GP4GUI {
             #region Function Delcarations
             // Verbosity Button Event Handler
             ((CheckBox)VerbosityBtn).CheckedChanged += (sender, e) => {
-                gp4.VerboseOutput = ((CheckBox)sender).Checked ^= true;
+                gp4.VerboseOutput = ((CheckBox)sender).Checked;
             };
             // Verbosity Button Event Handler
             ((CheckBox)VerbosityBtn2).CheckedChanged += (sender, e) => {
-                gp4.VerboseOutput = ((CheckBox)sender).Checked ^= true;
+                gp4.VerboseOutput = ((CheckBox)sender).Checked;
             };
 
             // CHK
             CheckForNewVersionBtn.Click += async (sender, e) => {
-                using (var Handler = new HttpClientHandler())
-                {
-                    Handler.UseDefaultCredentials = true;
-                    Handler.UseProxy = false;
-
-
-                    using (var Client = new HttpClient(Handler))
-                    {
-                        Client.DefaultRequestHeaders.Add("User-Agent", "Other");
-                        var reply = await Client.GetAsync("https://api.github.com/repos/TheMagicalBlob/OrbisGP4/tags");
-                        var message = reply.Content.ReadAsStringAsync().Result;
-
-                        using (var file = new FileStream("C:\\Users\\msblob\\Misc\\tst.txt", FileMode.Create, FileAccess.ReadWrite))
-                        {
-                            var str = Encoding.UTF8.GetBytes(message);
-
-                            file.Write(str, 0, str.Length);
-                            await file.FlushAsync();
-                        }
-                        var tag = message.Remove(message.IndexOf(',') - 1).Substring(message.IndexOf(':') + 2);
-                        Common.WLog($"\n[{tag}]");
-                    }
-                }
             };
             #endregion
 

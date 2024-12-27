@@ -232,9 +232,9 @@ namespace GP4GUI {
             this.OptionsBtn.ForeColor = System.Drawing.SystemColors.WindowText;
             this.OptionsBtn.Location = new System.Drawing.Point(4, 4);
             this.OptionsBtn.Name = "OptionsBtn";
-            this.OptionsBtn.Size = new System.Drawing.Size(84, 23);
+            this.OptionsBtn.Size = new System.Drawing.Size(66, 23);
             this.OptionsBtn.TabIndex = 9;
-            this.OptionsBtn.Text = "Tool Options";
+            this.OptionsBtn.Text = "Options...";
             this.OptionsBtn.UseVisualStyleBackColor = false;
             this.OptionsBtn.Click += new System.EventHandler(this.ToggleOptionsWindowVisibility);
             // 
@@ -298,7 +298,7 @@ namespace GP4GUI {
             this.DebugOptionsBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.DebugOptionsBtn.Font = new System.Drawing.Font("Gadugi", 7.25F, System.Drawing.FontStyle.Bold);
             this.DebugOptionsBtn.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.DebugOptionsBtn.Location = new System.Drawing.Point(94, 4);
+            this.DebugOptionsBtn.Location = new System.Drawing.Point(79, 4);
             this.DebugOptionsBtn.Name = "DebugOptionsBtn";
             this.DebugOptionsBtn.Size = new System.Drawing.Size(84, 23);
             this.DebugOptionsBtn.TabIndex = 20;

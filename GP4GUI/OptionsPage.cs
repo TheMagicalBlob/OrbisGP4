@@ -21,9 +21,6 @@ namespace GP4GUI
             TinyVersionLabel.Text = Version; // Set Version Label
         }
 
-        private Label SeperatorLine1;
-        private Button VersionCheckBtn;
-
 
 
         //######################################\\
@@ -52,6 +49,9 @@ namespace GP4GUI
             this.BasePackagePathTextBox = new GP4GUI.TextBox();
             this.SeperatorLine1 = new System.Windows.Forms.Label();
             this.VersionCheckBtn = new System.Windows.Forms.Button();
+            this.DownloadSourceBtn = new System.Windows.Forms.Button();
+            this.Title2 = new System.Windows.Forms.Label();
+            this.CreditsLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // IgnoreKeystoneCheckBox
@@ -139,7 +139,7 @@ namespace GP4GUI
             this.TinyVersionLabel.AutoSize = true;
             this.TinyVersionLabel.Font = new System.Drawing.Font("Gadugi", 7F, System.Drawing.FontStyle.Bold);
             this.TinyVersionLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(240)))), ((int)(((byte)(250)))));
-            this.TinyVersionLabel.Location = new System.Drawing.Point(9, 201);
+            this.TinyVersionLabel.Location = new System.Drawing.Point(8, 200);
             this.TinyVersionLabel.Name = "TinyVersionLabel";
             this.TinyVersionLabel.Size = new System.Drawing.Size(59, 12);
             this.TinyVersionLabel.TabIndex = 0;
@@ -233,24 +233,63 @@ namespace GP4GUI
             // VersionCheckBtn
             // 
             this.VersionCheckBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(18)))), ((int)(((byte)(18)))), ((int)(((byte)(18)))));
-            this.VersionCheckBtn.FlatAppearance.BorderSize = 0;
             this.VersionCheckBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.VersionCheckBtn.Font = new System.Drawing.Font("Gadugi", 7F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Underline))));
             this.VersionCheckBtn.ForeColor = System.Drawing.SystemColors.Window;
-            this.VersionCheckBtn.Location = new System.Drawing.Point(3, 212);
+            this.VersionCheckBtn.Location = new System.Drawing.Point(293, 229);
             this.VersionCheckBtn.Name = "VersionCheckBtn";
-            this.VersionCheckBtn.Size = new System.Drawing.Size(117, 23);
+            this.VersionCheckBtn.Size = new System.Drawing.Size(120, 22);
             this.VersionCheckBtn.TabIndex = 14;
             this.VersionCheckBtn.Text = "check for new version";
             this.VersionCheckBtn.UseVisualStyleBackColor = false;
             this.VersionCheckBtn.Click += new System.EventHandler(this.VersionCheckBtn_Click);
+            // 
+            // DownloadSourceBtn
+            // 
+            this.DownloadSourceBtn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(18)))), ((int)(((byte)(18)))), ((int)(((byte)(18)))));
+            this.DownloadSourceBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.DownloadSourceBtn.Font = new System.Drawing.Font("Gadugi", 7F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Underline))));
+            this.DownloadSourceBtn.ForeColor = System.Drawing.SystemColors.Window;
+            this.DownloadSourceBtn.Location = new System.Drawing.Point(293, 263);
+            this.DownloadSourceBtn.Name = "DownloadSourceBtn";
+            this.DownloadSourceBtn.Size = new System.Drawing.Size(120, 22);
+            this.DownloadSourceBtn.TabIndex = 15;
+            this.DownloadSourceBtn.Text = "download source code";
+            this.DownloadSourceBtn.UseVisualStyleBackColor = false;
+            this.DownloadSourceBtn.Click += new System.EventHandler(this.DownloadSourceBtn_Click);
+            // 
+            // Title2
+            // 
+            this.Title2.AutoSize = true;
+            this.Title2.Font = new System.Drawing.Font("Gadugi", 8F, System.Drawing.FontStyle.Bold);
+            this.Title2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(240)))), ((int)(((byte)(250)))));
+            this.Title2.Location = new System.Drawing.Point(178, 198);
+            this.Title2.Name = "Title2";
+            this.Title2.Size = new System.Drawing.Size(43, 14);
+            this.Title2.TabIndex = 16;
+            this.Title2.Text = "Credits";
+            this.Title2.Visible = false;
+            // 
+            // CreditsLabel
+            // 
+            this.CreditsLabel.Font = new System.Drawing.Font("Gadugi", 7.5F, System.Drawing.FontStyle.Bold);
+            this.CreditsLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(240)))), ((int)(((byte)(250)))));
+            this.CreditsLabel.Location = new System.Drawing.Point(8, 226);
+            this.CreditsLabel.Name = "CreditsLabel";
+            this.CreditsLabel.Size = new System.Drawing.Size(276, 62);
+            this.CreditsLabel.TabIndex = 17;
+            this.CreditsLabel.Text = "Credits:\r\n  libgp4: TheMagicalBlob, AlAzif (file blacklist)\r\n  GP4 GUI: TheMagica" +
+    "lBlob\r\n\r\n  Testing: Dr.YenYen, Dantify\r\n";
             // 
             // OptionsPage
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(18)))), ((int)(((byte)(18)))), ((int)(((byte)(18)))));
-            this.ClientSize = new System.Drawing.Size(415, 244);
+            this.ClientSize = new System.Drawing.Size(415, 296);
+            this.Controls.Add(this.CreditsLabel);
+            this.Controls.Add(this.Title2);
+            this.Controls.Add(this.DownloadSourceBtn);
             this.Controls.Add(this.TinyVersionLabel);
             this.Controls.Add(this.VersionCheckBtn);
             this.Controls.Add(this.SeperatorLine1);
@@ -389,10 +428,12 @@ namespace GP4GUI
 #if DEBUG
                         WLog($"Newest Tag: [{tag}]");
 #endif
-                        // TODO: change to numb comp
+
                         if (tag != Version) {
-                            var checkedVersion = tag.Split('.');
-                            var currentVersion = Version.Split('.');
+                            string[]
+                                checkedVersion = tag.Split('.'),
+                                currentVersion = Version.Split('.')
+                            ;
                             
                             if (checkedVersion.Length != currentVersion.Length)
                             {
@@ -423,6 +464,16 @@ namespace GP4GUI
                     else
                         WLog($"Error checking for newest tag (Status: {reply.StatusCode})");
                 }
+            }
+        }
+
+
+        // Prompt user to open their default browser and download the latest source code
+        private void DownloadSourceBtn_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("Would you like to download the latest source code through this system's default browser?") == DialogResult.OK) {
+                WLog("//! Not yet Implemented.");
+                // download source
             }
         }
 
@@ -521,6 +572,11 @@ namespace GP4GUI
         private TextBox BasePackagePathTextBox;
         private TextBox FileBlacklistTextBox;
         private TextBox PasscodeTextBox;
+        private Label SeperatorLine1;
+        private Button VersionCheckBtn;
+        private Button DownloadSourceBtn;
+        private Label Title2;
+        private Label CreditsLabel;
         private Button dummy; // I forget why this is here
         #endregion
 
