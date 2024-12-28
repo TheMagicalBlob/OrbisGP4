@@ -60,9 +60,9 @@ namespace GP4GUI {
 
         public static Pen pen = new Pen(AppColourLight); // Colouring for Border Drawing
 
-        public static readonly Font MainFont        = new Font("Gadugi", 8.25f, FontStyle.Bold); // Gadugi, 8.25pt, style=Bold, Italic
-        public static readonly Font TextFont        = new Font("Segoe UI Semibold", 9f); // Segoe UI Semibold, 9pt, style=Bold
-        public static readonly Font DefaultTextFont = new Font("Segoe UI Semibold", 9f, FontStyle.Italic); // Gadugi, 8.25pt, style=Bold, Italic
+        public static readonly Font MainFont        = new Font("Gadugi", 8.25f, FontStyle.Bold); // For the vast majority of controls; anything the user doesn't edit, really.
+        public static readonly Font TextFont        = new Font("Segoe UI Semibold", 9f); // For option controls with customized contents
+        public static readonly Font DefaultTextFont = new Font("Segoe UI Semibold", 9f, FontStyle.Italic); // For option controls in default states
         
         #endregion Variable Declarations
         //===================================\\

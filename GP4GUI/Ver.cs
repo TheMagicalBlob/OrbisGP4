@@ -225,10 +225,6 @@ namespace GP4GUI {
 
  - [GP4_GUI]: 
 
- - [libgp4]:  Sorted publicly accessible libgp4 members so I don't need to seek or manually find them every time (why'd that take me so long?)
-
- - [libgp4]:  Extended Compression Check
-
  - [libgp4]:  
 
 */
