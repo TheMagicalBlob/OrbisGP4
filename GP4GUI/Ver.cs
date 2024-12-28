@@ -8,7 +8,7 @@ using static GP4GUI.Common;
 namespace GP4GUI {
     public partial class OptionsPage
     {
-        public const string Version = "2.67.318 "; // Easier to see, more likely to remember to update
+        public const string Version = "2.67.319 "; // Easier to see, more likely to remember to update
     }
 
 
@@ -43,68 +43,59 @@ namespace GP4GUI {
 
 
 
-            // Control Declarations
+            #region [DEBUG CONTROL DECLARATIONS & INITIALIZATIONS]
+            // Declare Controls
             Control
                 VerbosityBtn,
                 VerbosityBtn2,
                 Libgp4TestBtn
             ;
-
-            // Init Debug Control Collection
+            // Initialize Controls
             DebugControls = new Control[]
             {
                 VerbosityBtn = new CheckBox
                 {
-                    Name = "VerbosityBtn",
-                    Location = new Point(161, 65),
-                    Size = new Size(90, 17),
-                    Font = new Font("Gadugi", 6F),
-                    Text = "Verbose Logging",
-                    ForeColor = Color.FromArgb(210, 240, 250),
-                    CheckState = CheckState.Checked,
-                    TabIndex = 18,
-                    Checked = true,
                     AutoSize = true,
-                    UseVisualStyleBackColor = true
+                    Font = MainFont,
+                    Text = "Verbose Logging",
+                    CheckState = CheckState.Checked,
+                    Checked = true
                 },
 
                 VerbosityBtn2 = new CheckBox
                 {
-                    Name = "VerbosityBtn2",
-                    Location = new Point(161, 65),
-                    Size = new Size(90, 17),
-                    Font = new Font("Gadugi", 6F),
-                    Text = "Verbose Logging",
-                    ForeColor = Color.FromArgb(210, 240, 250),
-                    CheckState = CheckState.Checked,
-                    TabIndex = 18,
-                    Checked = true,
                     AutoSize = true,
-                    UseVisualStyleBackColor = true
+                    Font = MainFont,
+                    Text = "Use Me",
+                    CheckState = CheckState.Checked,
+                    Checked = true
                 },
 
                 Libgp4TestBtn = new Button()
                 {
+                    AutoSize = true,
+                    Font = MainFont,
                     Text = "Test GP4Reader",
-                    Size = new Size(80, 20)
                 }
             };
+            #endregion [DEBUG CONTROL DECLARATIONS & INITIALIZATIONS]
 
 
-            #region Function Delcarations
+            #region [DEBUG CONTROL FUNCTIONS]
+
             // Verbosity Button Event Handler
             ((CheckBox)VerbosityBtn).CheckedChanged += (sender, e) => {
                 gp4.VerboseOutput = ((CheckBox)sender).Checked;
             };
-            // Verbosity Button Event Handler
+            // placeholder button
             ((CheckBox)VerbosityBtn2).CheckedChanged += (sender, e) => {
-                gp4.VerboseOutput = ((CheckBox)sender).Checked;
+                WLog((((CheckBox)VerbosityBtn2).Checked)? "UwU": "OwO"); // shits and giggles
             };
+            // Test GP4Creator and GP4Reader with either current gamedata folder path, or TestGamedataFolder variable
             Libgp4TestBtn.Click += (sender, e) =>
             {
                 // Apply Current Options to GP4Creator Instance, and Apply Defaults to Any Left Unassigned.
                 if (OptionsPageIsOpen) Azem.SaveOptions();
-
 
                 if (!Directory.Exists(gp4.GamedataFolder))
                 {
@@ -198,7 +189,8 @@ namespace GP4GUI {
                 System.Diagnostics.Process.Start(newgp4path);
             };
 
-            #endregion
+
+            #endregion [DEBUG CONTROL FUNCTIONS]
 
 
 
