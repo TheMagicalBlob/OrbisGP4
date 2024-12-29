@@ -470,12 +470,20 @@ namespace GP4GUI
 
 
         // Prompt user to open their default browser and download the latest source code
-        private void DownloadSourceBtn_Click(object sender, EventArgs e)
-        {
-            if (MessageBox.Show("Would you like to download the latest source code through this system's default browser?") == DialogResult.OK) {
-                WLog("//! Not yet Implemented.");
-                // download source
+        private void DownloadSourceBtn_Click(object sender, EventArgs e) {
+            WLog("Download Latest Source: https://github.com/TheMagicalBlob/OrbisGP4/archive/refs/heads/master.zip\nNo guarantees on stability; I just use the main branch for everything.");
+            
+            if (MessageBox.Show(
+                    "Download the latest source code through this system's default browser?\n\n(Download Will Start Automatically)",
+                    "Press \"Ok\" to open in a browser, or copy the link from the Output Window.",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question
+                ) 
+                == DialogResult.Yes)
+            {
+                System.Diagnostics.Process.Start("https://github.com/TheMagicalBlob/OrbisGP4/archive/refs/heads/master.zip");
             }
+            else Azem.BringToFront();
         }
 
 
