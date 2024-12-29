@@ -1,10 +1,13 @@
-﻿using System;
-using libgp4;
+﻿using libgp4;
+using System;
 using System.IO;
 using System.Drawing;
 using System.Windows.Forms;
-using static GP4GUI.Common;
 using System.ComponentModel;
+using static GP4GUI.Common;
+#if DEBUG
+using static GP4GUI.DebugContents;
+#endif
 
 namespace GP4GUI {
     public partial class MainForm : Form {
@@ -42,10 +45,10 @@ namespace GP4GUI {
         }
 
 
-        //##########################################\\
-        //--      Designer Managed Functions      --\\
-        //##########################################\\
-        #region Designer Managed Functions
+        //#######################################\\
+        //--     Basic Form Init Functions     --\\
+        //#######################################\\
+        #region Basic Form Init Functions
 
         private IContainer components = null;
         protected override void Dispose(bool disposing) {
@@ -269,15 +272,7 @@ namespace GP4GUI {
             this.PerformLayout();
 
         }
-        #endregion
-        //==========================================\\
 
-        
-
-        //#######################################\\
-        //--     Basic Form Init Functions     --\\
-        //#######################################\\
-        #region Basic Form Init Functions
                                                                     // deng
         /// <summary> Post-InitializeComponent Configuration.<br/><br/>
         /// Create Assign Anonomous Event Handlers to Parent and Children.
@@ -303,6 +298,7 @@ namespace GP4GUI {
             MouseMove += new MouseEventHandler((sender, e) => DragForm());
 
 
+            // Set appropriate event handlers for the controls on the form as well
             foreach (Control Item in Controls)
             { 
                 Item.MouseDown += new MouseEventHandler((sender, e) => {
@@ -318,10 +314,9 @@ namespace GP4GUI {
             }
         }
 
-
-
         #endregion
         //=======================================\\
+
 
 
 
@@ -474,8 +469,10 @@ namespace GP4GUI {
             WLog($"===============================================\n");
 */
 
-            if (GamedataFolderPathBox.IsDefault && DebugContents.TestGamedataFolder.Length != 0)
-                GamedataFolderPathBox.Set(DebugContents.TestGamedataFolder);
+            if (GamedataFolderPathBox.IsDefault && TestGamedataFolder.Length != 0)
+            {
+                gp4.GamedataFolder = TestGamedataFolder;
+            }
 
 #endif
 
@@ -491,9 +488,17 @@ namespace GP4GUI {
 
 
             // Check for Unassigned Gamedata Path Before Proceeding
-            if (GamedataFolderPathBox.IsDefault) {
-                WLog("Please Assign A Valid Gamedata Folder Before Building.\n");
-                return;
+            if (GamedataFolderPathBox.IsDefault)
+            {
+#if DEBUG
+                if (gp4.GamedataFolder.Remove(gp4.GamedataFolder.LastIndexOf('-')) == TestGamedataFolder.Remove(TestGamedataFolder.LastIndexOf('-')))
+                  WLog("Using Test Gamedata Folder.");
+                else
+#endif
+                {
+                    WLog("Please Assign A Valid Gamedata Folder Before Building.\n");
+                    return;
+                }
             }
             // Read Current Gamedata Folder Path From The Text Box
             else gp4.GamedataFolder = GamedataFolderPathBox.Text.Replace("\"", string.Empty);
@@ -524,7 +529,7 @@ namespace GP4GUI {
         {
             var path = string.Empty;
 #if DEBUG
-            path = DebugContents.TestGP4Path;
+            path = TestGP4Path;
 #else
             var browser = new OpenFileDialog {
                 Title = "Please Select a .gp4 Project File."
@@ -561,7 +566,7 @@ namespace GP4GUI {
         //--     Control Declarations     --\\
         //##################################\\
         #region Control Declarations
-        private TextBox GamedataFolderPathBox;
+        public TextBox GamedataFolderPathBox;
         public Button[] DropdownMenu = new Button[2];
         private Button VerifyGP4Btn;
         private Button BrowseBtn;

@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Linq;
 using System.Drawing;
+using System.Net.Http;
 using System.Windows.Forms;
 using System.ComponentModel;
 using static GP4GUI.Common;
-using System.Net.Http;
+#if DEBUG
+using static GP4GUI.DebugContents;
+#endif
 
 
 namespace GP4GUI

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 using libgp4;
 using static GP4GUI.Common;
@@ -8,7 +9,7 @@ using static GP4GUI.Common;
 namespace GP4GUI {
     public partial class OptionsPage
     {
-        public const string Version = "2.67.319 "; // Easier to see, more likely to remember to update
+        public const string Version = "2.67.321 "; // Easier to see, more likely to remember to update
     }
 
 
@@ -45,11 +46,14 @@ namespace GP4GUI {
 
             #region [DEBUG CONTROL DECLARATIONS & INITIALIZATIONS]
             // Declare Controls
-            Control
+            CheckBox
                 VerbosityBtn,
-                VerbosityBtn2,
+                PackageVersionToggleBtn
+            ;
+            Button
                 Libgp4TestBtn
             ;
+
             // Initialize Controls
             DebugControls = new Control[]
             {
@@ -62,13 +66,12 @@ namespace GP4GUI {
                     Checked = true
                 },
 
-                VerbosityBtn2 = new CheckBox
+                PackageVersionToggleBtn = new CheckBox
                 {
                     AutoSize = true,
                     Font = MainFont,
-                    Text = "Use Me",
-                    CheckState = CheckState.Checked,
-                    Checked = true
+                    Text = $"{(TestGamedataFolder.Length >0? $"{("-app".Any(TestGamedataFolder.Contains)? "-> Patch" : "-> App")}" : ";_;")}",
+                    Checked = !"-app".Any(TestGamedataFolder.Contains)
                 },
 
                 Libgp4TestBtn = new Button()
@@ -84,13 +87,24 @@ namespace GP4GUI {
             #region [DEBUG CONTROL FUNCTIONS]
 
             // Verbosity Button Event Handler
-            ((CheckBox)VerbosityBtn).CheckedChanged += (sender, e) => {
-                gp4.VerboseOutput = ((CheckBox)sender).Checked;
-            };
+            VerbosityBtn.CheckedChanged += (sender, e) => gp4.VerboseOutput = VerbosityBtn.Checked;
+       
             // placeholder button
-            ((CheckBox)VerbosityBtn2).CheckedChanged += (sender, e) => {
-                WLog((((CheckBox)VerbosityBtn2).Checked)? "UwU": "OwO"); // shits and giggles
+            PackageVersionToggleBtn.CheckedChanged += (sender, e) => {
+                if (TestGamedataFolder.Contains("-app")) {
+                    TestGamedataFolder = TestGamedataFolder.Replace("-app", "-patch");
+                    PackageVersionToggleBtn.Text = "-> App";
+                }
+                else if (TestGamedataFolder.Contains("-patch")) {
+                    TestGamedataFolder = TestGamedataFolder.Replace("-patch", "-app");
+                    PackageVersionToggleBtn.Text = "-> Patch";
+                }
+                else {
+                    WLog("Error, Invalid GamedataFolderPath Provided for This Function (must contain -patch | -app)");
+                }
             };
+
+
             // Test GP4Creator and GP4Reader with either current gamedata folder path, or TestGamedataFolder variable
             Libgp4TestBtn.Click += (sender, e) =>
             {
@@ -188,8 +202,6 @@ namespace GP4GUI {
 
                 System.Diagnostics.Process.Start(newgp4path);
             };
-
-
             #endregion [DEBUG CONTROL FUNCTIONS]
 
 
