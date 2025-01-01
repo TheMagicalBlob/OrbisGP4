@@ -91,7 +91,7 @@ namespace GP4GUI {
             this.Title.AutoSize = true;
             this.Title.Font = new System.Drawing.Font("Gadugi", 10F, System.Drawing.FontStyle.Bold);
             this.Title.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(240)))), ((int)(((byte)(250)))));
-            this.Title.Location = new System.Drawing.Point(210, 4);
+            this.Title.Location = new System.Drawing.Point(219, 4);
             this.Title.Name = "Title";
             this.Title.Size = new System.Drawing.Size(212, 18);
             this.Title.TabIndex = 0;
