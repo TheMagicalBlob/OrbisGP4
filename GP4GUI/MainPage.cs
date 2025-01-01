@@ -300,7 +300,10 @@ namespace GP4GUI {
 
             // Set appropriate event handlers for the controls on the form as well
             foreach (Control Item in Controls)
-            { 
+            {
+                if (Item.Name == "SwapBrowseModeBtn") // lazy fix to avoid the mouse down event confliciting with the button
+                    continue;
+                
                 Item.MouseDown += new MouseEventHandler((sender, e) => {
                     MouseDif = new Point(MousePosition.X - Venat.Location.X, MousePosition.Y - Venat.Location.Y);
                     MouseIsDown = true;
