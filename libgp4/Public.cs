@@ -66,7 +66,7 @@ namespace libgp4 {
             get => _GamedataFolder ?? string.Empty;
 
             set {
-                _GamedataFolder = value ?? string.Empty;
+                _GamedataFolder = value.TrimEnd('/', '\\') ?? string.Empty;
                 DLog($"GamedataFolder => [{_GamedataFolder}]");
 
                 if (!Directory.Exists(GamedataFolder))

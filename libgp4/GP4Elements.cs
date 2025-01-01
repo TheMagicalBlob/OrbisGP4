@@ -78,7 +78,7 @@ namespace libgp4 {
         /// </summary>
         private XmlNode CreateFilesElement(int chunk_count, string[][] extra_files, string gamedata_folder, XmlDocument gp4) {
             var files = gp4.CreateElement("files");
-            foreach (var file_path in Directory.GetFiles(GamedataFolder, "*", SearchOption.AllDirectories))
+            foreach (var file_path in Directory.GetFiles(gamedata_folder, "*", SearchOption.AllDirectories))
                 {
                 WLog($"Processing File \"{file_path}\".", true);
 
