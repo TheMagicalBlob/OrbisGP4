@@ -9,15 +9,12 @@ using static GP4GUI.Common;
 namespace GP4GUI {
     public partial class OptionsPage
     {
-        public const string Version = "2.67.324 "; // Easier to see, more likely to remember to update
+        public const string Version = "2.67.323 "; // Easier to see, more likely to remember to update
     }
-    // TODO:
-    // - 
-    // - 
-    // - see if you can fix whatever was cutting off the first character in file paths when ran through wine
 
 
-#if DEBUG
+
+  #if DEBUG
     public class DebugContents : GroupBox
     {
         // Variable Declarations
