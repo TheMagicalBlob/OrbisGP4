@@ -425,11 +425,11 @@ namespace libgp4 {
             //var gp4_timestamp = DateTime.Now.GetDateTimeFormats()[91];
             //var gp4_timestamp = "2024-01-01 00:00:00";
             string
-                Month = DateTime.Now.Month.ToString(),
-                Day = DateTime.Now.Day.ToString(),
-                Hour = DateTime.Now.Hour.ToString(),
+                Second = DateTime.Now.Second.ToString(),
                 Minute = DateTime.Now.Minute.ToString(),
-                Second = DateTime.Now.Second.ToString()
+                Hour   = DateTime.Now.Hour.ToString(),
+                Day    = DateTime.Now.Day.ToString(),
+                Month  = DateTime.Now.Month.ToString()
             ;
             var gp4_timestamp = $"{DateTime.Now.Year}-{Month.PadLeft(2, '0')}-{Day.PadLeft(2, '0')} {Hour.PadLeft(2, '0')}:{Minute.PadLeft(2, '0')}:{Second.PadLeft(2, '0')}";
             ////^^
