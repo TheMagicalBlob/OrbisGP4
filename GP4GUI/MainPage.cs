@@ -501,7 +501,7 @@ namespace GP4GUI {
                 }
             }
             // Read Current Gamedata Folder Path From The Text Box
-            else gp4.GamedataFolder = GamedataFolderPathBox.Text.Replace("\"", string.Empty);
+            else gp4.GamedataFolder = GamedataFolderPathBox.Text.Replace("\"", string.Empty).TrimEnd('/', '\\');
 
 
             // Ensure Keystone is Present if Applicable

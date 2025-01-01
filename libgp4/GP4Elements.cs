@@ -88,7 +88,7 @@ namespace libgp4 {
 
 
                 var file = gp4.CreateElement("file");
-                file.SetAttribute("targ_path", file_path.Remove(0, gamedata_folder.Length + 1).Replace('\\', '/'));
+                file.SetAttribute("targ_path", file_path.Remove(0, gamedata_folder.Length + 1).Replace('\\', '/')); // Replace windows-formatted paths with expected NORMAL ones (for targ_path only!!)
                 file.SetAttribute(
                     "orig_path",
                     UseAbsoluteFilePaths ?
