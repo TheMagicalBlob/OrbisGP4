@@ -293,6 +293,7 @@ namespace libgp4 {
                 ".mp4",
                 ".jpeg",
                 ".png",
+                ".psarc",
                 ".arc",
                 ".tar",
                 ".gz",
