@@ -79,7 +79,7 @@ namespace libgp4 {
         private XmlNode CreateFilesElement(int chunk_count, string[][] extra_files, string gamedata_folder, XmlDocument gp4) {
             var files = gp4.CreateElement("files");
             foreach (var file_path in Directory.GetFiles(gamedata_folder, "*", SearchOption.AllDirectories))
-                {
+            {
                 WLog($"Processing File \"{file_path}\".", true);
 
                 // Skip Blacklisted Items
@@ -137,6 +137,10 @@ namespace libgp4 {
                 }
             }
 */
+                
+            if (!files.HasChildNodes) {
+                WLog("ERROR: No Files Present In files Node. Aborting...", false);
+            }
 
             return files;
         }
@@ -255,7 +259,7 @@ namespace libgp4 {
                 WLog("Ignoring keystone File.", true, 1);
                 return true;
             }
-            else if (filepath.Substring(filepath.LastIndexOf('.')) == ".gp4") {
+            else if (filepath.Contains('.') && filepath.Substring(filepath.LastIndexOf('.')) == ".gp4") {
                 WLog("Ignoring .gp4 Project File.", true, 1);
                 return true;
             }
