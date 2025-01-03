@@ -247,12 +247,16 @@ namespace libgp4 {
         /// </summary>
         /// <returns> True If The File in filepath Shouldn't Be Included In The .gp4 </returns>
         private bool FileShouldBeExcluded(string filepath) {
-            if(filepath.Contains("sce_sys") && filepath.Contains(".dds")) {
+            if(filepath.Contains("sce_sys") && new string[] { ".dds", ".encrypted" }.Any(filepath.Contains)) {
                 WLog("Ignoring .dds In System Folder.", true, 1);
                 return true;
             }
             else if (filepath.Contains("keystone") && IgnoreKeystone) {
                 WLog("Ignoring keystone File.", true, 1);
+                return true;
+            }
+            else if (filepath.Substring(filepath.LastIndexOf('.')) == ".gp4") {
+                WLog("Ignoring .gp4 Project File.", true, 1);
                 return true;
             }
 
@@ -293,7 +297,6 @@ namespace libgp4 {
                 ".mp4",
                 ".jpeg",
                 ".png",
-                //".psarc",
                 ".arc",
                 ".tar",
                 ".gz",
