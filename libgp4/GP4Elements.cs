@@ -251,8 +251,8 @@ namespace libgp4 {
         /// </summary>
         /// <returns> True If The File in filepath Shouldn't Be Included In The .gp4 </returns>
         private bool FileShouldBeExcluded(string filepath) {
-            if(filepath.Contains("sce_sys") && new string[] { ".dds", ".encrypted" }.Any(filepath.Contains)) {
-                WLog("Ignoring .dds In System Folder.", true, 1);
+            if (new string[] { "sce_sys", "." }.All(filepath.Contains) && new string[] { ".dds", ".encrypted" }.Any(filepath.Substring(filepath.LastIndexOf('.')).Equals)) {
+                WLog($"Ignoring {filepath.Substring(filepath.LastIndexOf('.'))} In System Folder.", true, 1);
                 return true;
             }
             else if (filepath.Contains("keystone") && IgnoreKeystone) {
