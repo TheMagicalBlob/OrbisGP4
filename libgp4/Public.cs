@@ -21,6 +21,10 @@ namespace libgp4 {
         /// Allows For The Editing Of Various Options Before .gp4 Creation.
         /// <br/><br/> (A Valid GamedataFolder Must Be Set Prior To Creating The .gp4 Project File)
         /// </summary>
+        public GP4Creator(string gamedataFolder) {
+            // No idea what I want to do here
+            GamedataFolder = gamedataFolder;
+        }
         public GP4Creator() {
             // No idea what I want to do here
         }
@@ -66,11 +70,26 @@ namespace libgp4 {
             get => _GamedataFolder ?? string.Empty;
 
             set {
-                _GamedataFolder = value.TrimEnd('/', '\\') ?? string.Empty;
+
+                _GamedataFolder = value?.TrimEnd('/', '\\') ?? "Empty String";// string.Empty;
                 DLog($"GamedataFolder => [{_GamedataFolder}]");
 
                 if (!Directory.Exists(GamedataFolder))
-                    throw new DirectoryNotFoundException($"Invalid Gamedata Folder Path Provided. [{(File.Exists(GamedataFolder) ? $"Path \"{GamedataFolder}\" Leads to a File, Not a Folder." : $"Directory \"{GamedataFolder}\" Does Not Exist.")}]");
+                {
+                    string message;
+
+                    if (File.Exists(GamedataFolder)) {
+                        message = $"Path \"{GamedataFolder}\" Leads to a File, Not a Folder.";
+                    }
+                    else if (GamedataFolder == string.Empty) {
+                        message = "Nothing Was Provided. ()";
+                    }
+                    else
+                        message = $"Directory \"{GamedataFolder}\" Does Not Exist.";
+
+
+                    throw new DirectoryNotFoundException($"Invalid Gamedata Folder Path Provided. [{message}]");
+                }
 
                 SfoParams  = new SfoParser(this, GamedataFolder);
                 PlaygoData = new PlaygoParameters(this, GamedataFolder);
