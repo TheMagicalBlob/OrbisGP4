@@ -61,7 +61,7 @@ namespace libgp4 {
                 package.SetAttribute("app_path", base_package);
             }
             else if (sfo_data.category == "gd" && base_package != string.Empty) {
-                WLog($"WARNING: A Base Game Package Path Was Given, But The Package Category Was Set To Full Game.\n(Base Package: {base_package})", true);
+                Print($"WARNING: A Base Game Package Path Was Given, But The Package Category Was Set To Full Game.\n(Base Package: {base_package})", true);
             }
 
 
@@ -80,7 +80,7 @@ namespace libgp4 {
             var files = gp4.CreateElement("files");
             foreach (var file_path in Directory.GetFiles(gamedata_folder, "*", SearchOption.AllDirectories))
             {
-                WLog($"Processing File \"{file_path}\".", true);
+                Print($"Processing File \"{file_path}\".", true);
 
                 // Skip Blacklisted Items
                 if (FileShouldBeExcluded(file_path))
@@ -103,7 +103,7 @@ namespace libgp4 {
                 }
                 else
                     ext = false;
-                WLog($"PFS Compression {(ext? "En":"Dis")}abled", true, 1);
+                Print($"PFS Compression {(ext? "En":"Dis")}abled", true, 1);
 
                 
 
@@ -139,7 +139,7 @@ namespace libgp4 {
 */
                 
             if (!files.HasChildNodes) {
-                WLog("ERROR: No Files Present In files Node. Aborting...", false);
+                Print("ERROR: No Files Present In files Node. Aborting...", false);
             }
 
             return files;
@@ -252,28 +252,28 @@ namespace libgp4 {
         /// <returns> True If The File in filepath Shouldn't Be Included In The .gp4 </returns>
         private bool FileShouldBeExcluded(string filepath) {
             if (new string[] { "sce_sys", "." }.All(filepath.Contains) && new string[] { ".dds", ".encrypted" }.Any(filepath.Substring(filepath.LastIndexOf('.')).Equals)) {
-                WLog($"Ignoring {filepath.Substring(filepath.LastIndexOf('.'))} In System Folder.", true, 1);
+                Print($"Ignoring {filepath.Substring(filepath.LastIndexOf('.'))} In System Folder.", true, 1);
                 return true;
             }
             else if (filepath.Contains("keystone") && IgnoreKeystone) {
-                WLog("Ignoring keystone File.", true, 1);
+                Print("Ignoring keystone File.", true, 1);
                 return true;
             }
             else if (filepath.Contains('.') && filepath.Substring(filepath.LastIndexOf('.')) == ".gp4") {
-                WLog("Ignoring .gp4 Project File.", true, 1);
+                Print("Ignoring .gp4 Project File.", true, 1);
                 return true;
             }
 
 
             // Exclude Default Items.
             if(DefaultBlacklist.Any(filepath.Contains)) {
-                WLog($"Ignoring: {filepath}", true, 1);
+                Print($"Ignoring: {filepath}", true, 1);
                 return true;
             }
 
             // Exclude User-Specified Items
             if(FileBlacklist != null && FileBlacklist.Any(filepath.Contains)) {
-                WLog($"User Ignoring: {filepath}", true, 1);
+                Print($"User Ignoring: {filepath}", true, 1);
                 return true;
             }
 

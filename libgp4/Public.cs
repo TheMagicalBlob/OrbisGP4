@@ -455,13 +455,13 @@ namespace libgp4 {
 
 
 
-            WLog($"Starting .gp4 Creation.\n", false);
+            Print($"Starting .gp4 Creation.\n", false);
 
             // Check The Parsed Data For Any Potential Errors Before Building The .gp4 With It
             ApplyDefaultsToUnsetMembers(SfoParams);
             VerifyProjectData(GamedataFolder, PlaygoData.playgo_content_id, SfoParams);
 
-            WLog($".gp4 Project File Destination: {OutputPath}\nPKG Passcode: {Passcode}\n", true);
+            Print($".gp4 Project File Destination: {OutputPath}\nPKG Passcode: {Passcode}\n", true);
 
             // Initialize new Document Instance for the .gp4 Project.
             var gp4 = new XmlDocument();
@@ -492,8 +492,8 @@ namespace libgp4 {
             // Write The .gp4 File To The Provided Folder / As The Provided Filename
             gp4.Save(OutputPath);
 
-            WLog(string.Empty, true); // Lazy output formatting fix
-            WLog($"GP4 Creation Successful, File Saved As {OutputPath}\n", false);
+            Print(string.Empty, true); // Lazy output formatting fix
+            Print($"GP4 Creation Successful, File Saved As {OutputPath}\n", false);
             return OutputPath;
         }
         #endregion

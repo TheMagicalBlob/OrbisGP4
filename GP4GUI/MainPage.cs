@@ -499,7 +499,7 @@ namespace GP4GUI {
                 else
 #endif
                 {
-                    WLog("Please Assign A Valid Gamedata Folder Before Building.\n");
+                    Print("Please Assign A Valid Gamedata Folder Before Building.\n");
                     return;
                 }
             }
@@ -510,7 +510,7 @@ namespace GP4GUI {
             // Ensure Keystone is Present if Applicable
             if (gp4.SfoParams.category == "gd" && !gp4.IgnoreKeystone && !File.Exists($@"{gp4.GamedataFolder}\sce_sys\keystone"))
             {
-                WLog($"ERROR; No keystone File Found In Project Folder.\n\n");
+                Print($"ERROR; No keystone File Found In Project Folder.\n\n");
                 return;
             }
             #endregion [Assign Defaults/Verify Options]
@@ -547,7 +547,7 @@ namespace GP4GUI {
 
                 else if (File.Exists(pathboxtext))
                 {
-                    WLog("Using .gp4 Path in Gamedata Folder Path Box Instead of Browsing.");
+                    Print("Using .gp4 Path in Gamedata Folder Path Box Instead of Browsing.");
                     path = pathboxtext;
                 }
 
@@ -558,16 +558,16 @@ namespace GP4GUI {
 
 #endif
             if (path != string.Empty)
-            new GP4Reader(path).VerifyGP4((message) => { WLog(message); });
+            new GP4Reader(path).VerifyGP4((message) => { Print(message); });
         }
         #endregion
         //===============================================\\
 
 
 
-        //##################################\\
-        //--     Control Declarations     --\\
-        //##################################\\
+        //================================\\
+        //--|   Control Declarations   |--\\
+        //================================\\
         #region Control Declarations
         public TextBox GamedataFolderPathBox;
         public Button[] DropdownMenu = new Button[2];
@@ -582,16 +582,14 @@ namespace GP4GUI {
         private Button dummy; // I forget why this is here
         private Label Title;
         private Button DebugOptionsBtn;
-
         private RichTextBox OutputWindow;
-
-#if DEBUG
+    #if DEBUG
         private GroupBox DebugOptions;
-#endif
-#endregion Control Declarations
-        ///==================================\\\
+    #endif
+        #endregion [Control Declarations]
 
 
-        private readonly Button DesignerManip; // Manipulate Designer Stupidity (Stop Creating Methods Inside Existing Code, You Fucking Moron)
+        // Manipulate Designer Stupidity. (stop creating methods inside existing code, you moronic twat)
+        private readonly Button DesignerManip;
     }
 }

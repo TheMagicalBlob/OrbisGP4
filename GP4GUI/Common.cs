@@ -116,7 +116,7 @@ namespace GP4GUI {
         //#
         
         /// <summary> Output Misc. Messages to the Main Output Window (the big-ass richtext box). </summary>
-        public static void WLog(object str = null) {
+        internal static void Print(object str = null) {
             _OutputWindow.AppendLine(str.ToString());
 #if DEBUG
             // Debug Output
@@ -177,7 +177,8 @@ namespace GP4GUI {
         }
 /*
         public override string Text { get { if (IsDefault) return "fag"; return _Text; } set { _Text = value; base.Text = value; } }
-        private string _Text;*/
+        private string _Text;
+*/
 
 
         private void ClearControl()

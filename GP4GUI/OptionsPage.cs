@@ -409,69 +409,70 @@ namespace GP4GUI
 
 
         // Check for new app version by comparing newest tag to version text
-        private async void VersionCheckBtn_Click(object sender, EventArgs e)
-        {
-            using (var Handler = new HttpClientHandler())
-            {
-                Handler.UseDefaultCredentials = true;
-                Handler.UseProxy = false;
-
-
-                using (var Client = new HttpClient(Handler))
+        private async void VersionCheckBtn_Click(object sender, EventArgs e) {
+            try {
+                using (var clientHandler = new HttpClientHandler())
                 {
-                    HttpResponseMessage reply;
-                    Client.DefaultRequestHeaders.Add("User-Agent", "Other"); // Set Request Headers to Avoid a 403 Error
-                   
-                    if ((reply = await Client.GetAsync("https://api.github.com/repos/TheMagicalBlob/OrbisGP4/tags")).IsSuccessStatusCode)
+                    clientHandler.UseDefaultCredentials = true;
+                    clientHandler.UseProxy = false;
+
+                    using (var client = new HttpClient(clientHandler))
                     {
-                        var message = reply.Content.ReadAsStringAsync().Result;
-                        var tag = message.Remove(message.IndexOf(',') - 1).Substring(message.IndexOf(':') + 2);
-#if DEBUG
-                        WLog($"Newest Tag: [{tag}]");
-#endif
+                        HttpResponseMessage reply;
+                        client.DefaultRequestHeaders.Add("User-Agent", "Other"); // Set request headers to avoid error 403
+                   
+                        if ((reply = await client.GetAsync("https://api.github.com/repos/TheMagicalBlob/OrbisGP4/tags")).IsSuccessStatusCode)
+                        {
+                            var message = reply.Content.ReadAsStringAsync().Result;
+                            var tag = message.Remove(message.IndexOf(',') - 1).Substring(message.IndexOf(':') + 2);
+    #if DEBUG
+                            WLog($"Newest Tag: [{tag}]");
+    #endif
 
-                        if (tag != Version) {
-                            string[]
-                                checkedVersion = tag.Split('.'),
-                                currentVersion = Version.Split('.')
-                            ;
+                            if (tag != Version) {
+                                string[]
+                                    checkedVersion = tag.Split('.'),
+                                    currentVersion = Version.Split('.')
+                                ;
                             
-                            if (checkedVersion.Length != currentVersion.Length)
-                            {
-                                if (checkedVersion.Length < currentVersion.Length) {
-                                    WLog("Application Up-to-Date");
-                                }
-                                else {
-                                    WLog($"New Version Available. (//! print link or prompt to open in browser)");
-                                }
-                                return;
-                            }
-
-                            for (var i = 0; i < currentVersion.Length; ++i)
-                            {
-                                var currnum = currentVersion[i];
-                                var newnum = checkedVersion[i];
-
-                                if (int.Parse(currnum) < int.Parse(newnum))
+                                if (checkedVersion.Length != currentVersion.Length)
                                 {
-                                    WLog($"New Version Available. (//! print link or prompt to open in browser)");
+                                    if (checkedVersion.Length < currentVersion.Length) {
+                                        Print("Application Up-to-Date");
+                                    }
+                                    else
+                                        Print($@"New Version Available.\nLink: https://github.com/TheMagicalBlob/OrbisGP4/releases");
                                     return;
                                 }
-                            }
+
+                                for (var i = 0; i < currentVersion.Length; ++i)
+                                {
+                                    var currnum = currentVersion[i];
+                                    var newnum = checkedVersion[i];
+
+                                    if (int.Parse(currnum) < int.Parse(newnum)) {
+                                        Print($"New Version Available. (//! print link or prompt to open in browser)");
+                                        return;
+                                    }
+                                }
                             
-                            WLog("Application Up-to-Date");
+                                Print("Application Up-to-Date");
+                            }
                         }
+                        else
+                            Print($"Error checking for newest tag (Status: {reply.StatusCode})");
                     }
-                    else
-                        WLog($"Error checking for newest tag (Status: {reply.StatusCode})");
                 }
+            }
+            catch (Exception dang) {
+                Print($"Unable to connect to api.github");
             }
         }
 
 
         // Prompt user to open their default browser and download the latest source code
         private void DownloadSourceBtn_Click(object sender, EventArgs e) {
-            WLog("Download Latest Source: https://github.com/TheMagicalBlob/OrbisGP4/archive/refs/heads/master.zip\nNo guarantees on stability; I just use the main branch for everything.");
+            Print("Download Latest Source: https://github.com/TheMagicalBlob/OrbisGP4/archive/refs/heads/master.zip\nNo guarantees on stability; I just use the main branch for everything.");
             
             if (MessageBox.Show(
                     "Download the latest source code through this system's default browser?\n\n(Download Will Start Automatically)",

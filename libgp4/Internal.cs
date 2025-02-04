@@ -1032,7 +1032,7 @@ namespace libgp4 {
                 storage_type = null;
 
                 using(var sfo = File.OpenRead($@"{gamedataFolder}\sce_sys\param.sfo")) {
-                    Parent.WLog($"Parsing param.sfo File\nPath: {gamedataFolder}\\sce_sys\\param.sfo", true);
+                    Parent.Print($"Parsing param.sfo File\nPath: {gamedataFolder}\\sce_sys\\param.sfo", true);
 
                     byte[] buffer;
                     object[] SfoParams;
@@ -1054,7 +1054,7 @@ namespace libgp4 {
                     // Read PSF Parameter Count
                     sfo.Read(buffer, 0, 4);
                     var ParameterCount = BitConverter.ToInt32(buffer, 0);
-                    Parent.WLog($"{ParameterCount} Parameters In .sfo", true);
+                    Parent.Print($"{ParameterCount} Parameters In .sfo", true);
 
 
                     // Initialize Arrays
@@ -1240,7 +1240,7 @@ namespace libgp4 {
 
                 using(var playgo = File.OpenRead($@"{gamedataFolder}\sce_sys\playgo-chunk.dat"))
                 {
-                    Parent.WLog($"Parsing playgo-chunk.dat File\nPath: {gamedataFolder}\\sce_sys\\playgo-chunk.dat", true);
+                    Parent.Print($"Parsing playgo-chunk.dat File\nPath: {gamedataFolder}\\sce_sys\\playgo-chunk.dat", true);
 
                     var buffer = new byte[4];
 
@@ -1255,7 +1255,7 @@ namespace libgp4 {
                     playgo.Position = 0x0A;
                     chunk_count = (byte)playgo.ReadByte();
                     chunk_labels = new string[chunk_count];
-                    Parent.WLog($"{chunk_count} Chunks in Project File", true);
+                    Parent.Print($"{chunk_count} Chunks in Project File", true);
 
 
                     // Read Scenario Count, An Initialize Related Arrays
@@ -1265,7 +1265,7 @@ namespace libgp4 {
                     scenario_labels = new string[scenario_count];
                     initial_chunk_count = new int[scenario_count];
                     scenario_chunk_range = new int[scenario_count];
-                    Parent.WLog($"{scenario_count} Scenarios in Project File", true);
+                    Parent.Print($"{scenario_count} Scenarios in Project File", true);
 
 
                     // Read Default Scenario Id
@@ -1312,7 +1312,7 @@ namespace libgp4 {
                         scenario_chunk_range[index] = BitConverter.ToInt16(buffer, 2);
                     }
 
-                    Parent.WLog($"Default Scenario Type = {scenario_types[default_scenario_id]}\n", true);
+                    Parent.Print($"Default Scenario Type = {scenario_types[default_scenario_id]}\n", true);
 
                     // Load Scenario Label Array Byte Length
                     buffer = new byte[2];
@@ -1413,7 +1413,7 @@ namespace libgp4 {
 
             // Ensure A Gamedata Folder's Been Provided No Matter What
             if (gamedata_folder == null || !Directory.Exists(gamedata_folder)) {
-                WLog($"Could Not Find The Provided Gamedata Folder.\n \nPath Provided: \"{gamedata_folder}\"\n\n", false); // Spaced Out The First Double-line-break To Avoid Counting This Error As Two (update: fucking what???)
+                Print($"Could Not Find The Provided Gamedata Folder.\n \nPath Provided: \"{gamedata_folder}\"\n\n", false); // Spaced Out The First Double-line-break To Avoid Counting This Error As Two (update: fucking what???)
                 return;
             }
 
@@ -1432,6 +1432,13 @@ namespace libgp4 {
             }
             else if(sfo.category == "gd" && sfo.app_ver != "01.00") {
                 Errors += $"Invalid App Version for Application Package. App Version Was {sfo.app_ver}, Must Be 1.00.\n\n";
+
+            
+            // Ensure Keystone is Present if Applicable
+            if (SfoParams.category == "gd" && !IgnoreKeystone && !File.Exists($@"{GamedataFolder}\sce_sys\keystone"))
+            {
+                WLog($"ERROR; No keystone File Found In Project Folder.\n\n");
+                return;
             }
 
             // Verify Passcode Length
@@ -1458,7 +1465,7 @@ namespace libgp4 {
                 else
                     Errors = $"The Following {ErrorCount} Errors Were Found During The .gp4 Project Creation With Gamedata In: {gamedata_folder}.\n{Errors}";
 
-                WLog(Errors, true);
+                Print(Errors, true);
 
                 //throw new InvalidDataException(Errors);
             }
@@ -1479,7 +1486,7 @@ namespace libgp4 {
             }
             else if (!Directory.Exists(OutputDirectory) && !Directory.CreateDirectory(OutputDirectory).Exists)
             {
-                WLog($"Error; Invalid Output Directory Provided for .gp4 Project. [{(File.Exists(OutputDirectory) ? $"Path \"{OutputDirectory}\" Leads to a File, Not a Folder." : $"Directory \"{OutputDirectory}\" Does Not Exist.")}]", false);
+                Print($"Error; Invalid Output Directory Provided for .gp4 Project. [{(File.Exists(OutputDirectory) ? $"Path \"{OutputDirectory}\" Leads to a File, Not a Folder." : $"Directory \"{OutputDirectory}\" Does Not Exist.")}]", false);
                 return;
             }
 
@@ -1496,7 +1503,7 @@ namespace libgp4 {
             if (OutputDirectory == string.Empty)
             {
                 OutputDirectory = UseAbsoluteFilePaths ? GamedataFolder : GamedataFolder.Remove(GamedataFolder.LastIndexOf('\\'));
-                WLog($"Assigned \"{OutputDirectory}\" as .gp4 Project Output Directory.\n\n", true);
+                Print($"Assigned \"{OutputDirectory}\" as .gp4 Project Output Directory.\n\n", true);
             }
 
 
@@ -1513,16 +1520,16 @@ namespace libgp4 {
                 // Fix Improperly Formatted Passcode
                 else if (Passcode.Length > 32)
                 {
-                    WLog($"Incorrect Passcode Length Detected ({Passcode.Length} > 32), Trimming...", false);
+                    Print($"Incorrect Passcode Length Detected ({Passcode.Length} > 32), Trimming...", false);
                     Passcode.Remove(32);
                 }
                 else
                 {
-                    WLog($"Incorrect Passcode Format Detected ({Passcode.Length} < 32), Appending Zeros to Fill Remaining Length.", false);
+                    Print($"Incorrect Passcode Format Detected ({Passcode.Length} < 32), Appending Zeros to Fill Remaining Length.", false);
                     for (;Passcode.Length != 32; Passcode += "0");
                 }
 
-                WLog($"New Passcode: [{Passcode}]\n", false);
+                Print($"New Passcode: [{Passcode}]\n", false);
             }
         }
 
@@ -1537,7 +1544,7 @@ namespace libgp4 {
         /// <param name="obj"> The Object to Output The String Representation of. </param>
         /// <param name="is_verbose_msg"> Only Output obj if the VerboseOutput Option is Enabled. </param>
         /// <param name="indentation"> Indentation for the current message (for readability). </param>
-        private void WLog(object obj, bool is_verbose_msg, int? indentation = null)
+        internal void Print(object obj, bool is_verbose_msg, int? indentation = null)
         {
 #if Log
             var indent = new string('>', (int)(indentation ?? 0));
