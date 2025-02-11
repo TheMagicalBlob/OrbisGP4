@@ -47,6 +47,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MainPage.Designer.cs">
+      <DependentUpon>MainPage.cs</DependentUpon>
+    </Compile>
     <Compile Include="Common.cs" />
     <Compile Include="MainPage.cs">
       <SubType>Form</SubType>
@@ -94,4 +97,7 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>xcopy "$(ProjectDir)\bin\Release\libgp4.dll" "$(ProjectDir)\..\..\NaughtyDog-Debug-Menu-Patch-Tool\Resources\bin" /v/y/f</PostBuildEvent>
+  </PropertyGroup>
 </Project>

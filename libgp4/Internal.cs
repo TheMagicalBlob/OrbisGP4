@@ -1402,56 +1402,54 @@ namespace libgp4 {
         private string[][] extra_files;
 
 
-
+        // TODO: update this, the messages as an array is clunky the way they're written
         /// <summary> Check Various Parts Of The Parsed .gp4 Parameters To Try And Find Any Possible Errors In The Project Files/Structure. </summary>
-        private void VerifyProjectData(string gamedata_folder, string playgo_content_id, SfoParser sfo)
+        /// <returns> If errors are found; a string array containing the error messages obtained.<br/>Otherwise, returns an empty string array. </returns>
+        private string[] VerifyProjectData(string gamedata_folder, string playgo_content_id, SfoParser sfo)
         {
             // TODO: Expand This.
             
-            var Errors = string.Empty;
-            int ErrorCount;
+            var Errors = new List<string>();
 
             // Ensure A Gamedata Folder's Been Provided No Matter What
             if (gamedata_folder == null || !Directory.Exists(gamedata_folder)) {
-                Print($"Could Not Find The Provided Gamedata Folder.\n \nPath Provided: \"{gamedata_folder}\"\n\n", false); // Spaced Out The First Double-line-break To Avoid Counting This Error As Two (update: fucking what???)
-                return;
+                Print($"Could Not Find The Provided Gamedata Folder.\n\nPath Provided: \"{gamedata_folder}\"\n\n", false);
+                return Array.Empty<string>();
             }
 
-            else if (SkipIntegrityCheck) return;
+            else if (SkipIntegrityCheck) return Array.Empty<string>();
 
 
             
             // Check for Mismatched Content ID's
             if(playgo_content_id != sfo.content_id)
-                Errors += $"Content ID Mismatch Detected, Process Aborted\n[playgo-chunk.dat: {playgo_content_id} != param.sfo: {sfo.content_id}]\n\n";
+                Errors.Add($"Content ID Mismatch Detected, Process Aborted\n[playgo-chunk.dat: {playgo_content_id} != param.sfo: {sfo.content_id}]\n\n");
 
             
             // Catch Conflicting Project Type Information
             if (sfo.category == "gp" && sfo.app_ver == "01.00") {
-                Errors += $"Invalid App Version for Patch Package. App Version Must Be Passed 1.00.\n\n";
+                Errors.Add($"Invalid App Version for Patch Package. App Version Must Be Passed 1.00.\n\n");
             }
             else if(sfo.category == "gd" && sfo.app_ver != "01.00") {
-                Errors += $"Invalid App Version for Application Package. App Version Was {sfo.app_ver}, Must Be 1.00.\n\n";
-
+                Errors.Add($"Invalid App Version for Application Package. App Version Was {sfo.app_ver}, Must Be 1.00.\n\n");
+            }
             
             // Ensure Keystone is Present if Applicable
             if (SfoParams.category == "gd" && !IgnoreKeystone && !File.Exists($@"{GamedataFolder}\sce_sys\keystone"))
-            {
-                WLog($"ERROR; No keystone File Found In Project Folder.\n\n");
-                return;
-            }
+                Errors.Add("ERROR; No keystone File Found In Project Folder.\n\n");
+
 
             // Verify Passcode Length
             if(Passcode.Length < 32)
-                Errors += $"Invalid Password Length, Must Be A 32-Character String.\n\n";
+                Errors.Add($"Invalid Password Length, Must Be A 32-Character String.\n\n");
 
             // Make Sure A Folder Path Wasn't Provided In Place of the Base Game Package (In case they thought the tool would detect the right one? idk.)
             if (sfo.category == "gp") {
                 if (BasePackagePath == string.Empty) 
-                    Errors += $"Gamedata is for a Title Update, But an Empty Path Was Provided for the Required Base Game Package.\n\n";
+                    Errors.Add($"Gamedata is for a Title Update, But an Empty Path Was Provided for the Required Base Game Package.\n\n");
 
                 else if (Directory.Exists(BasePackagePath))
-                    Errors += $"Invalid Base Game Package Path Provided. (Directory \"{BasePackagePath}\" Was Provided Instead)\n\n";
+                    Errors.Add($"Invalid Base Game Package Path Provided. (Directory \"{BasePackagePath}\" Was Provided Instead)\n\n");
             }
 
 
@@ -1459,16 +1457,14 @@ namespace libgp4 {
             //##################################################\\
             //  Throw An Exception If Any Errors Were Detected  \\
             //##################################################\\
-            if (Errors != string.Empty) {
-                if((ErrorCount = (Errors.Length - Errors.Replace("\n\n", string.Empty).Length) / 2) == 1)
-                    Errors = $"The Following Error Was Found During The .gp4 Project Creation With Gamedata In: {gamedata_folder}.\n{Errors}";
-                else
-                    Errors = $"The Following {ErrorCount} Errors Were Found During The .gp4 Project Creation With Gamedata In: {gamedata_folder}.\n{Errors}";
+            if (Errors != null) {
 
                 Print(Errors, true);
 
-                //throw new InvalidDataException(Errors);
+                return Errors.ToArray<string>();
             }
+
+            return Array.Empty<string>();
         }
 
 

@@ -426,7 +426,7 @@ namespace GP4GUI
                             var message = reply.Content.ReadAsStringAsync().Result;
                             var tag = message.Remove(message.IndexOf(',') - 1).Substring(message.IndexOf(':') + 2);
     #if DEBUG
-                            WLog($"Newest Tag: [{tag}]");
+                            Print($"Newest Tag: [{tag}]");
     #endif
 
                             if (tag != Version) {

@@ -451,6 +451,7 @@ namespace libgp4 {
                 Month  = DateTime.Now.Month.ToString()
             ;
             var gp4_timestamp = $"{DateTime.Now.Year}-{Month.PadLeft(2, '0')}-{Day.PadLeft(2, '0')} {Hour.PadLeft(2, '0')}:{Minute.PadLeft(2, '0')}:{Second.PadLeft(2, '0')}";
+            string[] errors;
             ////^^
 
 
@@ -459,7 +460,14 @@ namespace libgp4 {
 
             // Check The Parsed Data For Any Potential Errors Before Building The .gp4 With It
             ApplyDefaultsToUnsetMembers(SfoParams);
-            VerifyProjectData(GamedataFolder, PlaygoData.playgo_content_id, SfoParams);
+
+            
+            if ((errors = VerifyProjectData(GamedataFolder, PlaygoData.playgo_content_id, SfoParams)) != Array.Empty<string>())
+            {
+                Array.ForEach(errors, error => Print(error + '\n', false));
+                Print($".gp4 Creation Failed; {errors.Length} Errors Found.", false);
+                return string.Empty;
+            }
 
             Print($".gp4 Project File Destination: {OutputPath}\nPKG Passcode: {Passcode}\n", true);
 

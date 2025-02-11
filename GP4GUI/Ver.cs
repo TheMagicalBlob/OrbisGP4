@@ -9,7 +9,7 @@ using static GP4GUI.Common;
 namespace GP4GUI {
     public partial class OptionsPage
     {
-        public const string Version = "2.67.341 "; // Easier to see, more likely to remember to update
+        public const string Version = "2.67.346 "; // Easier to see, more likely to remember to update
     }
 
     
@@ -28,11 +28,11 @@ namespace GP4GUI {
         public DebugContents(Form Venat, GP4Creator gp4, Point location) {
             // Error / Improper Usage Checking
             if (Venat == null) {
-                WLog($"ERROR: Provided Parent Form Was Null, Aborting Dropdown Menu Creation.");
+                Print($"ERROR: Provided Parent Form Was Null, Aborting Dropdown Menu Creation.");
                 return;
             }
             else if (gp4 == null) {
-                WLog($"ERROR: Provided GP4Creator Instance Was Null, Aborting Dropdown Menu Creation.");
+                Print($"ERROR: Provided GP4Creator Instance Was Null, Aborting Dropdown Menu Creation.");
                 return;
             }
 
@@ -99,7 +99,7 @@ namespace GP4GUI {
                     PackageVersionToggleBtn.Text = "-> Patch";
                 }
                 else {
-                    WLog("Error, Invalid GamedataFolderPath Provided for This Function (must contain -patch | -app)");
+                    Print("Error, Invalid GamedataFolderPath Provided for This Function (must contain -patch | -app)");
                 }
             };
 
@@ -116,7 +116,7 @@ namespace GP4GUI {
                         gp4.GamedataFolder = TestGamedataFolder;
                     }
                     else {
-                        WLog($"{(gp4.GamedataFolder == string.Empty ? "No" : "Invalid")} Gamedata Folder Path Provided.{(gp4.GamedataFolder.Length > 0 ? $"{gp4.GamedataFolder}" : string.Empty)}");
+                        Print($"{(gp4.GamedataFolder == string.Empty ? "No" : "Invalid")} Gamedata Folder Path Provided.{(gp4.GamedataFolder.Length > 0 ? $"{gp4.GamedataFolder}" : string.Empty)}");
                         return;
                     }
                 }
@@ -126,7 +126,7 @@ namespace GP4GUI {
                 var newgp4path = gp4.CreateGP4();
                 if (newgp4path == null)
                 {
-                    WLog("Error: CreateGP4() Returned Null, Aborting.");
+                    Print("Error: CreateGP4() Returned Null, Aborting.");
                     return;
                 }
 
@@ -135,68 +135,68 @@ namespace GP4GUI {
                 var newgp4 = new GP4Reader(newgp4path);
 
                 newgp4.VerifyGP4();
-                WLog("================== Instnce Tests Start ====================");
+                Print("================== Instnce Tests Start ====================");
                 var cat = newgp4.IsPatchProject;
-                WLog($"Is Patch Project: {cat}");
-                if (cat) WLog($"Source .pkg Path: {newgp4.BaseAppPkgPath}");
+                Print($"Is Patch Project: {cat}");
+                if (cat) Print($"Source .pkg Path: {newgp4.BaseAppPkgPath}");
 
 
-                WLog($"{newgp4.Files.Length} Files");
+                Print($"{newgp4.Files.Length} Files");
                 foreach (var f in newgp4.Files)
-                    WLog($"  {f}");
-                WLog($"{newgp4.Subfolders.Length} Subfolders");
+                    Print($"  {f}");
+                Print($"{newgp4.Subfolders.Length} Subfolders");
                 foreach (var s in newgp4.Subfolders)
-                    WLog($"  {s}");
+                    Print($"  {s}");
                 foreach (var sn in newgp4.SubfolderNames)
-                    WLog($"  {sn}");
+                    Print($"  {sn}");
 
 
-                WLog($"{newgp4.ChunkCount} Chunks");
+                Print($"{newgp4.ChunkCount} Chunks");
                 foreach (var c in newgp4.Chunks)
-                    WLog($"  {c}");
-                WLog($"{newgp4.ScenarioCount} Scenarios");
-                WLog($"(Default Scenario: {newgp4.DefaultScenarioId})");
+                    Print($"  {c}");
+                Print($"{newgp4.ScenarioCount} Scenarios");
+                Print($"(Default Scenario: {newgp4.DefaultScenarioId})");
                 foreach (var sc in newgp4.Scenarios)
-                    WLog($"Scenario {sc.Id}: Label={sc.Label} Type={sc.Type} InitialChunkCount:{sc.InitialChunkCount} Range={sc.ChunkRange}");
+                    Print($"Scenario {sc.Id}: Label={sc.Label} Type={sc.Type} InitialChunkCount:{sc.InitialChunkCount} Range={sc.ChunkRange}");
 
 
-                WLog($"Content Id: {newgp4.ContentID}");
-                WLog($"Passcode: {newgp4.Passcode}");
-                WLog($".sfo Timestamp: {newgp4.Timestamp}");
-                WLog("================== Instnce Tests End ====================\n\n");
+                Print($"Content Id: {newgp4.ContentID}");
+                Print($"Passcode: {newgp4.Passcode}");
+                Print($".sfo Timestamp: {newgp4.Timestamp}");
+                Print("================== Instnce Tests End ====================\n\n");
                 ///==============\\\
 
 
                 // static tests \\
-                WLog("================== Static Tests Start ====================");
+                Print("================== Static Tests Start ====================");
                 string[] files, subfolders;
                 var _cat = GP4Reader.IsPatchPackage(newgp4path);
-                WLog($"Is Patch Project: {_cat}");
-                if (_cat) WLog($"Source .pkg Path: {GP4Reader.GetBasePkgPath(newgp4path)}");
+                Print($"Is Patch Project: {_cat}");
+                if (_cat) Print($"Source .pkg Path: {GP4Reader.GetBasePkgPath(newgp4path)}");
 
-                WLog($"{(files = GP4Reader.GetFileListing(newgp4path)).Length} Files");
+                Print($"{(files = GP4Reader.GetFileListing(newgp4path)).Length} Files");
                 foreach (var f in files)
-                    WLog($"  {f}");
-                WLog($"{(subfolders = GP4Reader.GetFolderListing(newgp4path)).Length} Subfolders");
+                    Print($"  {f}");
+                Print($"{(subfolders = GP4Reader.GetFolderListing(newgp4path)).Length} Subfolders");
                 foreach (var s in subfolders)
-                    WLog($"  {s}");
+                    Print($"  {s}");
                 foreach (var sn in GP4Reader.GetFolderNames(newgp4path))
-                    WLog($"  {sn}");
+                    Print($"  {sn}");
 
 
-                WLog($"{GP4Reader.GetChunkCount(newgp4path)} Chunks");
+                Print($"{GP4Reader.GetChunkCount(newgp4path)} Chunks");
                 foreach (var c in GP4Reader.GetChunkListing(newgp4path))
-                    WLog($"  {c}");
-                WLog($"{GP4Reader.GetScenarioCount(newgp4path)} Scenarios");
-                WLog($"(Default Scenario: {GP4Reader.GetDefaultScenarioId(newgp4path)})");
+                    Print($"  {c}");
+                Print($"{GP4Reader.GetScenarioCount(newgp4path)} Scenarios");
+                Print($"(Default Scenario: {GP4Reader.GetDefaultScenarioId(newgp4path)})");
                 foreach (var sc in GP4Reader.GetScenarioListing(newgp4path))
-                    WLog($"Scenario {sc.Id}: Label={sc.Label} Type={sc.Type} InitialChunkCount:{sc.InitialChunkCount} Range={sc.ChunkRange}");
+                    Print($"Scenario {sc.Id}: Label={sc.Label} Type={sc.Type} InitialChunkCount:{sc.InitialChunkCount} Range={sc.ChunkRange}");
 
 
-                WLog($"Content Id: {GP4Reader.GetContentId(newgp4path)}");
-                WLog($"Passcode: {GP4Reader.GetPkgPasscode(newgp4path)}");
-                WLog($".sfo Timestamp: {GP4Reader.GetTimestamp(newgp4path)}");
-                WLog("================== Static Tests End ====================");
+                Print($"Content Id: {GP4Reader.GetContentId(newgp4path)}");
+                Print($"Passcode: {GP4Reader.GetPkgPasscode(newgp4path)}");
+                Print($".sfo Timestamp: {GP4Reader.GetTimestamp(newgp4path)}");
+                Print("================== Static Tests End ====================");
                 ///=============\\\
 
                 System.Diagnostics.Process.Start(newgp4path);
