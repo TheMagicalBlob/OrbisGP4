@@ -11,6 +11,7 @@ using System;
 using System.IO;
 using System.Xml;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace libgp4 {
 
@@ -469,7 +470,8 @@ namespace libgp4 {
                 return string.Empty;
             }
 
-            Print($".gp4 Project File Destination: {OutputPath}\nPKG Passcode: {Passcode}\n", true);
+            Print(new string[] { $".gp4 Project File Destination: {OutputPath}", $"Package Passcode: {Passcode}" }, true);
+            Print($"\n", true);
 
             // Initialize new Document Instance for the .gp4 Project.
             var gp4 = new XmlDocument();

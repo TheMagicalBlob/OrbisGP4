@@ -1452,6 +1452,10 @@ namespace libgp4 {
                     Errors.Add($"Invalid Base Game Package Path Provided. (Directory \"{BasePackagePath}\" Was Provided Instead)\n\n");
             }
 
+            // Verify the .gp4 Ouput Path
+            if ("<*>/|\\\"?:".Any(OutputPath.Contains))
+                Errors.Add($"Invalid output path provided. (path \"{OutputPath}\" containts illegal characters)\n\n");
+
 
 
             //##################################################\\
@@ -1534,16 +1538,16 @@ namespace libgp4 {
 
 
         /// <summary>
-        /// Output Log Messages To A Custom Output Method (GP4Creator.LoggingMethod(string)), And/Or To The Console If Applicable.<br/><br/>
+        /// Output the string representation of obj to the a custom output method if one's been assigned to GP4Creator.LoggingMethod. <br/><br/>
         /// Duplicates Message To Standard Console Output As Well.
         /// </summary>
-        /// <param name="obj"> The Object to Output The String Representation of. </param>
-        /// <param name="is_verbose_msg"> Only Output obj if the VerboseOutput Option is Enabled. </param>
+        /// <param name="obj"> The object to convert and output. </param>
+        /// <param name="is_verbose_msg"> Only output obj if the VerboseOutput option is enabled. </param>
         /// <param name="indentation"> Indentation for the current message (for readability). </param>
         internal void Print(object obj, bool is_verbose_msg, int? indentation = null)
         {
 #if Log
-            var indent = new string('>', (int)(indentation ?? 0));
+            var indent = new string('>', (int) (indentation ?? 0));
             var msg = indent + obj.ToString();
 
             //if (LoggingMethod != null && !(VerboseOutput ^ IsVerboseMsg))
@@ -1554,6 +1558,20 @@ namespace libgp4 {
             DLog(msg);
 #endif
         }
+
+
+
+        
+        /// <summary>
+        /// Output the string representations of objs to the standard console output (and a custom output method if one's been assigned to GP4Creator.LoggingMethod). <br/><br/>
+        /// Duplicates Message To Standard Console Output As Well.
+        /// </summary>
+        /// <param name="objs"> The objects to convert and output. </param>
+        /// <param name="is_verbose_msg"> Only output obj if the VerboseOutput option is enabled. </param>
+        /// <param name="indentation"> Indentation for the current message (for readability). </param>
+        internal void Print(object[] objs, bool is_verbose_msg, int? indentation = null) => Array.ForEach(objs, arg => Print(arg, is_verbose_msg, indentation));
+
+
 
         /// <summary> Console Logging Method.
         ///</summary>
