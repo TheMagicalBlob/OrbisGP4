@@ -80,7 +80,7 @@ namespace GP4GUI {
         #region [Form Functionality Functions]
 
         // Handle Form Dragging for Borderless Form
-        public static void DragForm() {
+        public static void MoveForm() {
             if(MouseIsDown)
             {
                 Venat.Location = new Point(Form.MousePosition.X - MouseDif.X, Form.MousePosition.Y - MouseDif.Y);
@@ -162,40 +162,50 @@ namespace GP4GUI {
         {
             IsDefault = true;
 
-            Click += (bite, me) => ClearControl();
-            GotFocus += (bite, me) => ClearControl(); // Both Events, Just-In-Case.
-            TextChanged += SetDefaultText;
+            GotFocus += ReadyControl;
+            //Click += ReadyControl; // Both Events, Just-In-Case.
 
-            // Reset control if nothing different was entered
-            LostFocus += (bite, me) => {
-                if(Text.Trim().Length == 0 || DefaultText.Contains(Text)) {
-                    Font = Common.DefaultTextFont;
-                    Text = DefaultText;
-                    IsDefault = true;
-                }
-            };
+            TextChanged += SetDefaultText; // Save the first Text assignment as the DefaultText
+            TextChanged += (sender, e) => Text = Text.Replace("\"", string.Empty);
+            
+            LostFocus += ResetControl; // Reset control if nothing was entered, or the text is a portion of the default text
         }
 /*
-        public override string Text { get { if (IsDefault) return "fag"; return _Text; } set { _Text = value; base.Text = value; } }
+        public override string Text { get { if (IsDefault) return "cunt"; return _Text; } set { _Text = value; base.Text = value; } }
         private string _Text;
 */
-
-
-        private void ClearControl()
-        {
-            if(IsDefault) {
-                IsDefault = false;
-                Font = Common.TextFont;
-                Clear();
-            }
-        }
-
+        
         /// <summary> Yoink Default Text From First Text Assignment (Ideally right after being created). </summary>
         private void SetDefaultText(object _, EventArgs __) {
             DefaultText = Text;
             TextChanged -= SetDefaultText;
-            TextChanged += (sender, e) => Text = Text.Replace("\"", string.Empty);
         }
+
+
+        private void ReadyControl(object bite, EventArgs me)
+        {
+            Common.Print($"Readying control \"{Name}\".");
+            
+            if(IsDefault) {
+                Clear();
+                IsDefault = false;
+
+                Font = Common.TextFont;
+            }
+        }
+
+        private void ResetControl(object bite, EventArgs me)
+        {
+            Common.Print($"Resetting control \"{Name}\".");
+
+            if(DefaultText.Contains(Text)) {
+                Text = DefaultText;
+                IsDefault = true;
+
+                Font = Common.DefaultTextFont;
+            }
+        }
+
 
         /// <summary> Set Control Text and State Properly (meh). </summary>
         public void Set(string text) {

@@ -362,7 +362,7 @@ namespace libgp4 {
             set
             {
                 _SkipEndComment = value;
-                DLog($"VerifyIntegrity => [{_SkipEndComment}]");
+                DLog($"SkipEndComment => [{_SkipEndComment}]");
             }
         }
         private bool _SkipEndComment;
@@ -452,7 +452,6 @@ namespace libgp4 {
                 Month  = DateTime.Now.Month.ToString()
             ;
             var gp4_timestamp = $"{DateTime.Now.Year}-{Month.PadLeft(2, '0')}-{Day.PadLeft(2, '0')} {Hour.PadLeft(2, '0')}:{Minute.PadLeft(2, '0')}:{Second.PadLeft(2, '0')}";
-            string[] errors;
             ////^^
 
 
@@ -462,8 +461,10 @@ namespace libgp4 {
             // Check The Parsed Data For Any Potential Errors Before Building The .gp4 With It
             ApplyDefaultsToUnsetMembers(SfoParams);
 
+
+            var errors = VerifyProjectData(GamedataFolder, PlaygoData.playgo_content_id, SfoParams);
             
-            if ((errors = VerifyProjectData(GamedataFolder, PlaygoData.playgo_content_id, SfoParams)) != Array.Empty<string>())
+            if (errors.Length > 0)
             {
                 Array.ForEach(errors, error => Print(error + '\n', false));
                 Print($".gp4 Creation Failed; {errors.Length} Errors Found.", false);
@@ -504,6 +505,8 @@ namespace libgp4 {
 
             Print(string.Empty, true); // Lazy output formatting fix
             Print($"GP4 Creation Successful, File Saved As {OutputPath}\n", false);
+
+
             return OutputPath;
         }
         #endregion

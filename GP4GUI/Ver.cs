@@ -9,12 +9,12 @@ using static GP4GUI.Common;
 namespace GP4GUI {
     public partial class OptionsPage
     {
-        public const string Version = "2.67.349 "; // Easier to see, more likely to remember to update
+        public const string Version = "2.67.354 "; // Easier to see, more likely to remember to update
     }
 
     
 #if DEBUG
-    public class DebugContents : GroupBox
+    public class Testing : GroupBox
     {
         // Variable Declarations
         public static string TestGamedataFolder;
@@ -25,7 +25,7 @@ namespace GP4GUI {
         ///</summary>
         public Control[] DebugControls { get; private set; }
 
-        public DebugContents(Form Venat, GP4Creator gp4, Point location) {
+        public Testing(Form Venat, GP4Creator gp4, Point location) {
             // Error / Improper Usage Checking
             if (Venat == null) {
                 Print($"ERROR: Provided Parent Form Was Null, Aborting Dropdown Menu Creation.");

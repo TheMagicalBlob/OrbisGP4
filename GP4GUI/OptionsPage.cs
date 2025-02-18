@@ -6,7 +6,7 @@ using System.Windows.Forms;
 using System.ComponentModel;
 using static GP4GUI.Common;
 #if DEBUG
-using static GP4GUI.DebugContents;
+//using static GP4GUI.Testing;
 #endif
 
 
@@ -346,7 +346,7 @@ namespace GP4GUI
             MouseUp += new MouseEventHandler((sender, e) => 
                 MouseIsDown = false
             );
-            MouseMove += new MouseEventHandler((sender, e) => DragForm());
+            MouseMove += new MouseEventHandler((sender, e) => MoveForm());
 
             
             foreach(Control Item in Controls)
@@ -362,7 +362,7 @@ namespace GP4GUI
                 
                 // Avoid Applying MoveForm EventHandler to Text Containters (to retain the ability to drag-select text)
                 if (Item.GetType() != typeof(TextBox) && Item.GetType() != typeof(RichTextBox))
-                Item.MouseMove += new MouseEventHandler((sender, e) => DragForm());
+                Item.MouseMove += new MouseEventHandler((sender, e) => MoveForm());
             }
         }
 

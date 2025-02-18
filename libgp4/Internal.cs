@@ -1402,6 +1402,7 @@ namespace libgp4 {
         private string[][] extra_files;
 
 
+
         // TODO: update this, the messages as an array is clunky the way they're written
         /// <summary> Check Various Parts Of The Parsed .gp4 Parameters To Try And Find Any Possible Errors In The Project Files/Structure. </summary>
         /// <returns> If errors are found; a string array containing the error messages obtained.<br/>Otherwise, returns an empty string array. </returns>
@@ -1453,15 +1454,15 @@ namespace libgp4 {
             }
 
             // Verify the .gp4 Ouput Path
-            if ("<*>/|\\\"?:".Any(OutputPath.Contains))
-                Errors.Add($"Invalid output path provided. (path \"{OutputPath}\" containts illegal characters)\n\n");
+            if ("<*>/|\"?:".Any(OutputPath.Substring(OutputPath.IndexOf(":\\") + 1).Contains))
+                Errors.Add($"Invalid output path provided. (path \"{OutputPath.Substring(OutputPath.IndexOf(":\\") + 1)}\" contains illegal characters)\n\n");
 
 
 
             //##################################################\\
             //  Throw An Exception If Any Errors Were Detected  \\
             //##################################################\\
-            if (Errors != null) {
+            if (Errors.Count != 0) {
 
                 Print(Errors, true);
 

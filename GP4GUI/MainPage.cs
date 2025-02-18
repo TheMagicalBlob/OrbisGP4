@@ -3,10 +3,9 @@ using System;
 using System.IO;
 using System.Drawing;
 using System.Windows.Forms;
-using System.ComponentModel;
 using static GP4GUI.Common;
 #if DEBUG
-using static GP4GUI.DebugContents;
+using static GP4GUI.Testing;
 #endif
 
 namespace GP4GUI {
@@ -35,7 +34,7 @@ namespace GP4GUI {
             Venat = this;
             Azem = new OptionsPage();
 #if DEBUG
-            DebugOptions = new DebugContents(Venat, gp4, new Point(DebugOptionsBtn.Location.X, DebugOptionsBtn.Location.Y + DebugOptionsBtn.Size.Height - 2));
+            DebugOptions = new Testing(Venat, gp4, new Point(DebugOptionsBtn.Location.X, DebugOptionsBtn.Location.Y + DebugOptionsBtn.Size.Height - 2));
 #else
             DebugOptionsBtn.Visible = DebugOptionsBtn.Enabled = false;
 #endif
@@ -70,7 +69,7 @@ namespace GP4GUI {
                 DropdownMenu[1].Visible = DropdownMenu[0].Visible = false;
             });
             MouseUp   += new MouseEventHandler((sender, e) => { MouseIsDown = false; if (OptionsPageIsOpen) Azem?.BringToFront(); });
-            MouseMove += new MouseEventHandler((sender, e) => DragForm());
+            MouseMove += new MouseEventHandler((sender, e) => MoveForm());
 
 
             // Set appropriate event handlers for the controls on the form as well
@@ -88,7 +87,7 @@ namespace GP4GUI {
                 
                 // Avoid Applying MoveForm EventHandler to Text Containters (to retain the ability to drag-select text)
                 if (Item.GetType() != typeof(TextBox) && Item.GetType() != typeof(RichTextBox))
-                    Item.MouseMove += new MouseEventHandler((sender, e) => DragForm());
+                    Item.MouseMove += new MouseEventHandler((sender, e) => MoveForm());
             }
         }
 
