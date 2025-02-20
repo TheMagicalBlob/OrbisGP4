@@ -280,8 +280,7 @@ namespace libgp4 {
         {
             get => _VerboseOutput;
 
-            set
-            {
+            set {
                 _VerboseOutput = value;
                 DLog($"VerboseLogging => [{_VerboseOutput}]");
             }
@@ -292,12 +291,11 @@ namespace libgp4 {
         /// <summary>
         /// Further Extend Verbosity by Duplicating DLog() Messages to LoggingMethod if Provided.
         /// </summary>
-        public static bool DebugOutput
+        public bool DebugOutput
         {
             get => _DebugOutput;
 
-            set
-            {
+            set {
                 _DebugOutput = value;
                 DLog($"VerboseLogging => [{_DebugOutput}]");
             }
@@ -314,8 +312,7 @@ namespace libgp4 {
         {
             get => _AbsoluteFilePaths;
 
-            set
-            {
+            set {
                 _AbsoluteFilePaths = value;
                 DLog($"AbsoluteFilePaths => [{_AbsoluteFilePaths}]");
             }
@@ -331,8 +328,7 @@ namespace libgp4 {
         {
             get => _IgnoreKeystone;
 
-            set
-            {
+            set {
                 _IgnoreKeystone = value;
                 DLog($"IgnoreKeystone => [{_IgnoreKeystone}]");
             }
@@ -345,8 +341,7 @@ namespace libgp4 {
         {
             get => _SkipIntegrityCheck;
 
-            set
-            {
+            set {
                 _SkipIntegrityCheck = value;
                 DLog($"VerifyIntegrity => [{_SkipIntegrityCheck}]");
             }
@@ -359,16 +354,15 @@ namespace libgp4 {
         {
             get => _SkipEndComment;
 
-            set
-            {
+            set {
                 _SkipEndComment = value;
                 DLog($"SkipEndComment => [{_SkipEndComment}]");
             }
         }
         private bool _SkipEndComment;
-
-        #endregion [Boolean Options]
-        #endregion User Options
+        #endregion
+        
+        #endregion [User Options]
         ///========================\\\
 
 
@@ -471,8 +465,7 @@ namespace libgp4 {
                 return string.Empty;
             }
 
-            Print(new string[] { $".gp4 Project File Destination: {OutputPath}", $"Package Passcode: {Passcode}" }, true);
-            Print($"\n", true);
+            Print(new string[] { $".gp4 Project File Destination: {OutputPath}", $"Package Passcode: {Passcode}", "\n" }, true);
 
             // Initialize new Document Instance for the .gp4 Project.
             var gp4 = new XmlDocument();

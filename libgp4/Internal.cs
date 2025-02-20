@@ -1101,7 +1101,7 @@ namespace libgp4 {
 
                         sfo.Read(buffer = new byte[ParamLengths[i]], 0, ParamLengths[i]);
 
-                        DLog($"Label: {SfoParamLabels[i]}");
+                        Parent.DLog($"Label: {SfoParamLabels[i]}");
 
                         // Datatype = string
                         if(DataTypes[i] == 2) {
@@ -1110,13 +1110,13 @@ namespace libgp4 {
                             else
                                 SfoParams[i] = Encoding.UTF8.GetString(buffer);
 
-                            DLog($"Param: {SfoParams[i]}");
+                            Parent.DLog($"Param: {SfoParams[i]}");
                         }
 
                         // Datatype = Int32
                         else if(DataTypes[i] == 4) {
                             SfoParams[i] = BitConverter.ToInt32(buffer, 0);
-                            DLog($"Param: {SfoParams[i]}");
+                          Parent.DLog($"Param: {SfoParams[i]}");
                         }
                     }
 
@@ -1577,24 +1577,16 @@ namespace libgp4 {
         /// <summary> Console Logging Method.
         ///</summary>
         /// <param name="obj"> The Object to Output The String Representation of. </param>
-        private static void DLog(object obj)
+        private void DLog(object obj)
         {
 #if DEBUG
-            try
-            {
-                Debug.WriteLine($"#libgp4: {obj}");
-            }
-            catch (Exception) { }
+            Debug.WriteLine($"#libgp4: {obj}");
 
             if (!Console.IsOutputRedirected)
-                try
-                {
-                    Console.WriteLine($"#libgp4: {obj}");
-                }
-                catch (Exception) { }
+                Console.WriteLine($"#libgp4: {obj}");
 
-            if (_LoggingMethod != null && DebugOutput)
-                _LoggingMethod(obj);
+            if (LoggingMethod != null && DebugOutput)
+                LoggingMethod(obj);
 #endif
         }
         #endregion
