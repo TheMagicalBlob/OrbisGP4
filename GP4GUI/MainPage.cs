@@ -328,8 +328,10 @@ namespace GP4GUI {
                 path = browser.FileName;
 
 #endif
-            if (path != string.Empty)
-            new GP4Reader(path).VerifyGP4((message) => { Print(message); });
+            if (path != string.Empty && File.Exists(path))
+                new GP4Reader(path).VerifyGP4((message) => { Print(message); });
+            else
+                Print("Invalid .gp4 file path provided.");
         }
         #endregion
         //===============================================\\

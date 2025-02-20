@@ -34,7 +34,7 @@ namespace libgp4 {
         /// <param name="GP4Path"> The Absolute Path To The .gp4 Project File </param>
         public GP4Reader(string GP4Path) {
             if (!File.Exists(GP4Path)) {
-                DLog($"No Valid GP4 Path Provided, Aborting. (File \"{GP4Path}\" Doesn't Exist)");
+                DPrint($"No Valid GP4 Path Provided, Aborting. (File \"{GP4Path}\" Doesn't Exist)");
                 return;
             }
 
@@ -148,7 +148,7 @@ namespace libgp4 {
 
 
         /// <summary> Library Logging Method. </summary>
-        private static void DLog(object o) {
+        private static void DPrint(object o) {
 #if DEBUG
             if(use_output_channel[0])
                 try { Debug.WriteLine("#libgp4.dll: " + o); }
@@ -192,7 +192,7 @@ namespace libgp4 {
 
                 // Bad Path
                 if(!File.Exists($@"{Directory.GetCurrentDirectory()}\{GP4Path}"))
-                    DLog($"Invalid .gp4 Path Given, Please Provide A Valid Absolute Or Relative Path To A .gp4 Project File.\n(Given Path: {GP4Path})");
+                    DPrint($"Invalid .gp4 Path Given, Please Provide A Valid Absolute Or Relative Path To A .gp4 Project File.\n(Given Path: {GP4Path})");
 
                 // Relative Path Checks Out
                 else return $@"{Directory.GetCurrentDirectory()}\{GP4Path}";
@@ -222,7 +222,7 @@ namespace libgp4 {
                                 return Out;
                 }
 
-            DLog($"Attribute \"{AttributeName}\" Not Found");
+            DPrint($"Attribute \"{AttributeName}\" Not Found");
             return string.Empty;
         }
 
@@ -252,7 +252,7 @@ namespace libgp4 {
                         return attributes.ToArray();
                 }
 
-            DLog($"Attribute \"{AttributeName}\" Not Found");
+            DPrint($"Attribute \"{AttributeName}\" Not Found");
             return Array.Empty<string>();
         }
 
@@ -278,7 +278,7 @@ namespace libgp4 {
             else return string.Empty;
 
 
-            DLog($"Node \"{NodeName}\" Not Found");
+            DPrint($"Node \"{NodeName}\" Not Found");
             return string.Empty;
         }
 
@@ -594,18 +594,18 @@ namespace libgp4 {
         #region User Functions
         /// <summary> Check Various Parts Of The .gp4 To Try And Find Any Possible Errors In The Project File.
         ///</summary>
-        public void VerifyGP4(Action<string> LoggingMethod = null) {
-            var Errors = string.Empty;
+        public string[] VerifyGP4(Action<string> LoggingMethod = null) {
+            var Errors = new List<string>();
             int i;
 
             // Check "psproject" Node Attributes
             if(format != "gp4" || version != 1000)
-                Errors += $"Invalid Attribute Values In \"psproject\" Node.\nFormat: {format} != gp4 || Version: {version} != 1000 \n\n";
+                Errors.Add($"Invalid Attribute Values In \"psproject\" Node.\nFormat: {format} != gp4 || Version: {version} != 1000 ");
 
 
             // Check "volume_id" Node Attributes
             if(volume_id != "PS4VOLUME")
-                Errors += $"Invalid volume_id Attribute in .gp4, Should Be PS4VOLUME. (Read: {volume_id})\n\n";
+                Errors.Add($"Invalid volume_id Attribute in .gp4, Should Be PS4VOLUME. (Read: {volume_id})");
 
 
 
@@ -614,16 +614,16 @@ namespace libgp4 {
             ///====================================\\\
             {
                 if(volume_type != "pkg_ps4_app" && volume_type != "pkg_ps4_patch")
-                    Errors += $"Invalid Volume Type: [{volume_type}]\n\n";
+                    Errors.Add($"Invalid Volume Type: [{volume_type}]");
 
                 if(IsPatchProject && volume_type != "pkg_ps4_patch")
-                    Errors += $"Unexpacted Volume Type For PS4 Patch Package: {volume_type}";
+                    Errors.Add($"Unexpacted Volume Type For PS4 Patch Package: {volume_type}");
 
                 else if(!IsPatchProject && volume_type != "pkg_ps4_app")
-                    Errors += $"Unexpacted Volume Type For PS4 App Package: {volume_type}";
+                    Errors.Add($"Unexpacted Volume Type For PS4 App Package: {volume_type}");
 
                 if(BaseAppPkgPath == string.Empty && IsPatchProject)
-                    Errors += "Conflicting Volume Type Data For PS4 Package.\n(Base .pkg Path Not Found In .gp4 Project, But The Volume Type Was Patch Package)\n\n";
+                    Errors.Add("Conflicting Volume Type Data For PS4 Package.\n(Base .pkg Path Not Found In .gp4 Project, But The Volume Type Was Patch Package)");
             }
 
 
@@ -634,15 +634,14 @@ namespace libgp4 {
             {
 
                 if((!IsPatchProject && storage_type != "digital50") || (IsPatchProject && storage_type != "digital25"))
-                    Errors +=
-                        $"Unexpected Storage Type For {(IsPatchProject ? "Patch" : "Full Game")} Package\n" +
-                        $" -   Expected: {(IsPatchProject ? "digital25" : "digital50")}\n -   Read: {storage_type}\n\n";
+                    Errors.Add($"Unexpected Storage Type For {(IsPatchProject ? "Patch" : "Full Game")} Package\n" +
+                        $" -   Expected: {(IsPatchProject ? "digital25" : "digital50")}\n -   Read: {storage_type}");
 
                 if(app_type != "full")
-                    Errors += $"Invalid Application Type In .gp4 Project\n -   Expected: full\n -   Read: {app_type})\n\n";
+                    Errors.Add($"Invalid Application Type In .gp4 Project\n -   Expected: full\n -   Read: {app_type})");
 
                 if(Passcode?.Length != 32)
-                    Errors += $"Incorrect Passcode Length, Must Be 32 Characters (Actual Length: {Passcode.Length})\n\n";
+                    Errors.Add($"Incorrect Passcode Length, Must Be 32 Characters (Actual Length: {Passcode.Length})");
 
 
                 #region [Lazy Content Id Chwck]
@@ -653,10 +652,10 @@ namespace libgp4 {
                 int ind, byteIndex = 0;
 
 
-                foreach(var file in Files) if(file.Contains("param.sfo")) p1 = file;
-                
-                if(p1 == "")
-                    Errors += $"Param.sfo File Not Found In .gp4 File Listing (Mandatory For Package Creation)";
+                Array.ForEach(Files, file => { if(file.Contains("param.sfo")) p1 = file; });
+
+                if(p1 == string.Empty)
+                    Errors.Add($"Param.sfo File Not Found In .gp4 File Listing (Mandatory For Package Creation)");
 
                 else if(File.Exists(p1)) {
                     using(var sfo = File.OpenRead(p1)) {
@@ -717,8 +716,11 @@ namespace libgp4 {
                         }
 
                         if(ContentID != (playgo_content_id = Encoding.UTF8.GetString(buff)) || playgo_content_id != sfo_content_id) // Check For Mismatched Content Id's
-                            Errors += $"Content Id Mismatch In .gp4 Project.\n{ContentID}\n\n.dat: {playgo_content_id}\n.sfo: {sfo_content_id}\n\n";
+                            Errors.Add($"Content Id Mismatch In .gp4 Project.\n{ContentID}.dat: {playgo_content_id}\n.sfo: {sfo_content_id}");
                     }
+                }
+                else {
+                    Errors.Add("param.sfo found in file listing, but the file doesn't exist and/or was unable to be opened for verification");
                 }
                 #endregion
             }
@@ -732,54 +734,54 @@ namespace libgp4 {
             {
                 // Check Default Scenario Id
                 if(DefaultScenarioId > Scenarios.Length - 1)
-                    Errors += $"Default Scenario Id Was Out Of Bounds ({DefaultScenarioId} > {Scenarios.Length - 1})\n\n";
+                    Errors.Add($"Default Scenario Id Was Out Of Bounds ({DefaultScenarioId} > {Scenarios.Length - 1})");
 
                 // Check Chunk Data Integrity
                 if(Chunks.Length != ChunkCount)
-                    Errors += "Number Of Chunks Listed In .gp4 Project Doesn't Match ChunkCount Attribute\n\n";
+                    Errors.Add("Number Of Chunks Listed In .gp4 Project Doesn't Match ChunkCount Attribute");
 
 
                 // Check Scenario Data Integrity
                 if(Scenarios.Length != ScenarioCount)
-                    Errors += "Number Of Scenarios Listed In .gp4 Project Doesn't Match ScenarioCount Attribute\n\n";
+                    Errors.Add("Number Of Scenarios Listed In .gp4 Project Doesn't Match ScenarioCount Attribute");
 
                 // Check .gp4 Integrity
                 if(ScenarioCount == 0 || ChunkCount == 0)
-                    Errors += $"Scenario And/Or Chunk Counts Were 0 (Scnarios: {ScenarioCount}, Chunks: {ChunkCount})\n\n";
+                    Errors.Add($"Scenario And/Or Chunk Counts Were 0 (Scnarios: {ScenarioCount}, Chunks: {ChunkCount})");
 
                 // Check Scenarios
                 if(Scenarios == null)
-                    Errors += "Application Was Missing Scenario Elements. (GP4Reader.Scenarios Was Null)";
+                    Errors.Add("Application Was Missing Scenario Elements. (GP4Reader.Scenarios Was Null)");
 
                 else {
                     i = 1;
                     foreach(var Sc in Scenarios) {
                         if(Sc.Id > Scenarios.Length - 1)
-                            Errors += $"Scenario Id Was Out Of Bounds In Scenario #{i} ({DefaultScenarioId} > {Scenarios.Length - 1})\n\n";
+                            Errors.Add($"Scenario Id Was Out Of Bounds In Scenario #{i} ({DefaultScenarioId} > {Scenarios.Length - 1})");
 
                         if(Sc.Type != "mp" && Sc.Type != "sp")
-                            Errors += $"Unexpected Scenario Type For Scenario #{i}\n(Expected: sp || mp\nRead: {Sc.Type})\n\n";
+                            Errors.Add($"Unexpected Scenario Type For Scenario #{i}\n(Expected: sp || mp\nRead: {Sc.Type})");
 
                         if(Sc.InitialChunkCount > Chunks.Length)
-                            Errors += $"Initial Chunk Count For Scenario #{i} Was Larger Than The Actual Chunk Count {Sc.InitialChunkCount} > {Chunks.Length}\n\n";
+                            Errors.Add($"Initial Chunk Count For Scenario #{i} Was Larger Than The Actual Chunk Count {Sc.InitialChunkCount} > {Chunks.Length}");
 
                         if(Sc.Label == "")
-                            Errors += $"Empty Scenario Label In Scenario #{i}\n\n";
+                            Errors.Add($"Empty Scenario Label In Scenario #{i}");
 
 
                         int RangeChk;
                         if(Sc.ChunkRange.Contains('-')) {
                             RangeChk = int.Parse(Sc.ChunkRange.Substring(Sc.ChunkRange.LastIndexOf('-') + 1));
                             if(RangeChk >= ChunkCount)
-                                Errors += $"Invalid Maximum Value For Chunk Range In Scenario #{i}\n ({RangeChk} >= {ChunkCount})\n\n";
+                                Errors.Add($"Invalid Maximum Value For Chunk Range In Scenario #{i}\n ({RangeChk} >= {ChunkCount})");
 
                             RangeChk = int.Parse(Sc.ChunkRange.Remove(Sc.ChunkRange.LastIndexOf('-')));
                             if(RangeChk >= ChunkCount)
-                                Errors += $"Invalid Minimum Value For Chunk Range In Scenario #{i}\n ({RangeChk} >= {ChunkCount})\n\n";
+                                Errors.Add($"Invalid Minimum Value For Chunk Range In Scenario #{i}\n ({RangeChk} >= {ChunkCount})");
 
                         }
                         else if((RangeChk = int.Parse(Sc.ChunkRange)) != 0) {
-                            Errors += $"Invalid Chunk Range In Scenario #{i}\n ({RangeChk} >= {ChunkCount})\n\n";
+                            Errors.Add($"Invalid Chunk Range In Scenario #{i}\n ({RangeChk} >= {ChunkCount})");
                         }
 
 
@@ -801,30 +803,26 @@ namespace libgp4 {
                 }
 
             if(i != 0)
-                Errors += i + $"{Base}\n";
+                Errors.Add(i + $"{Base}\n");
 
 
 
             ///================================================\\\
             //| Throw An Exception If Any Errors Were Detected |\\
             ///================================================\\\
-            if(Errors != string.Empty) {
-                string Message;
-                var ErrorCount = (Errors.Length - Errors.Replace("\n\n", "").Length) / 2;
+            #if DEBUG
+            string message;
 
-                if(ErrorCount == 1)
-                    Message = $"The Following Error Was Found In The .gp4 Project File:\n\n{Errors}";
+            if (Errors.Count < 2)
+                message = $"The Following Error Was Found In The .gp4 Project File:\n";
+            else
+                message = $"The Following {Errors.Count} Errors Were Found In The .gp4 Project File:\n";
+            DPrint(message);
+           
+            Array.ForEach<string>(Errors.ToArray(), error => DPrint(error));
+            #endif
 
-                else
-                    Message = $"The Following {ErrorCount} Errors Were Found In The .gp4 Project File:\n\n{Errors}";
-
-                DLog(Message);
-
-                if (LoggingMethod != null)
-                LoggingMethod(Message);
-
-                //throw new InvalidDataException(Message);
-            }
+            return null;
         }
 
         /// <summary>
@@ -1101,7 +1099,7 @@ namespace libgp4 {
 
                         sfo.Read(buffer = new byte[ParamLengths[i]], 0, ParamLengths[i]);
 
-                        Parent.DLog($"Label: {SfoParamLabels[i]}");
+                        Parent.DPrint($"Label: {SfoParamLabels[i]}");
 
                         // Datatype = string
                         if(DataTypes[i] == 2) {
@@ -1110,13 +1108,13 @@ namespace libgp4 {
                             else
                                 SfoParams[i] = Encoding.UTF8.GetString(buffer);
 
-                            Parent.DLog($"Param: {SfoParams[i]}");
+                            Parent.DPrint($"Param: {SfoParams[i]}");
                         }
 
                         // Datatype = Int32
                         else if(DataTypes[i] == 4) {
                             SfoParams[i] = BitConverter.ToInt32(buffer, 0);
-                          Parent.DLog($"Param: {SfoParams[i]}");
+                          Parent.DPrint($"Param: {SfoParams[i]}");
                         }
                     }
 
@@ -1556,13 +1554,11 @@ namespace libgp4 {
                     LoggingMethod(msg);
 #endif
 #if DEBUG
-            DLog(msg);
+            DPrint(msg);
 #endif
         }
 
 
-
-        
         /// <summary>
         /// Output the string representations of objs to the standard console output (and a custom output method if one's been assigned to GP4Creator.LoggingMethod). <br/><br/>
         /// Duplicates Message To Standard Console Output As Well.
@@ -1577,7 +1573,7 @@ namespace libgp4 {
         /// <summary> Console Logging Method.
         ///</summary>
         /// <param name="obj"> The Object to Output The String Representation of. </param>
-        private void DLog(object obj)
+        private void DPrint(object obj)
         {
 #if DEBUG
             Debug.WriteLine($"#libgp4: {obj}");

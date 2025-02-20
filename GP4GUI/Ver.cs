@@ -1,15 +1,17 @@
-﻿using System;
+﻿#if DEBUG
+using libgp4;
+using System;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using libgp4;
 using static GP4GUI.Common;
+#endif
 
 namespace GP4GUI {
     public partial class OptionsPage
     {
-        public const string Version = "2.67.355 "; // Easier to see, more likely to remember to update
+        public const string Version = "2.67.358 "; // Easier to see, more likely to remember to update
     }
 
     
@@ -25,7 +27,9 @@ namespace GP4GUI {
         ///</summary>
         public Control[] DebugControls { get; private set; }
 
-        public Testing(Form Venat, GP4Creator gp4, Point location) {
+
+        public Testing(Form Venat, GP4Creator gp4, Point location)
+        {
             // Error / Improper Usage Checking
             if (Venat == null) {
                 Print($"ERROR: Provided Parent Form Was Null, Aborting Dropdown Menu Creation.");
@@ -39,15 +43,18 @@ namespace GP4GUI {
             
             // Variable Declarations
             TestGamedataFolder = @"C:\Users\msblob\Misc\gp4 tst\CUSA00009-app";
-            TestGP4Path = @"C:\Users\msblob\Misc\gp4 tst\CUSA00009\CUSA00009-app.gp4";
+            TestGP4Path = @"C:\Users\msblob\Misc\gp4 tst\CUSA00009-app.gp4";
 
 
+            //#
+            //## Debug Control Declarations & Intitializations
+            //#
+            #region [Debug Control Declarations & Intitializations]
 
-            #region [DEBUG CONTROL DECLARATIONS & INITIALIZATIONS]
             // Declare Controls
             CheckBox
                 VerbosityBtn,
-                PackageVersionToggleBtn
+                PackageCategoryToggleBtn
             ;
             Button
                 Libgp4TestBtn
@@ -65,7 +72,7 @@ namespace GP4GUI {
                     Checked = true
                 },
 
-                PackageVersionToggleBtn = new CheckBox
+                PackageCategoryToggleBtn = new CheckBox
                 {
                     AutoSize = true,
                     Font = MainFont,
@@ -80,23 +87,26 @@ namespace GP4GUI {
                     Text = "Test GP4Reader",
                 }
             };
-            #endregion [DEBUG CONTROL DECLARATIONS & INITIALIZATIONS]
+            #endregion
 
 
-            #region [DEBUG CONTROL FUNCTIONS]
+            //#
+            //## Debug Control Function Declarations
+            //#
+            #region [Debug Control Function Declarations]
 
             // Verbosity Button Event Handler
             VerbosityBtn.CheckedChanged += (sender, e) => gp4.VerboseOutput = VerbosityBtn.Checked;
        
             // placeholder button
-            PackageVersionToggleBtn.CheckedChanged += (sender, e) => {
+            PackageCategoryToggleBtn.CheckedChanged += (sender, e) => {
                 if (TestGamedataFolder.Contains("-app")) {
                     TestGamedataFolder = TestGamedataFolder.Replace("-app", "-patch");
-                    PackageVersionToggleBtn.Text = "-> App";
+                    PackageCategoryToggleBtn.Text = "-> App";
                 }
                 else if (TestGamedataFolder.Contains("-patch")) {
                     TestGamedataFolder = TestGamedataFolder.Replace("-patch", "-app");
-                    PackageVersionToggleBtn.Text = "-> Patch";
+                    PackageCategoryToggleBtn.Text = "-> Patch";
                 }
                 else {
                     Print("Error, Invalid GamedataFolderPath Provided for This Function (must contain -patch | -app)");
@@ -112,7 +122,7 @@ namespace GP4GUI {
 
                 if (!Directory.Exists(gp4.GamedataFolder))
                 {
-                    if (Directory.Exists(TestGamedataFolder)) {
+                    if (TestGamedataFolder != null && Directory.Exists(TestGamedataFolder)) {
                         gp4.GamedataFolder = TestGamedataFolder;
                     }
                     else {

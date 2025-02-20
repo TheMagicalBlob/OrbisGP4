@@ -46,7 +46,7 @@ namespace libgp4 {
 
             private set {
                 _SfoParams = value;
-                DLog($"SfoParams => [{string.Join("\nSfoParams => ", _SfoParams)}]\n");
+                DPrint($"SfoParams => [{string.Join("\nSfoParams => ", _SfoParams)}]\n");
             }
         }
         private SfoParser _SfoParams;
@@ -59,7 +59,7 @@ namespace libgp4 {
 
             private set {
                 _PlaygoData = value;
-                DLog($"[{string.Join("\nPlaygoData => ", _PlaygoData)}]\n");
+                DPrint($"[{string.Join("\nPlaygoData => ", _PlaygoData)}]\n");
             }
         }
         private PlaygoParameters _PlaygoData;
@@ -73,7 +73,7 @@ namespace libgp4 {
             set {
 
                 _GamedataFolder = value?.TrimEnd('/', '\\') ?? "Empty String";// string.Empty;
-                DLog($"GamedataFolder => [{_GamedataFolder}]");
+                DPrint($"GamedataFolder => [{_GamedataFolder}]");
 
                 if (!Directory.Exists(GamedataFolder))
                 {
@@ -106,7 +106,7 @@ namespace libgp4 {
 
             set {
                 _OutputDirectory = value ?? string.Empty;
-                DLog($"OutputDirectory => [{_OutputDirectory}]");
+                DPrint($"OutputDirectory => [{_OutputDirectory}]");
             }
         }
         private string _OutputDirectory;
@@ -118,7 +118,7 @@ namespace libgp4 {
 
             set {
                 _OutputPath = value ?? string.Empty;
-                DLog($"OutputDirectory => [{_OutputPath}]");
+                DPrint($"OutputDirectory => [{_OutputPath}]");
             }
         }
         private string _OutputPath;
@@ -133,7 +133,7 @@ namespace libgp4 {
 
             set {                     
                 _Passcode = value ?? string.Empty;
-                DLog($"Passcode => [{_Passcode}]");
+                DPrint($"Passcode => [{_Passcode}]");
             }
         }
         private string _Passcode;
@@ -147,7 +147,7 @@ namespace libgp4 {
 
             set {
                 _BlacklistedFilesOrFolders = value ?? Array.Empty<string>();
-                DLog($"BlacklistedFilesOrFolders => [{string.Join(", ", _BlacklistedFilesOrFolders ?? Array.Empty<string>())}]");
+                DPrint($"BlacklistedFilesOrFolders => [{string.Join(", ", _BlacklistedFilesOrFolders ?? Array.Empty<string>())}]");
             }
         }
         private string[] _BlacklistedFilesOrFolders;
@@ -161,7 +161,7 @@ namespace libgp4 {
 
             set {
                 _BasePackagePath = value?.Replace("\"", string.Empty);
-                DLog($"BasePackagePath => [{_BasePackagePath}]");
+                DPrint($"BasePackagePath => [{_BasePackagePath}]");
             }
         }
         private string _BasePackagePath;
@@ -176,7 +176,7 @@ namespace libgp4 {
 
             private set {
                 _AppTitle = value ?? string.Empty;
-                DLog($"AppTitle => [{_AppTitle}]");
+                DPrint($"AppTitle => [{_AppTitle}]");
             }
         }
         private string _AppTitle;
@@ -190,7 +190,7 @@ namespace libgp4 {
 
             private set {
                 _AppTitles = value;
-                DLog($"AppTitles => [{string.Join(", ", _AppTitles)}]");
+                DPrint($"AppTitles => [{string.Join(", ", _AppTitles)}]");
             }
         }
         private List<string> _AppTitles;
@@ -204,7 +204,7 @@ namespace libgp4 {
 
             private set {
                 _AppType = value;
-                DLog($"AppType => [{_AppType}]");
+                DPrint($"AppType => [{_AppType}]");
             }
         }
         private int _AppType;
@@ -218,7 +218,7 @@ namespace libgp4 {
 
             private set {
                 _TargetAppVer = value ?? string.Empty;
-                DLog($"TargetAppVer => [{_TargetAppVer}]");
+                DPrint($"TargetAppVer => [{_TargetAppVer}]");
             }
         }
         private string _TargetAppVer;
@@ -232,7 +232,7 @@ namespace libgp4 {
 
             private set {
                 _SfoCreationDate = value ?? string.Empty;
-                DLog($"SfoCreationDate => [{_SfoCreationDate}]");
+                DPrint($"SfoCreationDate => [{_SfoCreationDate}]");
             }
         }
         private string _SfoCreationDate;
@@ -246,7 +246,7 @@ namespace libgp4 {
 
             private set {
                 _SdkVersion = value ?? string.Empty;
-                DLog($"SdkVersion => [{_SdkVersion}]");
+                DPrint($"SdkVersion => [{_SdkVersion}]");
             }
         }
         private string _SdkVersion;
@@ -264,7 +264,7 @@ namespace libgp4 {
             set
             {
                 _LoggingMethod = value;
-                DLog($"LoggingMethod => [Method: ({_LoggingMethod.Method}) | Target: ({_LoggingMethod.Target})]");
+                DPrint($"LoggingMethod => [Method: ({_LoggingMethod.Method}) | Target: ({_LoggingMethod.Target})]");
             }
         }
         private static Action<object> _LoggingMethod;
@@ -282,7 +282,7 @@ namespace libgp4 {
 
             set {
                 _VerboseOutput = value;
-                DLog($"VerboseLogging => [{_VerboseOutput}]");
+                DPrint($"VerboseLogging => [{_VerboseOutput}]");
             }
         }
         private bool _VerboseOutput;
@@ -297,7 +297,7 @@ namespace libgp4 {
 
             set {
                 _DebugOutput = value;
-                DLog($"VerboseLogging => [{_DebugOutput}]");
+                DPrint($"VerboseLogging => [{_DebugOutput}]");
             }
         }
         private static bool _DebugOutput;
@@ -314,7 +314,7 @@ namespace libgp4 {
 
             set {
                 _AbsoluteFilePaths = value;
-                DLog($"AbsoluteFilePaths => [{_AbsoluteFilePaths}]");
+                DPrint($"AbsoluteFilePaths => [{_AbsoluteFilePaths}]");
             }
         }
         private bool _AbsoluteFilePaths;
@@ -330,7 +330,7 @@ namespace libgp4 {
 
             set {
                 _IgnoreKeystone = value;
-                DLog($"IgnoreKeystone => [{_IgnoreKeystone}]");
+                DPrint($"IgnoreKeystone => [{_IgnoreKeystone}]");
             }
         }
         private bool _IgnoreKeystone;
@@ -343,7 +343,7 @@ namespace libgp4 {
 
             set {
                 _SkipIntegrityCheck = value;
-                DLog($"VerifyIntegrity => [{_SkipIntegrityCheck}]");
+                DPrint($"VerifyIntegrity => [{_SkipIntegrityCheck}]");
             }
         }
         private bool _SkipIntegrityCheck;
@@ -356,7 +356,7 @@ namespace libgp4 {
 
             set {
                 _SkipEndComment = value;
-                DLog($"SkipEndComment => [{_SkipEndComment}]");
+                DPrint($"SkipEndComment => [{_SkipEndComment}]");
             }
         }
         private bool _SkipEndComment;
