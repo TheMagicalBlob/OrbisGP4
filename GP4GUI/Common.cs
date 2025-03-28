@@ -153,7 +153,8 @@ namespace GP4GUI {
         }
     }
 
-
+    
+    
     /// <summary> Custom TextBox Class to Better Handle Default TextBox Contents. </summary>
     public class TextBox : System.Windows.Forms.TextBox
     {
@@ -173,10 +174,20 @@ namespace GP4GUI {
         // Default Control Text to Be Displayed When "Empty".
         private string DefaultText;
 
+        public override string Text
+        {
+            get => base.Text;
+
+            set
+            {
+                base.Text = value?.Replace("\"", string.Empty);
+            }
+        }
+
+
+
         // Help Better Keep Track of Whether the User's Changed the Text, Because I'm a Moron.
         public bool IsDefault() => Text == DefaultText;
-
-  
 
         /// <summary> Yoink Default Text From First Text Assignment (Ideally right after being created). </summary>
         private void SetDefaultText(object _, EventArgs __)
@@ -185,13 +196,6 @@ namespace GP4GUI {
             Font = Common.DefaultTextFont;
 
             TextChanged -= SetDefaultText;
-            TextChanged += (sender, e) =>
-            {
-                if (Text != DefaultText)
-                {
-                    Text = Text.Replace("\"", string.Empty);
-                }
-            };
         }
 
 
