@@ -160,64 +160,12 @@ namespace GP4GUI {
         /// <summary> Create New Control Instance. </summary>
         public TextBox()
         {
-            IsDefault = true;
-
-            GotFocus += ReadyControl;
-            //Click += ReadyControl; // Both Events, Just-In-Case.
-
             TextChanged += SetDefaultText; // Save the first Text assignment as the DefaultText
-            TextChanged += (sender, e) => Text = Text.Replace("\"", string.Empty);
-            
-            LostFocus += ResetControl; // Reset control if nothing was entered, or the text is a portion of the default text
+            Font = Common.DefaultTextFont;
+
+            GotFocus += (sender, args) => ReadyControl();
+            LostFocus += (sender, args) => ResetControl(false); // Reset control if nothing was entered, or the text is a portion of the default text
         }
-/*
-        public override string Text { get { if (IsDefault) return "cunt"; return _Text; } set { _Text = value; base.Text = value; } }
-        private string _Text;
-*/
-        
-        /// <summary> Yoink Default Text From First Text Assignment (Ideally right after being created). </summary>
-        private void SetDefaultText(object _, EventArgs __) {
-            DefaultText = Text;
-            TextChanged -= SetDefaultText;
-        }
-
-
-        private void ReadyControl(object bite, EventArgs me)
-        {
-            Common.Print($"Readying control \"{Name}\".");
-            
-            if(IsDefault) {
-                Clear();
-                IsDefault = false;
-
-                Font = Common.TextFont;
-            }
-        }
-
-        private void ResetControl(object bite, EventArgs me)
-        {
-            Common.Print($"Resetting control \"{Name}\".");
-
-            if(DefaultText.Contains(Text)) {
-                Text = DefaultText;
-                IsDefault = true;
-
-                Font = Common.DefaultTextFont;
-            }
-        }
-
-
-        /// <summary> Set Control Text and State Properly (meh). </summary>
-        public void Set(string text) {
-            if (text != string.Empty && !DefaultText.Contains(text))
-            {   
-                Font = Common.DefaultTextFont;
-                Text = text;
-                IsDefault = false;
-            }
-        }
-
-
 
 
 
@@ -226,8 +174,56 @@ namespace GP4GUI {
         private string DefaultText;
 
         // Help Better Keep Track of Whether the User's Changed the Text, Because I'm a Moron.
-        public bool IsDefault { get; private set; }
-        
+        public bool IsDefault() => Text == DefaultText;
+
+  
+
+        /// <summary> Yoink Default Text From First Text Assignment (Ideally right after being created). </summary>
+        private void SetDefaultText(object _, EventArgs __)
+        {
+            DefaultText = Text;
+            Font = Common.DefaultTextFont;
+
+            TextChanged -= SetDefaultText;
+            TextChanged += (sender, e) =>
+            {
+                if (Text != DefaultText)
+                {
+                    Text = Text.Replace("\"", string.Empty);
+                }
+            };
+        }
+
+
+        private void ReadyControl()
+        {
+            if(IsDefault()) {
+                Clear();
+
+                Font = Common.TextFont;
+            }
+        }
+
+        public void Reset() => ResetControl(true);
+        private void ResetControl(bool forceReset)
+        {
+            if(Text.Length < 1 || DefaultText.Contains(Text) || forceReset)
+            {
+                Text = DefaultText;
+                Font = Common.DefaultTextFont;
+            }
+        }
+
+
+        /// <summary> Set Control Text and State Properly (meh). </summary>
+        public void Set(string text)
+        {
+            if (text != string.Empty && !DefaultText.Contains(text))
+            {   
+                Text = text;
+                Font = Common.TextFont;
+            }
+        }
     }
 
     #endregion

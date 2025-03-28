@@ -8,6 +8,7 @@ using static GP4GUI.Common;
 using static GP4GUI.Testing;
 #endif
 
+
 namespace GP4GUI {
     public partial class MainForm : Form {
         public MainForm() {
@@ -243,7 +244,7 @@ namespace GP4GUI {
             WLog($"===============================================\n");
 */
 
-            if (GamedataPathTextBox.IsDefault && TestGamedataFolder.Length != 0)
+            if (GamedataPathTextBox.IsDefault() && TestGamedataFolder.Length != 0)
             {
                 gp4.GamedataFolder = TestGamedataFolder;
             }
@@ -262,7 +263,7 @@ namespace GP4GUI {
 
 
             // Check for Unassigned Gamedata Path Before Proceeding
-            if (GamedataPathTextBox.IsDefault)
+            if (GamedataPathTextBox.IsDefault())
             {
 #if DEBUG
                 if (gp4.GamedataFolder.Remove(gp4.GamedataFolder.LastIndexOf('-')) == TestGamedataFolder.Remove(TestGamedataFolder.LastIndexOf('-')))
@@ -310,7 +311,7 @@ namespace GP4GUI {
             };
 
             
-            if (!GamedataPathTextBox.IsDefault)
+            if (!GamedataPathTextBox.IsDefault())
             {
                 var pathboxtext = GamedataPathTextBox.Text;
                 if (Directory.Exists(pathboxtext))

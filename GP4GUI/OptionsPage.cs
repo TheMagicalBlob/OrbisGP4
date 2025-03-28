@@ -383,19 +383,19 @@ namespace GP4GUI
         public void SaveOptions()
         {
             // .gp4 Project Output Directory
-            if (!GP4OutputDirectoryTextBox.IsDefault) gp4.OutputDirectory = GP4OutputDirectoryTextBox.Text;
+            if (!GP4OutputDirectoryTextBox.IsDefault()) gp4.OutputDirectory = GP4OutputDirectoryTextBox.Text;
             else gp4.OutputDirectory = null;
 
             // Base .pkg Path
-            if (!BasePackagePathTextBox.IsDefault)    gp4.BasePackagePath = BasePackagePathTextBox.Text;
+            if (!BasePackagePathTextBox.IsDefault())    gp4.BasePackagePath = BasePackagePathTextBox.Text;
             else                                      gp4.BasePackagePath = null;
 
             // File Filter
-            if (!FileBlacklistTextBox.IsDefault)      gp4.FileBlacklist   = FileBlacklistTextBox.Text.Replace("\"", string.Empty).Split(';', '|', ',');
+            if (!FileBlacklistTextBox.IsDefault())      gp4.FileBlacklist   = FileBlacklistTextBox.Text.Replace("\"", string.Empty).Split(';', '|', ',');
             else                                      gp4.FileBlacklist   = null;
 
             // Package Passcode
-            if (!PasscodeTextBox.IsDefault)           gp4.Passcode        = PasscodeTextBox.Text;
+            if (!PasscodeTextBox.IsDefault())           gp4.Passcode        = PasscodeTextBox.Text;
             else if (gp4.Passcode != "00000000000000000000000000000000")
                                                       gp4.Passcode        = null;
                 
