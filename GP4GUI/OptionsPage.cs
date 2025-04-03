@@ -16,7 +16,7 @@ namespace GP4GUI
     {
         public OptionsPage() {
             InitializeComponent();
-            PostInitFormLogic(); // Set Event Handlers and Other Form-Related Crap
+            InitializeAdditionalEventHandlers(); // Set Event Handlers and Other Form-Related Crap
             
             Paint += PaintBorder;
             TinyVersionLabel.Text = Version; // Set Version Label
@@ -316,17 +316,12 @@ namespace GP4GUI
 
         }
 
-        /// <summary>
-        /// Create And Subscriibe
-        /// to Various Event Handlers for Basic Form Functionality.
-        /// </summary>
-        public void PostInitFormLogic()
-        {
-          /* This is far more annoying than an occasional single flicker from a form, so fuck it. Commented out.
-            // Stop OptionsPage Form From Being Hidden Whenever the Parent Is Clicked
-            this.TopMost = true;
-          */
 
+        /// <summary>
+        /// Create and subscribe to various event handlers for additional form functionality. (fck your properties panel's event handler window, let me write code)
+        /// </summary>
+        public void InitializeAdditionalEventHandlers()
+        {
             // Anonomously Create and Set CloseBtn Event Handler
             CloseBtn.Click += new EventHandler((sender, e) =>
             {

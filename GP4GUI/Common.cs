@@ -117,12 +117,16 @@ namespace GP4GUI {
         
         /// <summary> Output Misc. Messages to the Main Output Window (the big-ass richtext box). </summary>
         internal static void Print(object str = null) {
-            _OutputWindow.AppendLine(str.ToString());
+            gp4.LoggingMethod(str);
+
 #if DEBUG
             // Debug Output
-            try { Debug.WriteLine($"#libgp4: {str}");
-            }   
-            catch (Exception){}
+            if (!Console.IsOutputRedirected)
+            {
+                Console.WriteLine(str);
+            }
+            else
+                Debug.WriteLine($"#libgp4: {str ?? "null"}");
 #endif
         }
 

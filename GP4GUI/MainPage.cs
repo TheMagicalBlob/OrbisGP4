@@ -4,6 +4,7 @@ using System.IO;
 using System.Drawing;
 using System.Windows.Forms;
 using static GP4GUI.Common;
+
 #if DEBUG
 using static GP4GUI.Testing;
 #endif
@@ -11,37 +12,85 @@ using static GP4GUI.Testing;
 
 namespace GP4GUI {
     public partial class MainForm : Form {
-        public MainForm() {
-
-            // Initialize and Decorate Form, Then Set Event Handlers
-            InitializeComponent();
-            PostInitFormLogic();
-            CreateBrowseModeDropdownMenu();
-            Paint += PaintBorder;
-
-            // Initialize .gp4 Creator Instance, and Set Logging Method to OutputWindow
+        public MainForm(string[] args = null)
+        {
+            // Initialize .gp4 creator instance, and set logging method to "OutputWindow"
             gp4 = new GP4Creator {
-                LoggingMethod = (obj) => {
-                    OutputWindow.AppendLine($"{obj}");
-                    OutputWindow.Update();
-                },
 #if DEBUG
                 VerboseOutput = true
 #endif
             };
 
 
-            // Set Form Refferences
-            Venat = this;
-            Azem = new OptionsPage();
-#if DEBUG
-            DebugOptions = new Testing(Venat, gp4, new Point(DebugOptionsBtn.Location.X, DebugOptionsBtn.Location.Y + DebugOptionsBtn.Size.Height - 2));
-#else
-            DebugOptionsBtn.Visible = DebugOptionsBtn.Enabled = false;
-#endif
+            if (args.Length > 0)
+            {
+                // Set logging method to standard console output.
+                gp4.LoggingMethod = (obj) => Console.WriteLine(obj);
+                string formatted_args;
 
-            // Set Output Box Ptr
-            _OutputWindow = OutputWindow;
+                if (args.Length == 2)
+                {
+                    formatted_args = args[0];
+                }
+                else {
+                    var tmp = string.Empty;
+
+                    Array.ForEach(args, arg =>
+                    {
+                        arg = arg?.Replace(arg.Contains("-") ? "-" : " ", string.Empty);
+
+                        tmp += arg;
+                    });
+
+                    formatted_args = tmp;
+                }
+
+
+                foreach (char arg in formatted_args)
+                {
+                    switch (arg)
+                    {
+                        case 'a':
+                            gp4.UseAbsoluteFilePaths = true;
+                            break;
+                        case 'k':
+                            gp4.IgnoreKeystone = true;
+                            break;
+
+
+                        default:
+                            Print("Fuck");
+                            break;
+                    }
+                }
+
+
+            }
+            else {
+                // Initialize and Decorate Form, Then Set Event Handlers
+                InitializeComponent();
+                InitializeAdditionalEventHandlers();
+                CreateBrowseModeDropdownMenu();
+            
+                // Set logging method to "OutputWindow"
+                gp4.LoggingMethod = (obj) =>
+                {
+                    OutputWindow.AppendLine($"{obj}");
+                    OutputWindow.Update();
+                };
+
+                // Set Form Refferences
+                Venat = this;
+                Azem = new OptionsPage();
+    #if DEBUG
+                DebugOptions = new Testing(Venat, gp4, new Point(DebugOptionsBtn.Location.X, DebugOptionsBtn.Location.Y + DebugOptionsBtn.Size.Height - 2));
+    #else
+                DebugOptionsBtn.Visible = DebugOptionsBtn.Enabled = false;
+    #endif
+
+                // Set Output Box Ptr
+                _OutputWindow = OutputWindow;
+            }
         }
 
 
@@ -52,7 +101,7 @@ namespace GP4GUI {
         /// Post-InitializeComponent Configuration. <br/><br/>
         /// Create Assign Anonomous Event Handlers to Parent and Children.
         /// </summary>
-        public void PostInitFormLogic()
+        public void InitializeAdditionalEventHandlers()
         {
             MinimizeBtn.Click      += new EventHandler((sender, e) => ActiveForm.WindowState      = FormWindowState.Minimized     );
             MinimizeBtn.MouseEnter += new EventHandler((sender, e) => ((Control)sender).ForeColor = Color.FromArgb(90, 100, 255  ));
@@ -90,6 +139,8 @@ namespace GP4GUI {
                 if (Item.GetType() != typeof(TextBox) && Item.GetType() != typeof(RichTextBox))
                     Item.MouseMove += new MouseEventHandler((sender, e) => MoveForm());
             }
+
+            Paint += PaintBorder;
         }
 
 
@@ -248,7 +299,6 @@ namespace GP4GUI {
             {
                 gp4.GamedataFolder = TestGamedataFolder;
             }
-
 #endif
 
 

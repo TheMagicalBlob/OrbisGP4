@@ -26,6 +26,7 @@ namespace libgp4 {
             // No idea what I want to do here
             GamedataFolder = gamedataFolder;
         }
+
         public GP4Creator() {
             // No idea what I want to do here
         }
