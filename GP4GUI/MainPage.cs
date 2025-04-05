@@ -4,6 +4,7 @@ using System.IO;
 using System.Drawing;
 using System.Windows.Forms;
 using static GP4GUI.Common;
+using System.Collections.Generic;
 
 #if DEBUG
 using static GP4GUI.Testing;
@@ -12,7 +13,7 @@ using static GP4GUI.Testing;
 
 namespace GP4GUI {
     public partial class MainForm : Form {
-        public MainForm(string[] args = null)
+        public MainForm()
         {
             // Initialize .gp4 creator instance, and set logging method to "OutputWindow"
             gp4 = new GP4Creator {
@@ -21,76 +22,30 @@ namespace GP4GUI {
 #endif
             };
 
-
-            if (args.Length > 0)
-            {
-                // Set logging method to standard console output.
-                gp4.LoggingMethod = (obj) => Console.WriteLine(obj);
-                string formatted_args;
-
-                if (args.Length == 2)
-                {
-                    formatted_args = args[0];
-                }
-                else {
-                    var tmp = string.Empty;
-
-                    Array.ForEach(args, arg =>
-                    {
-                        arg = arg?.Replace(arg.Contains("-") ? "-" : " ", string.Empty);
-
-                        tmp += arg;
-                    });
-
-                    formatted_args = tmp;
-                }
-
-
-                foreach (char arg in formatted_args)
-                {
-                    switch (arg)
-                    {
-                        case 'a':
-                            gp4.UseAbsoluteFilePaths = true;
-                            break;
-                        case 'k':
-                            gp4.IgnoreKeystone = true;
-                            break;
-
-
-                        default:
-                            Print("Fuck");
-                            break;
-                    }
-                }
-
-
-            }
-            else {
-                // Initialize and Decorate Form, Then Set Event Handlers
-                InitializeComponent();
-                InitializeAdditionalEventHandlers();
-                CreateBrowseModeDropdownMenu();
             
-                // Set logging method to "OutputWindow"
-                gp4.LoggingMethod = (obj) =>
-                {
-                    OutputWindow.AppendLine($"{obj}");
-                    OutputWindow.Update();
-                };
+            // Initialize and Decorate Form, Then Set Event Handlers
+            InitializeComponent();
+            InitializeAdditionalEventHandlers();
+            CreateBrowseModeDropdownMenu();
+            
+            // Set logging method to "OutputWindow"
+            gp4.LoggingMethod = (obj) =>
+            {
+                OutputWindow.AppendLine($"{obj}");
+                OutputWindow.Update();
+            };
 
-                // Set Form Refferences
-                Venat = this;
-                Azem = new OptionsPage();
-    #if DEBUG
-                DebugOptions = new Testing(Venat, gp4, new Point(DebugOptionsBtn.Location.X, DebugOptionsBtn.Location.Y + DebugOptionsBtn.Size.Height - 2));
-    #else
-                DebugOptionsBtn.Visible = DebugOptionsBtn.Enabled = false;
-    #endif
+            // Set Form Refferences
+            Venat = this;
+            Azem = new OptionsPage();
+#if DEBUG
+            DebugOptions = new Testing(Venat, gp4, new Point(DebugOptionsBtn.Location.X, DebugOptionsBtn.Location.Y + DebugOptionsBtn.Size.Height - 2));
+#else
+            DebugOptionsBtn.Visible = DebugOptionsBtn.Enabled = false;
+#endif
 
-                // Set Output Box Ptr
-                _OutputWindow = OutputWindow;
-            }
+            // Set Output Box Ptr
+            _OutputWindow = OutputWindow;
         }
 
 
@@ -326,8 +281,9 @@ namespace GP4GUI {
                 }
             }
             // Read Current Gamedata Folder Path From The Text Box
-            else gp4.GamedataFolder = GamedataPathTextBox.Text.Replace("\"", string.Empty);
-
+            else {
+                gp4.GamedataFolder = GamedataPathTextBox.Text.Replace("\"", string.Empty);
+            }
 
             // Ensure Keystone is Present if Applicable
             if (gp4.SfoParams.category == "gd" && !gp4.IgnoreKeystone && !File.Exists($@"{gp4.GamedataFolder}\sce_sys\keystone"))
@@ -385,35 +341,5 @@ namespace GP4GUI {
                 Print("Invalid .gp4 file path provided.");
         }
         #endregion
-        //===============================================\\
-
-
-
-        //================================\\
-        //--|   Control Declarations   |--\\
-        //================================\\
-        #region Control Declarations
-        public TextBox GamedataPathTextBox;
-        public Button[] DropdownMenu = new Button[2];
-        private Button VerifyGP4Btn;
-        private Button BrowseBtn;
-        private Button SwapBrowseModeBtn;
-        private Button CreateProjectFileBtn;
-        private Button OptionsBtn;
-        private Button ClearLogBtn;
-        private Button MinimizeBtn;
-        private Button ExitBtn;
-        private Button dummy; // I forget why this is here
-        private Label Title;
-        private Button DebugOptionsBtn;
-        private RichTextBox OutputWindow;
-    #if DEBUG
-        private GroupBox DebugOptions;
-    #endif
-        #endregion [Control Declarations]
-
-
-        // Manipulate Designer Stupidity. (stop creating methods inside existing code, you moronic twat)
-        private readonly Button DesignerManip;
     }
 }

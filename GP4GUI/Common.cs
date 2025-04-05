@@ -2,6 +2,10 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using System.IO;
+using System.Text;
+
+
 #if DEBUG
 using System.Diagnostics;
 #endif
@@ -63,7 +67,7 @@ namespace GP4GUI {
         public static readonly Font MainFont        = new Font("Gadugi", 8.25f, FontStyle.Bold); // For the vast majority of controls; anything the user doesn't edit, really.
         public static readonly Font TextFont        = new Font("Segoe UI Semibold", 9f); // For option controls with customized contents
         public static readonly Font DefaultTextFont = new Font("Segoe UI Semibold", 9f, FontStyle.Italic); // For option controls in default states
-        
+
         #endregion Variable Declarations
         //===================================\\
 
@@ -116,10 +120,11 @@ namespace GP4GUI {
         //#
         
         /// <summary> Output Misc. Messages to the Main Output Window (the big-ass richtext box). </summary>
-        internal static void Print(object str = null) {
+        internal static void Print(object str = null)
+        {
+#if DEBUG
             gp4.LoggingMethod(str);
 
-#if DEBUG
             // Debug Output
             if (!Console.IsOutputRedirected)
             {
@@ -142,17 +147,16 @@ namespace GP4GUI {
     //################################################\\
     #region [Custom/"Overridden" Control Classes]
 
-    // Custom RichTextBox Class to Better Handle Default TextBox Contents
+    /// <summary>
+    /// Custom RichTextBox class because bite me.
+    /// </summary>
     public class RichTextBox : System.Windows.Forms.RichTextBox {
 
         /// <summary> Appends Text to The Currrent Text of A Text Box, Followed By The Standard Line Terminator.<br/>Scrolls To Keep The Newest Line In View. </summary>
         /// <param name="str"> The String To Output. </param>
-        public void AppendLine(string str = "") {
-            if(str.Length <= 0)
-                AppendText("\n");
-            else
-                AppendText($"{str}\n");
-
+        public void AppendLine(string str = "")
+        {
+            AppendText($"{str}\n");
             ScrollToCaret();
         }
     }
@@ -162,7 +166,7 @@ namespace GP4GUI {
     /// <summary> Custom TextBox Class to Better Handle Default TextBox Contents. </summary>
     public class TextBox : System.Windows.Forms.TextBox
     {
-        /// <summary> Create New Control Instance. </summary>
+        /// <summary> Create a new winforms TextBox control. </summary>
         public TextBox()
         {
             TextChanged += SetDefaultText; // Save the first Text assignment as the DefaultText
@@ -182,8 +186,7 @@ namespace GP4GUI {
         {
             get => base.Text;
 
-            set
-            {
+            set {
                 base.Text = value?.Replace("\"", string.Empty);
             }
         }
