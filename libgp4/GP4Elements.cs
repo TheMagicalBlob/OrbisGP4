@@ -221,7 +221,7 @@ namespace libgp4 {
 
 
         /// <summary> Build .gp4 Structure And Save To File
-        ///</summary>
+        /// </summary>
         /// <returns> Time Taken For Build Process </returns>
         private void BuildGp4Elements(XmlDocument gp4_project, XmlNode[] base_elements, XmlNode chunks, XmlNode scenarios, XmlNode files, XmlNode rootdir) {
 

@@ -4,7 +4,6 @@ using System.IO;
 using System.Drawing;
 using System.Windows.Forms;
 using static GP4GUI.Common;
-using System.Collections.Generic;
 
 #if DEBUG
 using static GP4GUI.Testing;
@@ -18,8 +17,11 @@ namespace GP4GUI {
             // Initialize .gp4 creator instance, and set logging method to "OutputWindow"
             gp4 = new GP4Creator {
 #if DEBUG
-                VerboseOutput = true
+                VerboseOutput = true,
+                DebugOutput = true,
 #endif
+                SkipIntegrityCheck = false,
+                SkipEndComment = false
             };
 
             
@@ -51,6 +53,14 @@ namespace GP4GUI {
 
 
 
+
+        
+        //=============================================\\
+        //--|   Background Function Delcarations   |---\\
+        //=============================================\\
+        #region [Background Function Delcarations]
+
+        
 
         /// <summary>                                         deng
         /// Post-InitializeComponent Configuration. <br/><br/>
@@ -98,34 +108,12 @@ namespace GP4GUI {
             Paint += PaintBorder;
         }
 
+        
 
-
-
-        //###############################################\\
-        //--     Main Form Functions and Variables     --\\
-        //###############################################\\
-        #region Main Form Functions & Variables
-
-
-        private void DebugOptionsBtn_Click(object sender, EventArgs e)
-        {
-#if DEBUG
-            DebugOptions.Visible = DebugOptions.Enabled ^= true;
-#endif
-        }
-
-
-
-        // Wipe the Text in OutputWindow
-        private void ClearLogBtn_Click(object _, EventArgs __) => OutputWindow.Clear();
-
-
-        // Verbosity Toggle for GP4Creator Output
-        private void VerbosityBtn_CheckedChanged(object sender, EventArgs e) => gp4.VerboseOutput = ((CheckBox)sender).Checked;
-
-
-        // Toggle The OptionsPage Window for .gp4 Option Editing, and Move to New Location
-        private void ToggleOptionsWindowVisibility(object _, EventArgs __)
+        /// <summary>
+        /// Toggle The OptionsPage Window for .gp4 Option Editing, and Move to New Location.
+        /// </summary>
+        private void ToggleOptionsWindowVisibility()
         {
             Azem.Visible = OptionsPageIsOpen ^= true;
 		    Azem.Location = new Point(Venat.Location.X + (Venat.Size.Width - Azem.Size.Width)/2, Venat.Location.Y + 80);
@@ -134,49 +122,11 @@ namespace GP4GUI {
             DropdownMenu[1].Visible = DropdownMenu[0].Visible = false;
         }
 
-
-        
-        // Use The Dummy File Method To Open A Folder.
-        private void BrowseBtn_Click(object _, EventArgs __)
+        /// <summary>
+        /// Initialize Dropdown Menu Used for Toggling of Folder Browser Method
+        /// </summary>
+        private void CreateBrowseModeDropdownMenu()
         {
-            // Use the ghastly Directory Tree Dialogue to Choose A Folder
-            if (LegacyFolderSelectionDialogue)
-            {
-                using (var FBrowser = new FolderBrowserDialog { Description = "Please Select the Desired Gamedata Folder" })
-                {
-                    if (FBrowser.ShowDialog() == DialogResult.OK) {
-                        GamedataPathTextBox.Set(FBrowser.SelectedPath);
-                    }
-                }
-
-            }
-            // Use The Newer "Hackey" Method
-            else {
-                using(var Browser = new OpenFileDialog {
-                    ValidateNames   = false,
-                    CheckPathExists = false,
-                    CheckFileExists = false,
-                    Title    = "(Don't click anything IN the desired folder, this dialogue is terrible)", 
-                    Filter   = "Folder Selection|*.",
-                    FileName = "Press 'Open' Inside The Desired Folder."
-                })
-                if (Browser.ShowDialog() == DialogResult.OK)
-                    GamedataPathTextBox.Set(Browser.FileName.Remove(Browser.FileName.LastIndexOf('\\')));
-            }
-        }
-
-
-
-        // Toggle Dowpdown Menu Visibility
-        private void SwapBrowseModeBtn_Click(object _, EventArgs __)
-        {
-            DropdownMenu[1].Visible = DropdownMenu[0].Visible ^= true;
-        }
-
-
-
-        // Initialize Dropdown Menu Used for Toggling of Folder Browser Method
-        private void CreateBrowseModeDropdownMenu() {
             var extalignment = BrowseBtn.Size.Height;
             var alignment = BrowseBtn.Location;
 
@@ -235,21 +185,13 @@ namespace GP4GUI {
         }
 
 
-        //#
-        //## Create the .gp4 Project File.
-        //#
+        
+        /// <summary>
+        /// Create the .gp4 Project File.
+        /// </summary>
         private void SetupAndCreateProjectFile(object sender, EventArgs e)
         {
-
-            //# Print GP4Creator Options
 #if DEBUG
-/*
-            WLog($"\n===============================================");
-            foreach (var param in typeof(GP4Creator.SfoParser).GetFields())
-            WLog($"{param.Name} == {param.GetValue(gp4?.SfoParams)}");
-            WLog($"===============================================\n");
-*/
-
             if (GamedataPathTextBox.IsDefault() && TestGamedataFolder.Length != 0)
             {
                 gp4.GamedataFolder = TestGamedataFolder;
@@ -261,10 +203,12 @@ namespace GP4GUI {
             //#
             //## Assign Defaults/Verify Options.
             //#
-            #region [Assign Defaults/Verify Options]
 
             // Apply Current Options to GP4Creator Instance, and Apply Defaults to Any Left Unassigned.
-            if (OptionsPageIsOpen) Azem.SaveOptions();
+            if (OptionsPageIsOpen)
+            {
+                Azem.SaveOptions();
+            }
 
 
             // Check for Unassigned Gamedata Path Before Proceeding
@@ -272,7 +216,9 @@ namespace GP4GUI {
             {
 #if DEBUG
                 if (gp4.GamedataFolder.Remove(gp4.GamedataFolder.LastIndexOf('-')) == TestGamedataFolder.Remove(TestGamedataFolder.LastIndexOf('-')))
-                  Print("Using Test Gamedata Folder.");
+                {
+                    Print("Using Test Gamedata Folder.");
+                }
                 else
 #endif
                 {
@@ -291,8 +237,8 @@ namespace GP4GUI {
                 Print($"ERROR; No keystone File Found In Project Folder.\n\n");
                 return;
             }
-            #endregion [Assign Defaults/Verify Options]
-            //#^
+
+
 
 
             //#
@@ -300,12 +246,77 @@ namespace GP4GUI {
             //#
             gp4.CreateGP4();
         }
+        #endregion
+
+
+        
+
+        //======================================\\
+        //--|   Event Handler Declarations   |--\\
+        //======================================\\
+        #region [Event Handler Declarations]
+
+
+        private void OptionsBtn_Click(object sender, EventArgs _) => ToggleOptionsWindowVisibility();
+
+
+        private void DebugOptionsBtn_Click(object sender, EventArgs _)
+        {
+#if DEBUG
+            DebugOptions.Visible = DebugOptions.Enabled ^= true;
+#endif
+        }
+
+
+        /// <summary>
+        /// Wipe the Text in OutputWindow
+        /// </summary>
+        private void ClearLogBtn_Click(object sender, EventArgs _) => OutputWindow.Clear();
+
+        
+
+        /// <summary>
+        /// Use The Dummy File Method To Open A Folder.
+        /// </summary>
+        private void BrowseBtn_Click(object sender, EventArgs _)
+        {
+            // Use the ghastly Directory Tree Dialogue to Choose A Folder
+            if (LegacyFolderSelectionDialogue)
+            {
+                using (var FBrowser = new FolderBrowserDialog { Description = "Please Select the Desired Gamedata Folder" })
+                {
+                    if (FBrowser.ShowDialog() == DialogResult.OK) {
+                        GamedataPathTextBox.Set(FBrowser.SelectedPath);
+                    }
+                }
+
+            }
+            // Use The Newer "Hackey" Method
+            else {
+                using(var Browser = new OpenFileDialog {
+                    ValidateNames   = false,
+                    CheckPathExists = false,
+                    CheckFileExists = false,
+                    Title    = "(Don't click anything IN the desired folder, this dialogue is terrible)", 
+                    Filter   = "Folder Selection|*.",
+                    FileName = "Press 'Open' Inside The Desired Folder."
+                })
+                if (Browser.ShowDialog() == DialogResult.OK)
+                    GamedataPathTextBox.Set(Browser.FileName.Remove(Browser.FileName.LastIndexOf('\\')));
+            }
+        }
 
 
 
-        //#
-        //## Verify an Existing .gp4 Project File.
-        //#
+        /// <summary>
+        /// Toggle Dowpdown Menu Visibility.
+        /// </summary>
+        private void SwapBrowseModeBtn_Click(object _, EventArgs __) => DropdownMenu[1].Visible = DropdownMenu[0].Visible ^= true;
+
+        
+        /// <summary>
+        /// Verify an Existing .gp4 Project File.
+        /// </summary>
         private void VerifyGP4Btn_Click(object sender, EventArgs e)
         {
             var path = string.Empty;

@@ -11,7 +11,6 @@ using System;
 using System.IO;
 using System.Xml;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace libgp4 {
 
@@ -22,14 +21,22 @@ namespace libgp4 {
         /// Allows For The Editing Of Various Options Before .gp4 Creation.
         /// <br/><br/> (A Valid GamedataFolder Must Be Set Prior To Creating The .gp4 Project File)
         /// </summary>
-        public GP4Creator(string gamedataFolder) {
+        public GP4Creator(string gamedataFolder)
+        {
             // No idea what I want to do here
             GamedataFolder = gamedataFolder;
         }
 
-        public GP4Creator() {
+
+        /// <summary>
+        /// Initialize a new instance of the GP4Creaator class without setting the active GamedataFolder.<br/>
+        /// A valid gamedata folder must be provided before .gp4 creation is started. Sfo and Playgo params will be set once one is provided
+        /// </summary>
+        public GP4Creator()
+        {
             // No idea what I want to do here
         }
+
 
 
 
@@ -40,34 +47,9 @@ namespace libgp4 {
         // TODO: sort these options, I can never remember what's where ffs
 
 
-        /// <summary> An Array Of Parameters Parsed From The param.sfo File In The Application/Patch's System Folder (sce_sys\param.sfo)
-        ///</summary>
-        public SfoParser SfoParams {
-            get => _SfoParams;
-
-            private set {
-                _SfoParams = value;
-                DPrint($"SfoParams => [{string.Join("\nSfoParams => ", _SfoParams)}]\n");
-            }
-        }
-        private SfoParser _SfoParams;
-
-
-        /// <summary> An Array Of Parameters Parsed From The playgo-chunk.dat File In The Application/Patch's System Folder (sce_sys\playgo-chunk.dat)
-        ///</summary>
-        public PlaygoParameters PlaygoData {
-            get => _PlaygoData;
-
-            private set {
-                _PlaygoData = value;
-                DPrint($"[{string.Join("\nPlaygoData => ", _PlaygoData)}]\n");
-            }
-        }
-        private PlaygoParameters _PlaygoData;
-
-
-        /// <summary> Root Path Of The PS4 Package Project The .gp4 Is To Be Created For. (Should Contain At Least An Executable And sce_sys Folder)
-        ///</summary>
+        /// <summary>
+        /// Root Path Of The PS4 Package Project The .gp4 Is To Be Created For. (Should Contain At Least An Executable And sce_sys Folder)
+        /// </summary>
         public string GamedataFolder {
             get => _GamedataFolder ?? string.Empty;
 
@@ -99,9 +81,39 @@ namespace libgp4 {
         }
         private string _GamedataFolder;
 
+
+        /// <summary>
+        /// An Array Of Parameters Parsed From The param.sfo File In The Application/Patch's System Folder (sce_sys\param.sfo)
+        /// </summary>
+        public SfoParser SfoParams {
+            get => _SfoParams;
+
+            private set {
+                _SfoParams = value;
+                DPrint($"SfoParams => [{string.Join("\nSfoParams => ", _SfoParams)}]\n");
+            }
+        }
+        private SfoParser _SfoParams;
+
+
+        /// <summary>
+        /// An Array Of Parameters Parsed From The playgo-chunk.dat File In The Application/Patch's System Folder (sce_sys\playgo-chunk.dat)
+        /// </summary>
+        public PlaygoParameters PlaygoData {
+            get => _PlaygoData;
+
+            private set {
+                _PlaygoData = value;
+                DPrint($"PlaygoData => [{string.Join("\nPlaygoData => ", _PlaygoData)}]\n");
+            }
+        }
+        private PlaygoParameters _PlaygoData;
+
+
         
-        /// <summary> Output Directory for the .gp4 Project File.
-        ///</summary>
+        /// <summary>
+        /// Output Directory for the .gp4 Project File.
+        /// </summary>
         public string OutputDirectory {
             get => _OutputDirectory ?? string.Empty;
 
@@ -113,7 +125,9 @@ namespace libgp4 {
         private string _OutputDirectory;
 
 
-        /// <summary> Full File Path That Will be Used for the .gp4 Project File. </summary>
+        /// <summary>
+        /// Full File Path That Will be Used for the .gp4 Project File.
+        /// </summary>
         private string OutputPath {
             get => _OutputPath ?? string.Empty;
 
@@ -298,7 +312,7 @@ namespace libgp4 {
 
             set {
                 _DebugOutput = value;
-                DPrint($"VerboseLogging => [{_DebugOutput}]");
+                DPrint($"DebugLogging => [{_DebugOutput}]");
             }
         }
         private static bool _DebugOutput;

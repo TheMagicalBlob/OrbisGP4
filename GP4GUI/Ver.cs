@@ -11,23 +11,34 @@ using static GP4GUI.Common;
 namespace GP4GUI {
     public partial class OptionsPage
     {
-        public const string Version = "2.67.363 "; // Easier to see, more likely to remember to update
+        public const string Version = "2.69.371 "; // Easier to see, more likely to remember to update
     }
 
     
 #if DEBUG
     public class Testing : GroupBox
     {
-        // Variable Declarations
+        //=================================\\
+        //--|   Variable Declarations   |--\\
+        //=================================\\
+        #region [Variable Declarations]
+
         public static string TestGamedataFolder;
         public static string TestGP4Path;
 
+        
         /// <summary>
-        ///   Collection of Controls Specifically for Debug Functionality.
-        ///</summary>
+        /// Collection of Controls Specifically for Debug Functionality.
+        /// </summary>
         public Control[] DebugControls { get; private set; }
+        #endregion
 
 
+
+
+        /// <summary>
+        /// Initialize a new instance of the Testing class, for variou- oh who the fuck am I writing this for
+        /// </summary>
         public Testing(Form Venat, GP4Creator gp4, Point location)
         {
             // Error / Improper Usage Checking
@@ -241,11 +252,3 @@ namespace GP4GUI {
     }
 #endif
 }
-
-/*
-
- - [GP4_GUI]: 
-
- - [libgp4]:  
-
-*/

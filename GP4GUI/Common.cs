@@ -2,13 +2,11 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
-using System.IO;
-using System.Text;
-
 
 #if DEBUG
 using System.Diagnostics;
 #endif
+
 
 namespace GP4GUI {
 

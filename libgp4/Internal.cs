@@ -22,7 +22,7 @@ namespace libgp4 {
     /// Usage:<br/>
     ///  1. Create A New Instance To Parse And Return All Relevant Data From The .gp4 File.<br/><br/>
     ///  2. Use The A Static Method To Read A Specific Attribute From The .gp4, Rather Than Reading Them All To Grab One/A Couple Things.
-    ///</summary>
+    /// </summary>
     public class GP4Reader {
 
         /// <summary>
@@ -53,11 +53,11 @@ namespace libgp4 {
         ///  <br/> [int] Id
         ///  <br/> [int] InitialChunkCount
         ///  <br/> [string] ChunkRange
-        ///</summary>
+        /// </summary>
         public struct Scenario {
 
             /// <summary> Create A New Scenario Instance From A .gp4 Node
-            ///</summary>
+            /// </summary>
             /// <param name="gp4Stream"> The XmlReader Instance With The Scneario Node </param>
             public Scenario(XmlReader gp4Stream) {
                 Type = gp4Stream.GetAttribute("type");
@@ -104,7 +104,7 @@ namespace libgp4 {
 
         /// <summary>
         /// Files That Aren't Meant To Be Added To A .pkg.
-        ///</summary>
+        /// </summary>
         private readonly string[] project_file_blacklist = new string[] {
                   // Drunk Canadian Guy
                     "right.sprx",
@@ -137,11 +137,11 @@ namespace libgp4 {
         private static readonly string assertion_base = $"An Error Occured When Reading Attribute From The Following Node: $|$\nMessage: %|%";
 
         /// <summary> Catch DLog Errors, Disabling Whichever Output Threw The Error.
-        ///</summary>
+        /// </summary>
         private static readonly bool[] use_output_channel = new bool[] { true, true };
 
         /// <summary> The Content Id In The Named File. (Redundancy To Hopefully Catch A Mismatched Id)
-        ///</summary>
+        /// </summary>
         private string sfo_content_id, playgo_content_id;
 
 
@@ -518,12 +518,12 @@ namespace libgp4 {
 
 
         /// <summary> Password To Be Used In Pkg Creation
-        ///</summary>
+        /// </summary>
         public string Passcode { get; private set; }
 
 
         /// <summary> True If The .gp4 Project Is For A Patch .pkg, False Otherwise.
-        ///</summary>
+        /// </summary>
         public bool IsPatchProject { get; private set; }
 
 
@@ -536,19 +536,19 @@ namespace libgp4 {
 
 
         /// <summary> Array Of All Files Listed In The .gp4 Project
-        ///</summary>
+        /// </summary>
         public string[] Files { get; private set; }
 
         /// <summary> Array Containing The Names Of Each Folder/Subfolder Within The Project Folder
-        ///</summary>
+        /// </summary>
         public string[] SubfolderNames { get; private set; }
 
         /// <summary> Array Containing The Full Path For Each Folder/Subfolder Within The Project Folder
-        ///</summary>
+        /// </summary>
         public string[] Subfolders { get; private set; }
 
         /// <summary> Array Containing Chunk Data For The Selected .gp4 Project File
-        ///</summary>
+        /// </summary>
         public string[] Chunks { get; private set; }
         /// <summary>
         /// chunk_count Attribute From The Chunk Info Node.
@@ -593,7 +593,7 @@ namespace libgp4 {
         //############################\\
         #region User Functions
         /// <summary> Check Various Parts Of The .gp4 To Try And Find Any Possible Errors In The Project File.
-        ///</summary>
+        /// </summary>
         public string[] VerifyGP4(Action<string> LoggingMethod = null) {
             var Errors = new List<string>();
             int i;
@@ -986,11 +986,11 @@ namespace libgp4 {
 
 
     /// <summary> A Small Class For Creating new .gp4 Files From Raw PS4 Gamedata, With A Few Options Related To .pkg Creation.
-    ///</summary>
+    /// </summary>
     public partial class GP4Creator {
 
         /// <summary> Class For Reading Parameters Reqired For .gp4 Creation From The param.sfo File (CUSA1234-example\sce_sys\param.sfo)
-        ///</summary>
+        /// </summary>
         public class SfoParser {
 
 #pragma warning disable CS1591
@@ -1114,7 +1114,7 @@ namespace libgp4 {
                         // Datatype = Int32
                         else if(DataTypes[i] == 4) {
                             SfoParams[i] = BitConverter.ToInt32(buffer, 0);
-                          Parent.DPrint($"Param: {SfoParams[i]}");
+                            Parent.DPrint($"Param: {SfoParams[i]}");
                         }
                     }
 
@@ -1181,7 +1181,7 @@ namespace libgp4 {
 
 
         /// <summary> Class For Reading Chunk &amp; Scenario Data Used In .gp4 Creation From The playgo-chunk.dat File (CUSA1234-example\sce_sys\playgo-chunk.dat)
-        ///</summary>
+        /// </summary>
         public class PlaygoParameters {
             public readonly int
                 chunk_count,        // Amount Of Chunks In The Application
@@ -1366,7 +1366,7 @@ namespace libgp4 {
         #region Internal Variables
 
         /// <summary> Names Of Files That Are Always To Be Excluded From .gp4 Projects By Default.
-        ///</summary>
+        /// </summary>
         public readonly string[] DefaultBlacklist = new string[] {
                     // Drunk Canadian Guy
                     "right.sprx",
@@ -1396,7 +1396,7 @@ namespace libgp4 {
         };
 
         /// <summary> List Of Additional Files To Include In The Project, Added by The User.
-        ///</summary>
+        /// </summary>
         private string[][] extra_files;
 
 
@@ -1549,12 +1549,8 @@ namespace libgp4 {
             var indent = new string('>', (int) (indentation ?? 0));
             var msg = indent + obj.ToString();
 
-            //if (LoggingMethod != null && !(VerboseOutput ^ IsVerboseMsg))
             if (LoggingMethod != null && !(!VerboseOutput && is_verbose_msg))
-                    LoggingMethod(msg);
-#endif
-#if DEBUG
-            DPrint(msg);
+                    LoggingMethod("##BASE PRINT: " + msg);
 #endif
         }
 
@@ -1571,18 +1567,17 @@ namespace libgp4 {
 
 
         /// <summary> Console Logging Method.
-        ///</summary>
+        /// </summary>
         /// <param name="obj"> The Object to Output The String Representation of. </param>
         private void DPrint(object obj)
         {
 #if DEBUG
-            Debug.WriteLine($"#libgp4: {obj}");
+            if (Console.IsOutputRedirected)
+                Debug.WriteLine($"#libgp4: {obj}");
 
-            if (!Console.IsOutputRedirected)
-                Console.WriteLine($"#libgp4: {obj}");
 
             if (LoggingMethod != null && DebugOutput)
-                LoggingMethod(obj);
+                LoggingMethod("$$DEBUG PRINT" + obj);
 #endif
         }
         #endregion

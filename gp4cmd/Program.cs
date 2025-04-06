@@ -3,14 +3,14 @@ using System.IO;
 using System.Linq;
 using libgp4;
 
+
 namespace gp4cmd;
-
-
 internal class Program
 {
     static void Main(string[] args)
     {
         GP4Creator gp4;
+        Console.Title = "GP4 CMD";
 
         // Catch improper usage
         if (args == null || args.Length < 1)
@@ -19,7 +19,12 @@ internal class Program
             Console.ReadKey(true);
             return;
         }
-
+        // Catch help command and print help dialogue
+        if (args[0] == "-h" || args[0] == "--help")
+        {
+            Help();
+            return;
+        }
 
         // Initialize new GP4Creator instance
         gp4 = new() {
@@ -29,18 +34,12 @@ internal class Program
         };
 
 
+
         // Parse program args (no I don't care how disgusting this is)
         for (int i = 0; i < args.Length - 1; ++i)
         {
             switch (args[i])
             {
-                // Print help output
-                case "-h":
-                case "--help":
-                    Help();
-                    break;
-
-
                 //#
                 //## Set boolean GP4Creator options
                 //#
@@ -50,7 +49,7 @@ internal class Program
                     gp4.IgnoreKeystone = true;
                     break;
 
-                case "--useabsolutefiles":
+                case "--absolutepaths":
                     gp4.UseAbsoluteFilePaths = true;
                     break;
 
@@ -88,8 +87,6 @@ internal class Program
 
                 case "--pkg":
                 case "--base":
-                case "--package":
-                case "--basepackage":
                 case "--basepkg":
                     gp4.BasePackagePath = args[++i];
                     break;
@@ -163,14 +160,10 @@ internal class Program
         }
 
 
-        //#
-        //## Verify parsed script args
-        //#
-
         // Verify provided gamedata path
         if (!Directory.Exists(args.Last()))
         {
-            Print($"An invalid path was provided for the folder containing the gamedata to be processed.\n - Directory \"{args.Last()}\" does not exist.");
+            Print($"\nAn invalid path was provided for the folder containing the gamedata to be processed.\n - Directory \"{args.Last()}\" does not exist.");
             Console.ReadKey(true);
             return;
         }
@@ -181,6 +174,7 @@ internal class Program
         //#
         //## Begin .gp4 creation
         //#
+        gp4.GamedataFolder = args.Last();
         var gp4Path = gp4.CreateGP4();
 
         // Check whether it ended up saving the file
@@ -192,40 +186,70 @@ internal class Program
 
 
 
-    /// <summary> Console.WriteLine shorthand for laziness. </summary>
+    /// <summary> Console.WriteLine shorthand for laziness (and consistency). </summary>
     private static void Print(object output) => Console.WriteLine(output);
 
     private static void Help()
     {
-        #if DEBUG
-        string[] helpOutput = [
+        Array.ForEach([
             "Usage:",
             "  gp4cmd.exe [options...] {Path to Gamedata Folder}",
             "",
             "Options:",
             "   -h",
-            "   --help:",
-            "             Print this help dialogue, then exit.",
+            "   --help:               |  Print this help dialogue, then exit.",
+            "   ",
             "   ",
             "   ",
             "   -i, -k",
             "   --ignore",
             "   --nokeystone",
-            "   --ignorekeystone",
+            "   --ignorekeystone      |  Avoid adding the keystone file to the .gp4's file listing when creating a base app package.",
             "   ",
             "   ",
+            "   -a",
+            "   --absolutepaths       |  Change the type of file paths used from relative (to the gamedata folder) to absolute.",
             "   ",
             "   ",
+            #if DEBUG
+            "   -d",
+            "   --debug",
+            "   --debugoutput         |  Enable debug-level logging messages.",
             "   ",
             "   ",
+            #endif
+            "   -v",
+            "   --verbose",
+            "   --verboseoutput       |  Enable verbose logging.",
+            "   ",
+            "   ",
+            "   -s, -c",
+            "   --skip",
+            "   --skipintegritycheck  |  Skip running various checks on the parsed gamedata before .gp4 creation.",
+            "   ",
+            "   ",
+            "   -p",
+            "   --passcode            |  Set the 32-char passcode attribute to be used for the created package.",
+            "   ",
+            "   ",
+            "   -o",
+            "   --out",
+            "   --output              |  Set a custom output directory for the finished .gp4 project.",
+            "                            --> Defaults to either the inside or outside of the provided gamedata folder, depending on whether absolute path files are enabled (false == inside)",
+            "   ",
+            "   ",
+            "   -b",
+            "   --pkg",
+            "   --base",
+            "   --basepkg             |  Set the path for the base application package, for use in marrying application patch packages.",
+            "                            --> Defaults to the expected filename of the base package",
+            "   ",
+            "   ",
+            "   -f, -e, -x",
+            "   --exclude",
+            "   --blacklist           |  Provide an array of file or folder names to exclude from the project",
             ""
-        ];
-        #else
-        string[] helpOutput = [
-            "Help dialogue not yet written."
-        ]; 
-        #endif
 
-        Array.ForEach(helpOutput, Print);
+        ], Print);
     }
 }

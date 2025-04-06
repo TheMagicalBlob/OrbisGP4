@@ -117,7 +117,7 @@ namespace GP4GUI
             this.OptionsBtn.TabIndex = 9;
             this.OptionsBtn.Text = "Options...";
             this.OptionsBtn.UseVisualStyleBackColor = false;
-            this.OptionsBtn.Click += new System.EventHandler(this.ToggleOptionsWindowVisibility);
+            this.OptionsBtn.Click += new System.EventHandler(this.OptionsBtn_Click);
             // 
             // ClearLogBtn
             // 
