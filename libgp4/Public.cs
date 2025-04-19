@@ -11,6 +11,7 @@ using System;
 using System.IO;
 using System.Xml;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace libgp4 {
 
@@ -480,18 +481,24 @@ namespace libgp4 {
                 return string.Empty;
             }
 
-            Print(new string[] { $".gp4 Project File Destination: {OutputPath}", $"Package Passcode: {Passcode}", "\n" }, true);
 
             // Initialize new Document Instance for the .gp4 Project.
+            Print(new string[] { $".gp4 Project File Destination: {OutputPath}", $"Package Passcode: {Passcode}", "\n" }, true);
             var gp4 = new XmlDocument();
 
 
+            // Check for a .gp4ignore file
             if (File.Exists($"{GamedataFolder}\\.gp4ignore"))
             {
                 if (FileBlacklist == Array.Empty<string>())
                 {
                     FileBlacklist = File.ReadAllLines($"{GamedataFolder}\\.gp4ignore");
                 }
+            }
+            // Check for a .app_path file
+            if(File.Exists($"{GamedataFolder}\\.app_path") && BasePackagePath == string.Empty)
+            {
+                BasePackagePath = File.ReadLines($"{GamedataFolder}\\.app_path").ToArray<string>()[0];
             }
 
 
@@ -516,6 +523,7 @@ namespace libgp4 {
                 CreateFilesElement(PlaygoData.chunk_count, extra_files, GamedataFolder, gp4),
                 CreateRootDirectoryElement(GamedataFolder, gp4)
             );
+
 
 
             // Write The .gp4 File To The Provided Folder / As The Provided Filename
