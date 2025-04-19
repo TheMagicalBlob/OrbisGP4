@@ -9,9 +9,6 @@ internal class Program
 {
     static void Main(string[] args)
     {
-        GP4Creator gp4;
-        Console.Title = "GP4 CMD";
-
         // Catch improper usage
         if (args == null || args.Length < 1)
         {
@@ -26,8 +23,11 @@ internal class Program
             return;
         }
 
+        Console.Title = "GP4 CMD";
+
+
         // Initialize new GP4Creator instance
-        gp4 = new() {
+        var gp4 = new GP4Creator() {
             LoggingMethod = Print,
             SkipEndComment = true,
             SkipIntegrityCheck = false
@@ -93,7 +93,7 @@ internal class Program
 
                 case "--exclude":
                 case "--blacklist":
-                    gp4.FileBlacklist = args[i..args.Length];
+                    gp4.FileBlacklist = args[++i..args.Length];
                     Print($"Set Blacklist as [{string.Join(", ", gp4.FileBlacklist)}]");
                     break;
 
@@ -145,7 +145,10 @@ internal class Program
 
                         case 'f':
                         case 'e': case 'x':
-                            gp4.FileBlacklist = args[i..args.Length];
+                            var blacklist = new string[args.Length - ++i];
+                            Array.Copy(args, i, blacklist, 0, blacklist.Length);
+
+                            gp4.FileBlacklist = args;
                             Print($"Set Blacklist as [{string.Join(", ", gp4.FileBlacklist)}]");
                             break;
                     }
@@ -191,7 +194,7 @@ internal class Program
 
     private static void Help()
     {
-        Array.ForEach([
+        Array.ForEach(new string[] {
             "Usage:",
             "  gp4cmd.exe [options...] {Path to Gamedata Folder}",
             "",
@@ -250,6 +253,6 @@ internal class Program
             "   --blacklist           |  Provide an array of file or folder names to exclude from the project",
             ""
 
-        ], Print);
+        }, Print);
     }
 }

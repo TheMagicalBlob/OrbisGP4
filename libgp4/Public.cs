@@ -485,6 +485,16 @@ namespace libgp4 {
             // Initialize new Document Instance for the .gp4 Project.
             var gp4 = new XmlDocument();
 
+
+            if (File.Exists($"{GamedataFolder}\\.gp4ignore"))
+            {
+                if (FileBlacklist == Array.Empty<string>())
+                {
+                    FileBlacklist = File.ReadAllLines($"{GamedataFolder}\\.gp4ignore");
+                }
+            }
+
+
             // Create Base .gp4 Elements (Up To Chunk/Scenario Data)
             var basic_elements = CreateBaseElements
             (

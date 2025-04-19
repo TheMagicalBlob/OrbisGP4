@@ -1035,7 +1035,10 @@ namespace libgp4 {
                     byte[] buffer;
                     object[] SfoParams;
                     string[] SfoParamLabels;
-                    int[] ParamOffsets, DataTypes, ParamLengths;
+                    int[] ParamOffsets,
+                          DataTypes,
+                          ParamLengths
+                    ;
 
 
                     // Check PSF File Magic, + 4 Bytes To Skip Label Base Ptr
