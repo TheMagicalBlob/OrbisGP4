@@ -1,8 +1,8 @@
 ﻿
-//################################\\
+//================================\\
 // Contents:                      \\
 //--> Publicly Accessible Members \\
-//################################\\
+//================================\\
 
 #define GUIExtras
 #define Log
@@ -41,10 +41,10 @@ namespace libgp4 {
 
 
 
-        //########################\\
+        //========================\\
         //--    User Options    --\\
-        //########################\\
-        #region User Options
+        //========================\\
+        #region [User Options]
         // TODO: sort these options, I can never remember what's where ffs
 
 
@@ -280,7 +280,7 @@ namespace libgp4 {
             set
             {
                 _LoggingMethod = value;
-                DPrint($"LoggingMethod => [Method: ({_LoggingMethod.Method}) | Target: ({_LoggingMethod.Target})]");
+                DPrint($"LoggingMethod => {_LoggingMethod.Method}");
             }
         }
         private static Action<object> _LoggingMethod;
@@ -379,14 +379,13 @@ namespace libgp4 {
         #endregion
         
         #endregion [User Options]
-        ///========================\\\
 
 
 
-        //############################\\
-        //--     User Functions     --\\
-        //############################\\
-        #region User Functions
+        //============================\\
+        //---|   User Functions   |---\\
+        //============================\\
+        #region [User Functions]
 
         #region WIP AddFile(s) Shit
         /*
@@ -438,7 +437,6 @@ namespace libgp4 {
         #endregion
 
 
-
         /// <summary>
         /// Build A New .gp4 Project File For The Provided Gamedata With The Current Options/Settings, And Save It In The Specified OutputDirectory.<br/><br/>
         /// First, Parses gamedata_folder\sce_sys\playgo-chunk.dat &amp; gamedata_folder\sce_sys\param.sfo For Parameters Required For .gp4 Creation,<br/>
@@ -482,25 +480,30 @@ namespace libgp4 {
             }
 
 
-            // Initialize new Document Instance for the .gp4 Project.
-            Print(new string[] { $".gp4 Project File Destination: {OutputPath}", $"Package Passcode: {Passcode}", "\n" }, true);
-            var gp4 = new XmlDocument();
+            Print(true, null, $".gp4 Project File Destination: {OutputPath}", $"Package Passcode: {Passcode}", "\n");
 
 
             // Check for a .gp4ignore file
-            if (File.Exists($"{GamedataFolder}\\.gp4ignore"))
+            if (File.Exists($"{GamedataFolder}\\.gp4ignore") && FileBlacklist.Length < 1)
             {
-                if (FileBlacklist == Array.Empty<string>())
-                {
-                    FileBlacklist = File.ReadAllLines($"{GamedataFolder}\\.gp4ignore");
-                }
+                FileBlacklist = File.ReadAllLines($"{GamedataFolder}\\.gp4ignore").Select(str => str = str.Replace("\"", string.Empty)).ToArray();
             }
             // Check for a .app_path file
-            if(File.Exists($"{GamedataFolder}\\.app_path") && BasePackagePath == string.Empty)
+            if(File.Exists($"{GamedataFolder}\\.app_path") && !File.Exists(BasePackagePath))
             {
-                BasePackagePath = File.ReadLines($"{GamedataFolder}\\.app_path").ToArray<string>()[0];
+                BasePackagePath = File.ReadAllText($"{GamedataFolder}\\.app_path").Replace("\"", string.Empty);
+            }
+            // Check for a .passcode file
+            if(File.Exists($"{GamedataFolder}\\.passcode"))
+            {
+                Passcode = File.ReadAllText($"{GamedataFolder}\\.passcode").Replace("\"", string.Empty);
             }
 
+
+
+
+            // Initialize a new XML Document instance for the .gp4 Project.
+            var gp4 = new XmlDocument();
 
             // Create Base .gp4 Elements (Up To Chunk/Scenario Data)
             var basic_elements = CreateBaseElements
@@ -513,7 +516,8 @@ namespace libgp4 {
                 gp4_timestamp
             );
 
-            // Create The Actual .go4 Structure
+
+            // Create The Actual .gp4 Structure
             BuildGp4Elements
             (
                 gp4,
@@ -523,6 +527,7 @@ namespace libgp4 {
                 CreateFilesElement(PlaygoData.chunk_count, extra_files, GamedataFolder, gp4),
                 CreateRootDirectoryElement(GamedataFolder, gp4)
             );
+
 
 
 
@@ -536,6 +541,5 @@ namespace libgp4 {
             return OutputPath;
         }
         #endregion
-        ///============================\\\
     }
 }

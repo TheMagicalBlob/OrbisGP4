@@ -10,10 +10,10 @@ namespace GP4GUI
 {
     public partial class MainForm
     {
-        //#######################################\\
-        //--     Basic Form Init Functions     --\\
-        //#######################################\\
-        #region [Basic Form Init Functions]
+        //=====================================\\
+        //--|   Designer Crap, No Touchie   |--\\
+        //=====================================\\
+        #region [Designer Crap, No Touchie]
 
         private IContainer components = null;
         protected override void Dispose(bool disposing)
@@ -173,7 +173,6 @@ namespace GP4GUI
             this.DebugOptionsBtn.TabIndex = 20;
             this.DebugOptionsBtn.Text = "Debug Options";
             this.DebugOptionsBtn.UseVisualStyleBackColor = false;
-            this.DebugOptionsBtn.Click += new System.EventHandler(this.DebugOptionsBtn_Click);
             // 
             // OutputWindow
             // 

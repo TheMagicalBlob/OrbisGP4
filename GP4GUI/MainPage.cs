@@ -42,6 +42,7 @@ namespace GP4GUI {
             Azem = new OptionsPage();
 #if DEBUG
             DebugOptions = new Testing(Venat, gp4, new Point(DebugOptionsBtn.Location.X, DebugOptionsBtn.Location.Y + DebugOptionsBtn.Size.Height - 2));
+            DebugOptionsBtn.Click += (sender, _) => DebugOptionsBtn_Click();
 #else
             DebugOptionsBtn.Visible = DebugOptionsBtn.Enabled = false;
 #endif
@@ -115,7 +116,7 @@ namespace GP4GUI {
         /// </summary>
         private void ToggleOptionsWindowVisibility()
         {
-            Azem.Visible = OptionsPageIsOpen ^= true;
+            Azem.Visible ^= true;
 		    Azem.Location = new Point(Venat.Location.X + (Venat.Size.Width - Azem.Size.Width)/2, Venat.Location.Y + 80);
             Azem.Update();
 
@@ -251,36 +252,18 @@ namespace GP4GUI {
 
         
 
+
         //======================================\\
         //--|   Event Handler Declarations   |--\\
         //======================================\\
         #region [Event Handler Declarations]
-
-
-        private void OptionsBtn_Click(object sender, EventArgs _) => ToggleOptionsWindowVisibility();
-
-
-        private void DebugOptionsBtn_Click(object sender, EventArgs _)
-        {
-#if DEBUG
-            DebugOptions.Visible = DebugOptions.Enabled ^= true;
-#endif
-        }
-
-
-        /// <summary>
-        /// Wipe the Text in OutputWindow
-        /// </summary>
-        private void ClearLogBtn_Click(object sender, EventArgs _) => OutputWindow.Clear();
-
         
-
         /// <summary>
-        /// Use The Dummy File Method To Open A Folder.
+        /// Browse for a gamedata folder to parse in to a .gp4 project file.
         /// </summary>
         private void BrowseBtn_Click(object sender, EventArgs _)
         {
-            // Use the ghastly Directory Tree Dialogue to Choose A Folder
+            // Use the ghastly Directory Tree Dialogue to choose a folder
             if (LegacyFolderSelectionDialogue)
             {
                 using (var FBrowser = new FolderBrowserDialog { Description = "Please Select the Desired Gamedata Folder" })
@@ -291,7 +274,7 @@ namespace GP4GUI {
                 }
 
             }
-            // Use The Newer "Hackey" Method
+            // Use the newer hacky dummy file method
             else {
                 using(var Browser = new OpenFileDialog {
                     ValidateNames   = false,
@@ -305,15 +288,34 @@ namespace GP4GUI {
                     GamedataPathTextBox.Set(Browser.FileName.Remove(Browser.FileName.LastIndexOf('\\')));
             }
         }
-
-
+        
 
         /// <summary>
-        /// Toggle Dowpdown Menu Visibility.
+        /// Toggle browse-mode selection dropdown menu visibility.
         /// </summary>
         private void SwapBrowseModeBtn_Click(object _, EventArgs __) => DropdownMenu[1].Visible = DropdownMenu[0].Visible ^= true;
 
         
+        /// <summary>
+        /// Wipe the Text in OutputWindow.
+        /// </summary>
+        private void ClearLogBtn_Click(object sender, EventArgs _) => OutputWindow.Clear();
+
+
+        #if DEBUG
+        /// <summary>
+        /// Toggle the Debug Options panel.
+        /// </summary>
+        private void DebugOptionsBtn_Click() => DebugOptions.Visible = DebugOptions.Enabled ^= true;
+        #endif
+
+
+        /// <summary>
+        /// Toggle the Options panel.
+        /// </summary>
+        private void OptionsBtn_Click(object sender, EventArgs _) => ToggleOptionsWindowVisibility();
+
+
         /// <summary>
         /// Verify an Existing .gp4 Project File.
         /// </summary>

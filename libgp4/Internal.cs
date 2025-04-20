@@ -1,7 +1,7 @@
-﻿//###############################\\
+﻿//===============================\\
 // Contents:                     \\
 //--> Main Library Functionality \\
-//###############################\\
+//===============================\\
 
 #define GUIExtras
 #define Log
@@ -97,10 +97,10 @@ namespace libgp4 {
         }
 
 
-        //##########################################\\
-        //--     Internal Variables / Methods     --\\
-        //##########################################\\
-        #region Internal Variables / Methods
+        //==========================================\\
+        //---|   Internal Variables / Methods   |---\\
+        //==========================================\\
+        #region [Internal Variables / Methods]
 
         /// <summary>
         /// Files That Aren't Meant To Be Added To A .pkg.
@@ -493,13 +493,12 @@ namespace libgp4 {
         }
 
         #endregion
-        ///==========================================\\\
 
-
-        //#####################################\\
-        //--     GP4 Attributes / Values     --\\
-        //#####################################\\
-        #region GP4 Attributes / Values
+        
+        //============================================\\
+        //---|   GP4 Project Attribute / Values   |---\\
+        //============================================\\
+        #region [GP4 Project Attributes / Values]
 
         /// <summary>
         /// Volume Timestamp / .gp4 Creation Time <br/><br/>
@@ -585,13 +584,13 @@ namespace libgp4 {
         private int version;
 
         #endregion
-        ///=====================================\\\
 
+        
+        //============================\\
+        //---|   User Functions   |---\\
+        //============================\\
+        #region [User Functions]
 
-        //############################\\
-        //--     User Functions     --\\
-        //############################\\
-        #region User Functions
         /// <summary> Check Various Parts Of The .gp4 To Try And Find Any Possible Errors In The Project File.
         /// </summary>
         public string[] VerifyGP4(Action<string> LoggingMethod = null) {
@@ -825,6 +824,7 @@ namespace libgp4 {
             return null;
         }
 
+
         /// <summary>
         /// Check Whether The .gp4 Project File Is A Patch, Or An Application Project.
         /// </summary>
@@ -980,9 +980,9 @@ namespace libgp4 {
             }
         }
         #endregion
-        ///============================\\\
-
     }
+
+
 
 
     /// <summary> A Small Class For Creating new .gp4 Files From Raw PS4 Gamedata, With A Few Options Related To .pkg Creation.
@@ -1183,7 +1183,8 @@ namespace libgp4 {
         }
 
 
-        /// <summary> Class For Reading Chunk &amp; Scenario Data Used In .gp4 Creation From The playgo-chunk.dat File (CUSA1234-example\sce_sys\playgo-chunk.dat)
+        /// <summary>
+        /// Class For Reading Chunk &amp; Scenario Data Used In .gp4 Creation From The playgo-chunk.dat File at [GamedataFolder]\sce_sys\playgo-chunk.dat.
         /// </summary>
         public class PlaygoParameters {
             public readonly int
@@ -1363,10 +1364,10 @@ namespace libgp4 {
         }
 
 
-        //################################\\
-        //--     Internal Variables     --\\
-        //################################\\
-        #region Internal Variables
+        //================================\\
+        //---|   Internal Variables   |---\\
+        //================================\\
+        #region [Internal Variables]
 
         /// <summary> Names Of Files That Are Always To Be Excluded From .gp4 Projects By Default.
         /// </summary>
@@ -1550,10 +1551,9 @@ namespace libgp4 {
         {
 #if Log
             var indent = new string('>', (int) (indentation ?? 0));
-            var msg = indent + obj.ToString();
-
+            
             if (LoggingMethod != null && !(!VerboseOutput && is_verbose_msg))
-                    LoggingMethod("##BASE PRINT: " + msg);
+                    LoggingMethod(indent + obj.ToString());
 #endif
         }
 
@@ -1565,7 +1565,7 @@ namespace libgp4 {
         /// <param name="objs"> The objects to convert and output. </param>
         /// <param name="is_verbose_msg"> Only output obj if the VerboseOutput option is enabled. </param>
         /// <param name="indentation"> Indentation for the current message (for readability). </param>
-        internal void Print(object[] objs, bool is_verbose_msg, int? indentation = null) => Array.ForEach(objs, arg => Print(arg, is_verbose_msg, indentation));
+        internal void Print(bool is_verbose_msg, int? indentation, params object[] objs) => Array.ForEach(objs, arg => Print(arg, is_verbose_msg, indentation));
 
 
 
@@ -1580,10 +1580,9 @@ namespace libgp4 {
 
 
             if (LoggingMethod != null && DebugOutput)
-                LoggingMethod("$$DEBUG PRINT" + obj);
+                LoggingMethod(obj);
 #endif
         }
         #endregion
-        ///================================\\\
     }
 }

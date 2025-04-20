@@ -3,6 +3,7 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 
+
 #if DEBUG
 using System.Diagnostics;
 #endif
@@ -15,23 +16,23 @@ namespace GP4GUI {
     /// </summary>
     public static class Common
     {
-
-        //###################################\\
-        //--     Variable Declarations     --\\
-        //###################################\\
-        #region Variable Declarations
+        //=================================\\
+        //--|   Variable Declarations   |--\\
+        //=================================\\
+        #region [Variable Declarations]
         
         //#
         //## Form Functionality Variables
         //#
-        #region [Form Functionality Variables]
 
-        //TODO: Label These
-        public static bool
-            LegacyFolderSelectionDialogue = true, // 
-            OptionsPageIsOpen = false,            //
-            MouseIsDown = false                   //
-        ;
+        /// <summary> Boolean global to set the type of dialogue to use for the GamedataFolder path box's browse button. </summary>
+        public static bool LegacyFolderSelectionDialogue = true;
+
+        /// <summary> Return the current state of the options page. </summary>
+        public static bool OptionsPageIsOpen { get => Azem.Visible; }
+
+        /// <summary> Boolean global for keeping track of the current mouse state. </summary>
+        public static bool MouseIsDown = false;
 
 
         /// <summary> Store Expected Options Form Offset
@@ -51,12 +52,13 @@ namespace GP4GUI {
 
         /// <summary> OutputWindow Pointer/Ref Because I'm Lazy. </summary>
         public static RichTextBox _OutputWindow;
-        #endregion
+
 
 
         //#
         //## Look/Feel-Related Variables
         //#
+
         public static Color AppColour = Color.FromArgb(125, 183, 245);
         public static Color AppColourLight = Color.FromArgb(210, 240, 250);
 
@@ -65,23 +67,23 @@ namespace GP4GUI {
         public static readonly Font MainFont        = new Font("Gadugi", 8.25f, FontStyle.Bold); // For the vast majority of controls; anything the user doesn't edit, really.
         public static readonly Font TextFont        = new Font("Segoe UI Semibold", 9f); // For option controls with customized contents
         public static readonly Font DefaultTextFont = new Font("Segoe UI Semibold", 9f, FontStyle.Italic); // For option controls in default states
-
-        #endregion Variable Declarations
-        //===================================\\
+        #endregion
 
 
-
-        //###################################\\
-        //--     Function Declarations     --\\
-        //###################################\\
-        #region Function Declarations
+        
+        //==================================\\
+        //--|   Function Delcarations   |---\\
+        //==================================\\
+        #region [Function Delcarations]
 
         //#
         //## Form Functionality Functions
         //#
         #region [Form Functionality Functions]
 
-        // Handle Form Dragging for Borderless Form
+        /// <summary>
+        /// Handle Form Dragging for Borderless Form.
+        /// </summary>
         public static void MoveForm() {
             if(MouseIsDown)
             {
@@ -95,7 +97,9 @@ namespace GP4GUI {
         }
 
         
-        // Draw a Thin Border for the Control On-Paint
+        /// <summary>
+        /// Draw a Thin Border for the Control On-Paint
+        /// </summary>
         public static void PaintBorder(object sender, PaintEventArgs e) {
             var ItemPtr = sender as Form;
 
@@ -110,14 +114,16 @@ namespace GP4GUI {
             e.Graphics.Clear(Color.FromArgb(20, 20, 20));
             e.Graphics.DrawLines(pen, Border);
         }
-        #endregion [Form Functionality Functions]
+        #endregion
 
 
         //#
-        //## Logging Bullshit
+        //## Logging function
         //#
-        
-        /// <summary> Output Misc. Messages to the Main Output Window (the big-ass richtext box). </summary>
+
+        /// <summary>
+        /// Output Misc. Messages to the Main Output Window (the big-ass richtext box).
+        /// </summary>
         internal static void Print(object str = null)
         {
 #if DEBUG
@@ -132,18 +138,15 @@ namespace GP4GUI {
                 Debug.WriteLine($"#libgp4: {str ?? "null"}");
 #endif
         }
-
-        #endregion Function Declarations
-        //===================================\\
-
+        #endregion
     }
 
 
-
-    //################################################\\
-    //--    Custom/"Overridden" Control Classes     --\\
-    //################################################\\
-    #region [Custom/"Overridden" Control Classes]
+    
+    //=====================================\\
+    //---|   Custom Class Extensions   |---\\
+    //=====================================\\
+    #region [Custom Class Extensions]
 
     /// <summary>
     /// Custom RichTextBox class because bite me.
@@ -159,8 +162,6 @@ namespace GP4GUI {
         }
     }
 
-    
-    
     /// <summary> Custom TextBox Class to Better Handle Default TextBox Contents. </summary>
     public class TextBox : System.Windows.Forms.TextBox
     {
@@ -234,8 +235,5 @@ namespace GP4GUI {
             }
         }
     }
-
     #endregion
-    ///================================================\\\
-
 }

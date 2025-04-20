@@ -1,8 +1,8 @@
 ﻿
-//##############################################\\
+//==============================================\\
 // Contents:                                    \\
 //--> Functions to Create Various .gp4 Elements \\
-//##############################################\\
+//==============================================\\
 
 #define GUIExtras
 #define Log
@@ -15,10 +15,11 @@ using System.Xml;
 namespace libgp4 {
     public partial class GP4Creator {
 
-        //##################################\\
-        //--     GP4 ELEMENT CREATION     --\\
-        //##################################\\
-        #region GP4 ELEMENT CREATION
+        
+        //=========================================\\
+        //--|   .gp4 Project Element Creation   |--\\
+        //=========================================\\
+        #region [.gp4 Project Element Creation]
 
         /// <summary>
         ///  Create Base .gp4 Elements (Up To The Start Of The chunk_info Node).
@@ -146,36 +147,58 @@ namespace libgp4 {
         }
 
 
-        /// <summary> Create "rootdir" Element Containing The Game's File Structure through A Listing Of Each Directory And Subdirectory
+        /// <summary>
+        /// Create "rootdir" Element Containing The Game's File Structure through A Listing Of Each Directory And Subdirectory.
         /// </summary>
-        private XmlNode CreateRootDirectoryElement(string gamedata_folder, XmlDocument gp4) {
+        private XmlNode CreateRootDirectoryElement(string gamedata_folder, XmlDocument gp4)
+        {
             var rootdir = gp4.CreateElement("rootdir");
 
-            void AppendSubfolder(string dir, XmlElement node) {
-                foreach(string folder in Directory.GetDirectories(dir)) {
+            void AppendSubfolder(string dir, XmlElement node)
+            {
+                foreach(string folder in Directory.GetDirectories(dir))
+                {
                     var subdir = gp4.CreateElement("dir");
+                    
                     subdir.SetAttribute("targ_name", folder.Substring(folder.LastIndexOf('\\') + 1));
 
-                    if(folder.Substring(folder.LastIndexOf('\\') + 1) != "about")
+                    if (folder.Substring(folder.LastIndexOf('\\') + 1) != "about")
+                    {
                         node.AppendChild(subdir);
+                    }
 
-                    if(Directory.GetDirectories(folder).Length > 0) AppendSubfolder(folder, subdir);
+                    if (Directory.GetDirectories(folder).Length > 0)
+                    {
+                        AppendSubfolder(folder, subdir);
+                    }
                 }
             }
 
-            foreach(string folder in Directory.GetDirectories(gamedata_folder)) {
+            foreach(string folder in Directory.GetDirectories(gamedata_folder))
+            {
+                if (FileBlacklist.Contains(folder))
+                {
+                    continue;
+                }
+
                 var dir = gp4.CreateElement("dir");
+                
                 dir.SetAttribute("targ_name", folder.Substring(folder.LastIndexOf('\\') + 1));
 
+
                 rootdir.AppendChild(dir);
-                if(Directory.GetDirectories(folder).Length > 0) AppendSubfolder(folder, dir);
+                if (Directory.GetDirectories(folder).Length > 0)
+                {
+                    AppendSubfolder(folder, dir);
+                }
             }
 
             return rootdir;
         }
 
 
-        /// <summary> Create "chunks" Element
+        /// <summary>
+        /// Create "chunks" Element.
         /// </summary>
         private XmlNode CreateChunksElement(PlaygoParameters data, XmlDocument gp4) {
             var chunks = gp4.CreateElement("chunks");
@@ -194,7 +217,8 @@ namespace libgp4 {
         }
 
 
-        /// <summary> Create "scenarios" Element
+        /// <summary>
+        /// Create "scenarios" Element.
         /// </summary>
         private XmlNode CreateScenariosElement(PlaygoParameters data, XmlDocument gp4) {
             var scenarios = gp4.CreateElement("scenarios");
@@ -220,9 +244,10 @@ namespace libgp4 {
         }
 
 
-        /// <summary> Build .gp4 Structure And Save To File
+        /// <summary>
+        /// Build .gp4 Structure And Save To File.
         /// </summary>
-        /// <returns> Time Taken For Build Process </returns>
+        /// <returns> Time Taken For Build Process. </returns>
         private void BuildGp4Elements(XmlDocument gp4_project, XmlNode[] base_elements, XmlNode chunks, XmlNode scenarios, XmlNode files, XmlNode rootdir) {
 
             gp4_project.AppendChild(gp4_project.CreateXmlDeclaration("1.1", "utf-8", "yes"));
@@ -331,6 +356,5 @@ namespace libgp4 {
         }
 
         #endregion
-        ///==================================\\\
     }
 }
