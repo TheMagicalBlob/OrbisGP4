@@ -9,6 +9,7 @@
 
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Xml;
 
 
@@ -77,8 +78,10 @@ namespace libgp4 {
         /// <summary>
         /// Create "files" Element Containing File Destination And Source Paths, Along With Whether To Enable PFS Compression.
         /// </summary>
-        private XmlNode CreateFilesElement(int chunk_count, string[][] extra_files, string gamedata_folder, XmlDocument gp4) {
+        private XmlNode CreateFilesElement(int chunk_count, string[][] extra_files, string gamedata_folder, XmlDocument gp4)
+        {
             var files = gp4.CreateElement("files");
+            
             foreach (var file_path in Directory.GetFiles(gamedata_folder, "*", SearchOption.AllDirectories))
             {
                 Print($"Processing File \"{file_path}\".", true);
@@ -97,14 +100,11 @@ namespace libgp4 {
                     file_path.Remove(0, gamedata_folder.Length + 1) // Strip Gamedata Folder Path From Filepath
                 );
 
-                bool ext;
-                if (!SkipPfsCompressionForFile(file_path)) {
+                if (!SkipPfsCompressionForFile(file_path))
+                {
                     file.SetAttribute("pfs_compression", "enable");
-                    ext = true;
                 }
-                else
-                    ext = false;
-                Print($"PFS Compression {(ext? "En":"Dis")}abled", true, 1);
+
 
                 
 
@@ -158,7 +158,7 @@ namespace libgp4 {
             {
                 foreach(string folder in Directory.GetDirectories(dir))
                 {
-                    if (FileBlacklist.Contains(folder))
+                    if (FileShouldBeExcluded(folder))
                     {
                         continue;
                     }
@@ -181,7 +181,7 @@ namespace libgp4 {
 
             foreach(string folder in Directory.GetDirectories(gamedata_folder))
             {
-                if (FileBlacklist.Contains(folder))
+                if (FileShouldBeExcluded(folder))
                 {
                     continue;
                 }
@@ -280,34 +280,55 @@ namespace libgp4 {
         /// Checks Both A Default String[] Of Blacklisted Files, As Well As Any User Blacklisted Files/Folders.
         /// </summary>
         /// <returns> True If The File in filepath Shouldn't Be Included In The .gp4 </returns>
-        private bool FileShouldBeExcluded(string filepath) {
-            if (new string[] { "sce_sys", "." }.All(filepath.Contains) && new string[] { ".dds", ".encrypted" }.Any(filepath.Substring(filepath.LastIndexOf('.')).Equals)) {
-                Print($"Ignoring {filepath.Substring(filepath.LastIndexOf('.'))} In System Folder.", true, 1);
+        private bool FileShouldBeExcluded(string file_path)
+        {
+            if (new string[] { "sce_sys", "." }.All(file_path.Contains) && new string[] { ".dds", ".encrypted" }.Any(file_path.Substring(file_path.LastIndexOf('.')).Equals)) {
+                Print($"Ignoring {file_path.Substring(file_path.LastIndexOf('.'))} In System Folder.", true, 1);
                 return true;
             }
-            else if (filepath.Contains("keystone") && IgnoreKeystone) {
+            else if (file_path.Contains("keystone") && IgnoreKeystone) {
                 Print("Ignoring keystone File.", true, 1);
                 return true;
             }
-            else if (filepath.Contains('.') && filepath.Substring(filepath.LastIndexOf('.')) == ".gp4") {
+            else if (file_path.Contains('.') && file_path.Substring(file_path.LastIndexOf('.')) == ".gp4") {
                 Print("Ignoring .gp4 Project File.", true, 1);
                 return true;
             }
+            
 
 
-            // Exclude Default Items.
-            if(DefaultBlacklist.Any(filepath.Contains)) {
-                Print($"Ignoring: {filepath}", true, 1);
-                return true;
+            
+
+
+            bool checkPath(string path)
+            {
+                if (Directory.Exists(path))
+                {
+                    if (path == file_path)
+                    {
+                        Print($"Ignoring Folder: {file_path}.", true, 1);
+
+                        return true;
+                    }
+
+                    return file_path.Contains(path + '\\'); // Avoid printing the "ignoring x" output for items inside ignored folders
+
+                }
+                else if (File.Exists(path))
+                {
+                    if (path == file_path)
+                    {
+                        Print($"Ignoring File: {file_path}.", true, 1);
+
+                        return true;
+                    }
+                }
+
+
+                return false;
             }
 
-            // Exclude User-Specified Items
-            if(FileBlacklist != null && FileBlacklist.Any(filepath.Contains)) {
-                Print($"User Ignoring: {filepath}", true, 1);
-                return true;
-            }
-
-            return false;
+            return DefaultBlacklist.Select(item => item = item[1] == ':' ? item : $"{GamedataFolder}\\{item}").Any(checkPath) || FileBlacklist.Select(item => item = item[1] == ':' ? item : $"{GamedataFolder}\\{item}").Any(checkPath);
         }
 
 
@@ -316,9 +337,10 @@ namespace libgp4 {
         /// <br/><br/> [TODO: Flesh This List Out/Do it Properly. This Is Almost Certainly Incomplete. Need More Brain Juice.]
         /// </summary>
         /// 
-        /// <returns> True If Pfs Compression Should Be Enabled. </returns>
-        private bool SkipPfsCompressionForFile(string filepath) {
-            var ret = new string[] {
+        /// <returns> True if pfs compression should be enabled. </returns>
+        private bool SkipPfsCompressionForFile(string filepath)
+        {
+            var pfsCompression = new string[] {
                 "sce_sys",
                 "sce_module",
                 ".fself",
@@ -337,11 +359,10 @@ namespace libgp4 {
                 ".zip",
                 ".7z"
             }.Any(filepath.ToLower().Contains);
-            if (ret) {
 
-            }
-
-            return ret;
+            
+            Print($"PFS Compression {(pfsCompression? "En":"Dis")}abled", true, 1);
+            return pfsCompression;
         }
 
 
@@ -350,8 +371,9 @@ namespace libgp4 {
         /// <br/><br/> [TODO: Flesh This List Out/Do it Properly. This Is Almost Certainly Incomplete. Need More Brain Juice.]
         /// </summary>
         /// 
-        /// <returns> True If The Chunk Attribute Should Be Skipped. </returns>
-        private bool SkipChunkAttributeForFile(string filepath) {
+        /// <returns> True if the chunk attribute should be skipped. </returns>
+        private bool SkipChunkAttributeForFile(string filepath)
+        {
             return new string[] {
                 "keystone",
                 "sce_sys",

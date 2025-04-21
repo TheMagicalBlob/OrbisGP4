@@ -1355,13 +1355,16 @@ namespace libgp4 {
 
                     while(buffer[byteIndex] != 0)
                         Builder.Append(Convert.ToChar(buffer[byteIndex++])); // Just Take A Byte, You Fussy Prick
-                        //Builder.Append(Encoding.UTF8.GetString(new byte[] { buffer[byteIndex++] })); // Just Take A Byte, You Fussy Prick
 
                     byteIndex++;
                     StringArray[index] = Builder.ToString();
                 }
             }
         }
+
+
+
+
 
 
         //================================\\
@@ -1371,38 +1374,48 @@ namespace libgp4 {
 
         /// <summary> Names Of Files That Are Always To Be Excluded From .gp4 Projects By Default.
         /// </summary>
-        public readonly string[] DefaultBlacklist = new string[] {
-                    // Drunk Canadian Guy
-                    "right.sprx",
-                    "sce_discmap.plt",
-                    "sce_discmap_patch.plt",
-                    @"sce_sys\playgo-chunk",
-                    @"sce_sys\psreserved.dat",
-                    @"sce_sys\playgo-manifest.xml",
-                    @"sce_sys\origin-deltainfo.dat",
-                    // Al Azif
-                    @"sce_sys\.metas",
-                    @"sce_sys\.digests",
-                    @"sce_sys\.image_key",
-                    @"sce_sys\license.dat",
-                    @"sce_sys\.entry_keys",
-                    @"sce_sys\.entry_names",
-                    @"sce_sys\license.info",
-                    @"sce_sys\selfinfo.dat",
-                    @"sce_sys\imageinfo.dat",
-                    @"sce_sys\.unknown_0x21",
-                    @"sce_sys\.unknown_0xC0",
-                    @"sce_sys\pubtoolinfo.dat",
-                    @"sce_sys\app\playgo-chunk",
-                    @"sce_sys\.general_digests",
-                    @"sce_sys\target-deltainfo.dat",
-                    @"sce_sys\app\playgo-manifest.xml"
+        public readonly string[] DefaultBlacklist = new string[]
+        {
+                // Drunk Canadian Guy
+                "sce_discmap.plt",
+                "sce_discmap_patch.plt",
+                @"sce_sys\about",
+                @"sce_sys\playgo-chunk",
+                @"sce_sys\psreserved.dat",
+                @"sce_sys\playgo-manifest.xml",
+                @"sce_sys\origin-deltainfo.dat",
+                // Al Azif
+                @"sce_sys\.metas",
+                @"sce_sys\.digests",
+                @"sce_sys\.image_key",
+                @"sce_sys\license.dat",
+                @"sce_sys\.entry_keys",
+                @"sce_sys\.entry_names",
+                @"sce_sys\license.info",
+                @"sce_sys\selfinfo.dat",
+                @"sce_sys\imageinfo.dat",
+                @"sce_sys\.unknown_0x21",
+                @"sce_sys\.unknown_0xC0",
+                @"sce_sys\pubtoolinfo.dat",
+                @"sce_sys\app\playgo-chunk",
+                @"sce_sys\.general_digests",
+                @"sce_sys\target-deltainfo.dat",
+                @"sce_sys\app\playgo-manifest.xml"
         };
 
         /// <summary> List Of Additional Files To Include In The Project, Added by The User.
         /// </summary>
         private string[][] extra_files;
 
+        #endregion
+
+
+
+        
+        //================================\\
+        //---|   Internal Functions   |---\\
+        //================================\\
+        #region [Internal Functions]
 
 
         // TODO: update this, the messages as an array is clunky the way they're written
@@ -1461,9 +1474,10 @@ namespace libgp4 {
 
 
 
-            //##################################################\\
-            //  Throw An Exception If Any Errors Were Detected  \\
-            //##################################################\\
+
+            //#
+            //## Throw An Exception If Any Errors Were Detected
+            //#
             if (Errors.Count != 0) {
 
                 Print(Errors, true);
@@ -1475,7 +1489,10 @@ namespace libgp4 {
         }
 
 
-        /// <summary> Assign Default Values to Unassigned Options. </summary>
+
+        /// <summary>
+        /// Assign Default Values to Unassigned Options.
+        /// </summary>
         private void ApplyDefaultsToUnsetMembers(SfoParser sfo_data)
         {
             //#
@@ -1540,6 +1557,8 @@ namespace libgp4 {
 
 
 
+
+
         /// <summary>
         /// Output the string representation of obj to the a custom output method if one's been assigned to GP4Creator.LoggingMethod. <br/><br/>
         /// Duplicates Message To Standard Console Output As Well.
@@ -1572,15 +1591,18 @@ namespace libgp4 {
         /// <summary> Console Logging Method.
         /// </summary>
         /// <param name="obj"> The Object to Output The String Representation of. </param>
-        private void DPrint(object obj)
+        private void DPrint(object obj, int? indentation = null)
         {
 #if DEBUG
+            var indent = new string('>', (int) (indentation ?? 0));
+
+
             if (Console.IsOutputRedirected)
-                Debug.WriteLine($"#libgp4: {obj}");
+                Debug.WriteLine($"#libgp4: {indent}{obj}");
 
 
             if (LoggingMethod != null && DebugOutput)
-                LoggingMethod(obj);
+                LoggingMethod($"{indent}{obj}");
 #endif
         }
         #endregion
