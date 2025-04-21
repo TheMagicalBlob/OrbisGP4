@@ -158,6 +158,11 @@ namespace libgp4 {
             {
                 foreach(string folder in Directory.GetDirectories(dir))
                 {
+                    if (FileBlacklist.Contains(folder))
+                    {
+                        continue;
+                    }
+
                     var subdir = gp4.CreateElement("dir");
                     
                     subdir.SetAttribute("targ_name", folder.Substring(folder.LastIndexOf('\\') + 1));
