@@ -1379,7 +1379,7 @@ namespace libgp4 {
                 // Drunk Canadian Guy
                 "sce_discmap.plt",
                 "sce_discmap_patch.plt",
-                @"sce_sys\about",
+                @"sce_sys\about\right.sprx",
                 @"sce_sys\playgo-chunk.dat",
                 @"sce_sys\playgo-chunk.sha",
                 @"sce_sys\psreserved.dat",
