@@ -1380,6 +1380,8 @@ namespace libgp4 {
                 "sce_discmap.plt",
                 "sce_discmap_patch.plt",
                 @"sce_sys\about\right.sprx",
+                @"sce_sys\app\playgo-chunk.dat",
+                @"sce_sys\app\playgo-chunk.sha",
                 @"sce_sys\playgo-chunk.dat",
                 @"sce_sys\playgo-chunk.sha",
                 @"sce_sys\psreserved.dat",
