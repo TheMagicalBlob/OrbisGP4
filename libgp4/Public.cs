@@ -158,11 +158,25 @@ namespace libgp4 {
         /// <summary>
         /// An Array Containing The Names Of Any Files Or Folders That Are To Be Excluded From The .gp4 Project.
         /// </summary>
-        public string[] FileBlacklist {
+        public string[] FileBlacklist
+        {
             get => _BlacklistedFilesOrFolders ?? Array.Empty<string>();
 
             set {
                 _BlacklistedFilesOrFolders = value ?? Array.Empty<string>();
+
+
+                // Format relative file paths for convenience
+                _BlacklistedFilesOrFolders.Select(item =>
+                {
+                    if (item[1] != ':')
+                    {
+                        return GamedataFolder + '\\' + item;
+                    }
+
+                    return item;
+                });
+
                 DPrint($"BlacklistedFilesOrFolders => [{string.Join(", ", _BlacklistedFilesOrFolders ?? Array.Empty<string>())}]");
             }
         }
@@ -446,12 +460,13 @@ namespace libgp4 {
         /// <returns> The Absolute Path to the Created .gp4 Project File. </returns>
         public string CreateGP4()
         {
-            //// TODO: Test this more thoroughly
-
-            // Timestamp For GP4, Same Format Sony Used Though Sony's Technically Only Tracks The Date,
-            // With The Time Left As 00:00, But Imma Just Add The Time. It Doesn't Break Anything).
-            //var gp4_timestamp = DateTime.Now.GetDateTimeFormats()[91];
-            //var gp4_timestamp = "2024-01-01 00:00:00";
+            //#
+            //## GP4 Project File Creation Start
+            //#
+            Print($"Beginning .gp4 Project Creation.\n", false);
+            
+            // Create a timestamp for the .gp4 project file.
+            // Uses the same format sony did, though they only tracked the date and left the time zeroed. I'm just gonna add it though, the publishing tools don't seem to care.
             string
                 Second = DateTime.Now.Second.ToString(),
                 Minute = DateTime.Now.Minute.ToString(),
@@ -460,27 +475,29 @@ namespace libgp4 {
                 Month  = DateTime.Now.Month.ToString()
             ;
             var gp4_timestamp = $"{DateTime.Now.Year}-{Month.PadLeft(2, '0')}-{Day.PadLeft(2, '0')} {Hour.PadLeft(2, '0')}:{Minute.PadLeft(2, '0')}:{Second.PadLeft(2, '0')}";
-            ////^^
 
-
-
-            Print($"Starting .gp4 Creation.\n", false);
 
             // Check The Parsed Data For Any Potential Errors Before Building The .gp4 With It
             ApplyDefaultsToUnsetMembers(SfoParams);
 
 
+            // Verify project data
             var errors = VerifyProjectData(GamedataFolder, PlaygoData.playgo_content_id, SfoParams);
             
             if (errors.Length > 0)
             {
+                Print("\n", false);
                 Array.ForEach(errors, error => Print(error + '\n', false));
-                Print($".gp4 Creation Failed; {errors.Length} Errors Found.", false);
+
+                Print($"\n.gp4 Creation Failed; {errors.Length} Errors Found.", false);
                 return string.Empty;
             }
 
 
-            Print(true, null, $".gp4 Project File Destination: {OutputPath}", $"Package Passcode: {Passcode}", "\n");
+            
+
+
+
 
 
             // Check for a .gp4ignore file
@@ -518,6 +535,7 @@ namespace libgp4 {
 
 
             // Create The Actual .gp4 Structure
+            Print($"Start Time: {DateTime.Now.Minute.ToString().PadLeft(2, '0')}:{DateTime.Now.Second.ToString().PadLeft(2, '0')}", false);
             BuildGp4Elements
             (
                 gp4,
@@ -527,7 +545,7 @@ namespace libgp4 {
                 CreateFilesElement(PlaygoData.chunk_count, extra_files, GamedataFolder, gp4),
                 CreateRootDirectoryElement(GamedataFolder, gp4)
             );
-
+            Print($"End Time: {DateTime.Now.Minute.ToString().PadLeft(2, '0')}:{DateTime.Now.Second.ToString().PadLeft(2, '0')}", false);
 
 
 

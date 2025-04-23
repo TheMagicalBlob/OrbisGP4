@@ -7,6 +7,7 @@
 #define GUIExtras
 #define Log
 
+using System;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -327,6 +328,7 @@ namespace libgp4 {
 
                 return false;
             }
+
 
             return DefaultBlacklist.Select(item => item = item[1] == ':' ? item : $"{GamedataFolder}\\{item}").Any(checkPath) || FileBlacklist.Select(item => item = item[1] == ':' ? item : $"{GamedataFolder}\\{item}").Any(checkPath);
         }
