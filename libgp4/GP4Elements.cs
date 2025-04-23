@@ -82,8 +82,22 @@ namespace libgp4 {
         private XmlNode CreateFilesElement(int chunk_count, string[][] extra_files, string gamedata_folder, XmlDocument gp4)
         {
             var files = gp4.CreateElement("files");
-            
-            foreach (var file_path in Directory.GetFiles(gamedata_folder, "*", SearchOption.AllDirectories))
+
+            var folderContents = Directory.GetFiles(gamedata_folder, "*", SearchOption.AllDirectories).ToList();
+
+            if (FileBlacklist != null)
+            {
+                for (int i = 0; i < FileBlacklist.Length; i++)
+                {
+                    if (Directory.Exists(FileBlacklist[i]))
+                    {
+                        folderContents.RemoveAll(item => item.Contains(FileBlacklist[i] + '\\'));
+                    }
+                }
+            }
+
+
+            foreach (var file_path in folderContents)
             {
                 Print($"Processing File \"{file_path}\".", true);
 

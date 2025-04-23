@@ -88,8 +88,8 @@ namespace libgp4 {
                 SfoParams  = new SfoParser(this, GamedataFolder);
                 PlaygoData = new PlaygoParameters(this, GamedataFolder);
 
-                var i = 0;
-                DefaultBlacklist.Select(item => item = GamedataFolder + '\\' + _DefaultBlacklist[i++]);
+                DefaultBlacklist = _DefaultBlacklist;
+                DefaultBlacklist.Select(item => item = GamedataFolder + '\\' + item);
             }
         }
         private string _GamedataFolder;

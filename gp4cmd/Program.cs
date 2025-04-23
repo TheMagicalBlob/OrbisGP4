@@ -96,13 +96,7 @@ namespace gp4cmd
 
                     case "--exclude":
                     case "--blacklist":
-                        var buffer = new List<string>(args);
-                        buffer.RemoveRange(++i, buffer.Count);
-
-                        gp4.FileBlacklist = buffer.ToArray();
-                        Print($"Set Blacklist as [{string.Join(", ", gp4.FileBlacklist)}]");
-
-                        File.WriteAllText("C:\\Users\\blob\\Dev\\repos\\OrbisGP4", string.Join("\n", gp4.FileBlacklist));
+                        gp4.FileBlacklist = new List<string>(args).GetRange(++i, args.Length - 3).ToArray();
                         break;
 
 
