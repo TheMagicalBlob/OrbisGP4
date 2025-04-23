@@ -1372,9 +1372,10 @@ namespace libgp4 {
         //================================\\
         #region [Internal Variables]
 
-        /// <summary> Names Of Files That Are Always To Be Excluded From .gp4 Projects By Default.
+        /// <summary>
+        /// List of files to always be excluded from the project file. Gamedata folder is prepended once it's set
         /// </summary>
-        public readonly string[] DefaultBlacklist = new string[]
+        private readonly string[] _DefaultBlacklist = new string[]
         {
                 // Drunk Canadian Guy
                 "sce_discmap.plt",
@@ -1405,6 +1406,7 @@ namespace libgp4 {
                 @"sce_sys\target-deltainfo.dat",
                 @"sce_sys\app\playgo-manifest.xml"
         };
+        private string[] DefaultBlacklist;
 
         /// <summary> List Of Additional Files To Include In The Project, Added by The User.
         /// </summary>

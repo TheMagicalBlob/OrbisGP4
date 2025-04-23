@@ -106,7 +106,8 @@ namespace GP4GUI
 
 
         // Check for new app version by comparing newest tag to version text
-        private async void VersionCheckBtn_Click(object sender, EventArgs e) {
+        private async void VersionCheckBtn_Click(object sender, EventArgs e)
+        {
             try {
                 using (var clientHandler = new HttpClientHandler())
                 {
@@ -192,14 +193,20 @@ namespace GP4GUI
         private void GP4OutputDirectoryBrowseBtn_Click(object sender, EventArgs e)
         {
             // Use the ghastly Directory Tree Dialogue to Choose A Folder
-            if (LegacyFolderSelectionDialogue) {
+            if (LegacyFolderSelectionDialogue)
+            {
                 using (var ShitBrowser = new FolderBrowserDialog())
+                {
                     if (ShitBrowser.ShowDialog() == DialogResult.OK)
+                    {
                         GP4OutputDirectoryTextBox.Set(ShitBrowser.SelectedPath);
+                    }
+                }
             }
             // Use The Newer "Hackey" Method
             else {
-                var CrapBrowser = new OpenFileDialog() {
+                var CrapBrowser = new OpenFileDialog()
+                {
                     ValidateNames = false,
                     CheckPathExists = false,
                     CheckFileExists = false,
@@ -209,7 +216,9 @@ namespace GP4GUI
                 };
 
                 if (CrapBrowser.ShowDialog() == DialogResult.OK)
+                {
                     GP4OutputDirectoryTextBox.Set(CrapBrowser.FileName.Remove(CrapBrowser.FileName.LastIndexOf('\\')));
+                }
             }
         }
 
@@ -218,10 +227,15 @@ namespace GP4GUI
         private void BasePackagePathTextBox_TextChanged(object sender, EventArgs e) => gp4.BasePackagePath = BasePackagePathTextBox.Text;
 
         // Search for the Base Application Package Through an OpenFileDialogue Instance.
-        private void BasePackagePathBrowseBtn_Click(object sender, EventArgs e) {
-            using(var Browser = new OpenFileDialog{ Title = "Please Select the Base-Game Package You're Creating a Patch Package for." })
-                if(Browser.ShowDialog() == DialogResult.OK)
+        private void BasePackagePathBrowseBtn_Click(object sender, EventArgs e)
+        {
+            using (var Browser = new OpenFileDialog { Title = "Please Select the Base-Game Package You're Creating a Patch Package for." })
+            {
+                if (Browser.ShowDialog() == DialogResult.OK)
+                {
                     BasePackagePathTextBox.Set(Browser.FileName);
+                }
+            }
         }
 
 
@@ -242,14 +256,18 @@ namespace GP4GUI
         }
 
         // Build an Array of Files to Exclude from the .gp4 Project's File Listing From Those Selected Through an OpenFileDialogue Instance (W/ Multiselect).
-        private void FileBlacklistBrowseBtn_Click(object sender, EventArgs e) {
-            using (var Browser = new OpenFileDialog {
+        private void FileBlacklistBrowseBtn_Click(object sender, EventArgs e)
+        {
+            using (var Browser = new OpenFileDialog
+            {
                 Multiselect = true,
                 Title = "Folders Must Be Added Manually To The Text Box (Blame Microsoft)"
             })
 
-            if(Browser.ShowDialog() == DialogResult.OK)
+            if (Browser.ShowDialog() == DialogResult.OK)
+            {
                 FileBlacklistTextBox.Set($"{string.Join(",", Browser.FileNames)}");
+            }
         }
 
                

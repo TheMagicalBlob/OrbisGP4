@@ -180,6 +180,7 @@ namespace libgp4 {
                 }
             }
 
+
             foreach(string folder in Directory.GetDirectories(gamedata_folder))
             {
                 if (FileShouldBeExcluded(folder))
@@ -254,9 +255,12 @@ namespace libgp4 {
         /// Build .gp4 Structure And Save To File.
         /// </summary>
         /// <returns> Time Taken For Build Process. </returns>
-        private void BuildGp4Elements(XmlDocument gp4_project, XmlNode[] base_elements, XmlNode chunks, XmlNode scenarios, XmlNode files, XmlNode rootdir) {
-
+        private void BuildGp4Elements(XmlDocument gp4_project, XmlNode[] base_elements, XmlNode chunks, XmlNode scenarios, XmlNode files, XmlNode rootdir)
+        {
+            // XML Delcaration go brr (this is an important comment)
             gp4_project.AppendChild(gp4_project.CreateXmlDeclaration("1.1", "utf-8", "yes"));
+
+
             gp4_project.AppendChild(base_elements[0]);      // psproject
 
             base_elements[0].AppendChild(base_elements[1]); // volume
@@ -271,9 +275,13 @@ namespace libgp4 {
             base_elements[0].AppendChild(files);
             base_elements[0].AppendChild(rootdir);
 
+
             if (!SkipEndComment)
-            gp4_project.AppendChild(gp4_project.CreateComment("OrbisGP4 - gengp4.exe Alternative. GUI & Library Source: [https://github.com/TheMagicalBlob/OrbisGP4/]"));
+            {
+                gp4_project.AppendChild(gp4_project.CreateComment("OrbisGP4 - gengp4.exe Alternative. GUI & Library Source: [https://github.com/TheMagicalBlob/OrbisGP4/]"));
+            }
         }
+
 
 
         /// <summary>
@@ -283,15 +291,18 @@ namespace libgp4 {
         /// <returns> True If The File in filepath Shouldn't Be Included In The .gp4 </returns>
         private bool FileShouldBeExcluded(string file_path)
         {
-            if (new string[] { "sce_sys", "." }.All(file_path.Contains) && new string[] { ".dds", ".encrypted" }.Any(file_path.Substring(file_path.LastIndexOf('.')).Equals)) {
+            if (new string[] { "sce_sys", "." }.All(file_path.Contains) && new string[] { ".dds", ".encrypted" }.Any(file_path.Substring(file_path.LastIndexOf('.')).Equals))
+            {
                 Print($"Ignoring {file_path.Substring(file_path.LastIndexOf('.'))} In System Folder.", true, 1);
                 return true;
             }
-            else if (file_path.Contains("keystone") && IgnoreKeystone) {
+            else if (file_path.Contains("keystone") && IgnoreKeystone)
+            {
                 Print("Ignoring keystone File.", true, 1);
                 return true;
             }
-            else if (file_path.Contains('.') && file_path.Substring(file_path.LastIndexOf('.')) == ".gp4") {
+            else if (file_path.Contains('.') && file_path.Substring(file_path.LastIndexOf('.')) == ".gp4")
+            {
                 Print("Ignoring .gp4 Project File.", true, 1);
                 return true;
             }
@@ -303,6 +314,12 @@ namespace libgp4 {
 
             bool checkPath(string path)
             {
+                // Format relative paths
+                if (path.Length > 1 & path[1] != ':')
+                {
+                    path = $@"{GamedataFolder}\{path}";
+                }
+
                 if (Directory.Exists(path))
                 {
                     if (path == file_path)
@@ -330,7 +347,7 @@ namespace libgp4 {
             }
 
 
-            return DefaultBlacklist.Select(item => item = item[1] == ':' ? item : $"{GamedataFolder}\\{item}").Any(checkPath) || FileBlacklist.Select(item => item = item[1] == ':' ? item : $"{GamedataFolder}\\{item}").Any(checkPath);
+            return DefaultBlacklist.Any(checkPath) || FileBlacklist.Any(checkPath);
         }
 
 
@@ -342,25 +359,14 @@ namespace libgp4 {
         /// <returns> True if pfs compression should be enabled. </returns>
         private bool SkipPfsCompressionForFile(string filepath)
         {
-            var pfsCompression = new string[] {
-                "sce_sys",
-                "sce_module",
-                ".fself",
-                ".self",
-                ".elf",
-                ".bin",
-                ".prx",
-                ".dll",
-                ".mp3",
-                ".mp4",
-                ".jpeg",
-                ".png",
-                ".arc",
-                ".tar",
-                ".gz",
-                ".zip",
-                ".7z"
-            }.Any(filepath.ToLower().Contains);
+            var pfsCompression = new[]
+            {
+                "sce_sys", "sce_module",
+                ".fself", ".self", ".elf", ".bin", ".prx", ".dll",
+                ".mp3", ".mp4",".jpeg",".png",
+                ".arc", ".tar", ".gz", ".zip", ".7z"
+            }
+            .Any(filepath.ToLower().Contains);
 
             
             Print($"PFS Compression {(pfsCompression? "En":"Dis")}abled", true, 1);

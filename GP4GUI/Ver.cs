@@ -11,7 +11,7 @@ using static GP4GUI.Common;
 namespace GP4GUI {
     public partial class OptionsPage
     {
-        public const string Version = "2.75.400 "; // Easier to see, more likely to remember to update
+        public const string Version = "2.76.405 "; // Easier to see, more likely to remember to update
     }
 
     

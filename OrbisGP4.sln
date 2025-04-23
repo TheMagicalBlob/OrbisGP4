@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "libgp4", "libgp4\libgp4.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GP4GUI", "GP4GUI\GP4GUI.csproj", "{4EDFA0A4-59EC-4A35-B622-0FC2B1B8DEE8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gp4cmd", "gp4cmd\gp4cmd.csproj", "{FE00F5EF-7B5F-443A-9794-AC55503892A9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gp4cmd", "gp4cmd\gp4cmd.csproj", "{10628C28-75C1-43EF-9619-7EE737CDFBAE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +23,10 @@ Global
 		{4EDFA0A4-59EC-4A35-B622-0FC2B1B8DEE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4EDFA0A4-59EC-4A35-B622-0FC2B1B8DEE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4EDFA0A4-59EC-4A35-B622-0FC2B1B8DEE8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FE00F5EF-7B5F-443A-9794-AC55503892A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FE00F5EF-7B5F-443A-9794-AC55503892A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FE00F5EF-7B5F-443A-9794-AC55503892A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FE00F5EF-7B5F-443A-9794-AC55503892A9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{10628C28-75C1-43EF-9619-7EE737CDFBAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{10628C28-75C1-43EF-9619-7EE737CDFBAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{10628C28-75C1-43EF-9619-7EE737CDFBAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{10628C28-75C1-43EF-9619-7EE737CDFBAE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

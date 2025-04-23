@@ -51,33 +51,45 @@ namespace libgp4 {
         /// <summary>
         /// Root Path Of The PS4 Package Project The .gp4 Is To Be Created For. (Should Contain At Least An Executable And sce_sys Folder)
         /// </summary>
-        public string GamedataFolder {
+        public string GamedataFolder
+        {
             get => _GamedataFolder ?? string.Empty;
 
             set {
+                if (value == null)
+                {
+                    _GamedataFolder = string.Empty;
+                }
+                else
+                    _GamedataFolder = value?.TrimEnd('/', '\\');
 
-                _GamedataFolder = value?.TrimEnd('/', '\\') ?? "Empty String";// string.Empty;
                 DPrint($"GamedataFolder => [{_GamedataFolder}]");
+
 
                 if (!Directory.Exists(GamedataFolder))
                 {
                     string message;
 
-                    if (File.Exists(GamedataFolder)) {
+                    if (File.Exists(GamedataFolder))
+                    {
                         message = $"Path \"{GamedataFolder}\" Leads to a File, Not a Folder.";
                     }
-                    else if (GamedataFolder == string.Empty) {
-                        message = "Nothing Was Provided. ()";
+                    else if (GamedataFolder == string.Empty)
+                    {
+                        message = "Nothing Was Provided.";
                     }
                     else
                         message = $"Directory \"{GamedataFolder}\" Does Not Exist.";
 
 
-                    throw new DirectoryNotFoundException($"Invalid Gamedata Folder Path Provided. [{message}]");
+                    throw new DirectoryNotFoundException($"Invalid Gamedata Folder Path Provided, unable to parse data in sce_sys. [{message}]");
                 }
 
                 SfoParams  = new SfoParser(this, GamedataFolder);
                 PlaygoData = new PlaygoParameters(this, GamedataFolder);
+
+                var i = 0;
+                DefaultBlacklist.Select(item => item = GamedataFolder + '\\' + _DefaultBlacklist[i++]);
             }
         }
         private string _GamedataFolder;
@@ -121,7 +133,7 @@ namespace libgp4 {
             set {
                 _OutputDirectory = value ?? string.Empty;
                 DPrint($"OutputDirectory => [{_OutputDirectory}]");
-            }
+            } 
         }
         private string _OutputDirectory;
 
@@ -164,18 +176,6 @@ namespace libgp4 {
 
             set {
                 _BlacklistedFilesOrFolders = value ?? Array.Empty<string>();
-
-
-                // Format relative file paths for convenience
-                _BlacklistedFilesOrFolders.Select(item =>
-                {
-                    if (item[1] != ':')
-                    {
-                        return GamedataFolder + '\\' + item;
-                    }
-
-                    return item;
-                });
 
                 DPrint($"BlacklistedFilesOrFolders => [{string.Join(", ", _BlacklistedFilesOrFolders ?? Array.Empty<string>())}]");
             }
@@ -496,24 +496,26 @@ namespace libgp4 {
 
             
 
-
-
-
-
             // Check for a .gp4ignore file
-            if (File.Exists($"{GamedataFolder}\\.gp4ignore") && FileBlacklist.Length < 1)
+            Print("Checking for .gp4ignore/.app_path/.passcode files in gamedata folder...", true);
+            if (File.Exists($"{GamedataFolder}\\.gp4ignore") && FileBlacklist != null && FileBlacklist.Length < 1)
             {
                 FileBlacklist = File.ReadAllLines($"{GamedataFolder}\\.gp4ignore").Select(str => str = str.Replace("\"", string.Empty)).ToArray();
+                Print($"Using the {FileBlacklist.Length} blacklisted files listed in from .app_path file in gamedata folder.", true);
             }
+
             // Check for a .app_path file
             if(File.Exists($"{GamedataFolder}\\.app_path") && !File.Exists(BasePackagePath))
             {
                 BasePackagePath = File.ReadAllText($"{GamedataFolder}\\.app_path").Replace("\"", string.Empty);
+                Print($"Using Application path \"{BasePackagePath}\" from .app_path file in gamedata folder.", true);
             }
+
             // Check for a .passcode file
             if(File.Exists($"{GamedataFolder}\\.passcode"))
             {
                 Passcode = File.ReadAllText($"{GamedataFolder}\\.passcode").Replace("\"", string.Empty);
+                Print($"Using Passcode \"{Passcode}\" from .passcode file in gamedata folder.", true); // passcode passcode passcode passcode pa-
             }
 
 
@@ -535,7 +537,8 @@ namespace libgp4 {
 
 
             // Create The Actual .gp4 Structure
-            Print($"Start Time: {DateTime.Now.Minute.ToString().PadLeft(2, '0')}:{DateTime.Now.Second.ToString().PadLeft(2, '0')}", false);
+            Print($"Building .gp4 structure.", false);
+            Print($" - Start time: {DateTime.Now.Minute.ToString().PadLeft(2, '0')}:{DateTime.Now.Second.ToString().PadLeft(2, '0')}", true);
             BuildGp4Elements
             (
                 gp4,
@@ -545,16 +548,18 @@ namespace libgp4 {
                 CreateFilesElement(PlaygoData.chunk_count, extra_files, GamedataFolder, gp4),
                 CreateRootDirectoryElement(GamedataFolder, gp4)
             );
-            Print($"End Time: {DateTime.Now.Minute.ToString().PadLeft(2, '0')}:{DateTime.Now.Second.ToString().PadLeft(2, '0')}", false);
-
+            Print($"Finished Building .gp4 Project file.", false);
+            Print($" - Completion time: {DateTime.Now.Minute.ToString().PadLeft(2, '0')}:{DateTime.Now.Second.ToString().PadLeft(2, '0')}", true);
+            Print("", false); // lazy formatting fix
 
 
             // Write The .gp4 File To The Provided Folder / As The Provided Filename
+            Print("Saving .gp4 file to disk...", false);
             gp4.Save(OutputPath);
 
-            Print(string.Empty, true); // Lazy output formatting fix
-            Print($"GP4 Creation Successful, File Saved As {OutputPath}\n", false);
 
+            Print(string.Empty, true); // Lazy output formatting fix
+            Print($"GP4 Creation Successful, File Saved As\n\"{OutputPath}\"\n\n", false);
 
             return OutputPath;
         }
