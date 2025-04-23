@@ -328,12 +328,6 @@ namespace libgp4 {
 
             bool checkPath(string path)
             {
-                // Format relative paths
-                if (path.Length > 1 & path[1] != ':')
-                {
-                    path = $@"{GamedataFolder}\{path}";
-                }
-
                 if (Directory.Exists(path))
                 {
                     if (path == file_path)

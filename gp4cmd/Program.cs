@@ -97,6 +97,7 @@ namespace gp4cmd
                     case "--exclude":
                     case "--blacklist":
                         gp4.FileBlacklist = new List<string>(args).GetRange(++i, args.Length - 3).ToArray();
+                        i = args.Length;
                         break;
 
 

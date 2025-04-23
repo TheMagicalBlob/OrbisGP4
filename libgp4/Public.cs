@@ -88,8 +88,24 @@ namespace libgp4 {
                 SfoParams  = new SfoParser(this, GamedataFolder);
                 PlaygoData = new PlaygoParameters(this, GamedataFolder);
 
-                DefaultBlacklist = _DefaultBlacklist;
-                DefaultBlacklist.Select(item => item = GamedataFolder + '\\' + item);
+
+                DefaultBlacklist = _DefaultBlacklist.Select(item => item = GamedataFolder + '\\' + item).ToArray();
+
+                if (FileBlacklist != Array.Empty<string>())
+                {
+                    if (GamedataFolder != string.Empty)
+                    {
+                        _BlacklistedFilesOrFolders = _BlacklistedFilesOrFolders.Select(item =>
+                        {
+                            if (item.Length > 1 && (item[1] != ':'))
+                            {
+                                return $"{GamedataFolder}\\{item}";
+                            }
+                            return item;
+                        })
+                        .ToArray();
+                    }
+                }
             }
         }
         private string _GamedataFolder;
@@ -176,6 +192,20 @@ namespace libgp4 {
 
             set {
                 _BlacklistedFilesOrFolders = value ?? Array.Empty<string>();
+
+                // Format relative path files
+                if (GamedataFolder != string.Empty)
+                {
+                    _BlacklistedFilesOrFolders = _BlacklistedFilesOrFolders.Select(item =>
+                    {
+                        if (item.Length > 1 && (item[1] != ':'))
+                        {
+                            return $"{GamedataFolder}\\{item}";
+                        }
+                        return item;
+                    })
+                    .ToArray();
+                }
 
                 DPrint($"BlacklistedFilesOrFolders => [{string.Join(", ", _BlacklistedFilesOrFolders ?? Array.Empty<string>())}]");
             }
