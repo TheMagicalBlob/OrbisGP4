@@ -294,7 +294,6 @@ namespace GP4GUI
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "OptionsPage";
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
-            this.Text = "Form1";
             this.ResumeLayout(false);
             this.PerformLayout();
 

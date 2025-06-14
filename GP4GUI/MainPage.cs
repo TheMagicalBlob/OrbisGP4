@@ -11,8 +11,8 @@ using static GP4GUI.Testing;
 
 
 namespace GP4GUI {
-    public partial class MainForm : Form {
-        public MainForm()
+    public partial class MainPage : Form {
+        public MainPage()
         {
             // Initialize .gp4 creator instance, and set logging method to "OutputWindow"
             gp4 = new GP4Creator {
@@ -93,6 +93,7 @@ namespace GP4GUI {
             {
                 if (Item.Name == "SwapBrowseModeBtn") // lazy fix to avoid the mouse down event confliciting with the button
                     continue;
+
                 
                 Item.MouseDown += new MouseEventHandler((sender, e) => {
                     MouseDif = new Point(MousePosition.X - Venat.Location.X, MousePosition.Y - Venat.Location.Y);

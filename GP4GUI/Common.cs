@@ -43,7 +43,7 @@ namespace GP4GUI {
         public static Point MouseDif;
         
         /// <summary> MainPage Form Pointer/Refference. </summary>
-        public static MainForm Venat;
+        public static MainPage Venat;
         /// <summary> OptionsPage Form Pointer/Refference. </summary>
         public static OptionsPage Azem;
 
@@ -114,6 +114,42 @@ namespace GP4GUI {
             e.Graphics.Clear(Color.FromArgb(20, 20, 20));
             e.Graphics.DrawLines(pen, Border);
         }
+        
+
+        /// <summary> Create and draw a thin white line from one end of the form to the other. (placeholder code atm)
+        ///</summary>
+        public static void DrawSeperatorLine(object sender, PaintEventArgs @event)
+        {
+            var item = sender as Label;
+
+            if (item == null)
+            {
+                echo("!! ERROR: Invalid control passed as Seperator line.");
+                echo($"  - Control \"{item.Name}\" location: {item.Location}.");
+            }
+            if (item.Name == "SeperatorLine0" && item.Location != new Point(2, 20))
+            {
+                echo($"Seperator Line 0 Improperly positioned on {item.Parent.Name}");
+            }
+            if (item.Height != 15)
+            {
+                echo($"# WARNING: \"{item.Name}\" has an invalid height!!! (Label is {item.Height} pixels in hight)");
+            }
+            if (!(item.Location.X == 2 && item.Width == item.Parent.Width - 4))
+            {
+                echo($"Moved And Resized {item.Name} ({item.Parent.Name}).");
+
+                item.Location = new Point(2, item.Location.Y);
+                item.Width = item.Parent.Width - 4;
+            }
+
+
+            @event.Graphics.Clear(Color.FromArgb(18, 18, 18));
+            @event.Graphics.DrawLines(pen, new Point[] {
+                new Point(0, 9),
+                new Point(item.Parent.Width, 9)
+            });
+        }
         #endregion
 
 
@@ -128,7 +164,13 @@ namespace GP4GUI {
         {
 #if DEBUG
             gp4.LoggingMethod(str);
+            echo(str);
+#endif
+        }
 
+        private static void echo(object str)
+        {
+            #if DEBUG
             // Debug Output
             if (!Console.IsOutputRedirected)
             {
@@ -136,7 +178,7 @@ namespace GP4GUI {
             }
             else
                 Debug.WriteLine($"#libgp4: {str ?? "null"}");
-#endif
+            #endif
         }
         #endregion
     }

@@ -57,6 +57,11 @@ namespace GP4GUI
             
             foreach(Control Item in Controls)
             {
+                if (Item.GetType() == typeof(Label) && Item.Name.Contains("ratorLine"))
+                {
+                    Item.Paint += DrawSeperatorLine;
+                }
+                
                 Item.MouseDown += new MouseEventHandler((sender, e) => {
                     MouseDif = new Point(MousePosition.X - Venat.Location.X, MousePosition.Y - Venat.Location.Y);
                     MouseIsDown = true;

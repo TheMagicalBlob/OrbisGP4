@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 namespace GP4GUI
 {
-    public partial class MainForm
+    public partial class MainPage
     {
         //=====================================\\
         //--|   Designer Crap, No Touchie   |--\\
